@@ -31,23 +31,8 @@ cloud:
     credentials:
       #            accessKey: 1234
       #            secretKey: 1234
-      accessKey: 123123123ewqeqwe
-      secretKey: 12e12e+12eweqwe
+      accessKey: asfasadsadasd
+      secretKey: asfasdasd+fasdasdasdafas
 
 
-      stack:
-        auto: 'false'
 
-
-#소셜로그인
-  security:
-    oauth2:
-      client:
-        registration:
-          #          구글로그인
-          google:
-            client-id: asedasd12-123eqwe.apps.12eqwe12.com
-            client-secret: 12eqwedwda-12eqawdeawe
-            scope:
-              - email
-              - profile
