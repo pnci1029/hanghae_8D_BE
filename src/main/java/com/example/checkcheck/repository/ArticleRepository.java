@@ -1,8 +1,15 @@
 package com.example.checkcheck.repository;
 
-import com.example.checkcheck.model.Article;
+import com.example.checkcheck.model.articleModel.Article;
+import com.example.checkcheck.model.articleModel.Category;
+import com.example.checkcheck.model.articleModel.Process;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+import java.util.List;
 
+public interface ArticleRepository extends JpaRepository<Article, Long>, ArticleRepositoryCustom {
+
+    List<Article> findByCategoryAndProcess(Category category, Process process);
+
+    List<Article> findByCategory(Category category);
 }

@@ -1,20 +1,23 @@
 package com.example.checkcheck.model;
 
+import com.example.checkcheck.model.articleModel.Article;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data @NoArgsConstructor
-@Table(name = "member")
 public class Member {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Long id;
+    private Long memberId;
 
     @Column
     private String nickName;
@@ -40,6 +43,9 @@ public class Member {
     @Column
     private Double socialId;
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Article> article=new ArrayList<>();
 
     @Builder
     public Member(String nickName, String password, String userEmail,

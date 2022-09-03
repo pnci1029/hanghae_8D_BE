@@ -119,7 +119,6 @@ public class SocialGoogleService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
-        System.out.println("jsonNode = " + jsonNode.toString());
         String accessToken = jsonNode.get("access_token").asText();
 //        String refreshToken = jsonNode.get("refresh_token").asText();
         String refreshToken = null;
@@ -150,12 +149,8 @@ public class SocialGoogleService {
         String id = jsonNode.get("sub").asText();
 
         String userEmail = jsonNode.get("email").asText();
-        System.out.println("userEmail = " + userEmail);
 
         String userName = jsonNode.get("name").asText();
-        System.out.println("userName = " + userName);
-//        String profileUrl = jsonNode.get("properties")
-//                .get("profile_image").asText();
         return new GoogleUserInfoDto(id, userName, userEmail);
     }
 
@@ -167,8 +162,6 @@ public class SocialGoogleService {
         Member findGoogle = memberRepository.findByUserRealEmail(googleUserInfoDto.getUserEmail()).orElse(null);
 
 
-        System.out.println("findGoogle = " + findGoogle);
-        //        아이디 여러개생김
 
         //DB에 중복된 계정이 없으면 회원가입 처리
         if (findGoogle == null) {
@@ -185,9 +178,6 @@ public class SocialGoogleService {
                     .userEmail("g_" + email)
                     .userRealEmail(email)
                     .password(encodedPassword)
-//                    .socialId(googleId)
-//                    .createdAt(createdAt)
-//                    .socialId(String.valueOf(kakaoId))
                     .provider(provider)
                     .build();
             memberRepository.save(kakaoMember);
