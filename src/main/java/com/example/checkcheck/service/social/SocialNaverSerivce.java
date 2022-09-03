@@ -6,9 +6,10 @@ import com.example.checkcheck.dto.userinfo.NaverUserInfoDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.RefreshTokenRepository;
-import com.example.checkcheck.repository.UserRepository;
+import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
-import com.example.checkcheck.service.UserService;
+import com.example.checkcheck.service.MemberService;
+import com.example.checkcheck.util.ComfortUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,11 @@ public class SocialNaverSerivce {
     private String client_id;
     @Value("${cloud.security.oauth2.client.registration.naver.client-secret}")
     private String clientSecret;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
+    private final MemberService memberService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ComfortUtils comfortUtils;
 
     @Transactional
     public SocialResponseDto naverLogin(String code, String state, HttpServletResponse response) {
@@ -53,9 +55,10 @@ public class SocialNaverSerivce {
             String realEmail = "n_" + naverUserEmail;
 
 
+
             // 재가입 방지
             // 네이버 ID로 유저 정보 DB 에서 조회
-            Member member = userRepository.findByUserEmail(realEmail).orElse(null);
+            Member member = memberRepository.findByUserEmail(realEmail).orElse(null);
 
 
             // 없으면 회원가입
@@ -65,12 +68,11 @@ public class SocialNaverSerivce {
                         .password(encodedPassword)
                         .userEmail("n_"+naverUserEmail)
                         .userRealEmail(naverUser.getUserEmail().substring(1, naverUser.getUserEmail().length() - 1))
-                        .userRank("Bronze")
 //                        .socialId(Double.valueOf(naverUser.getNaverId().substring(1, naverUser.getNaverId().length() - 1)))
                         .createdAt(LocalDateTime.now())
                         .provider(provider)
                         .build();
-                userRepository.save(member);
+                memberRepository.save(member);
 
             } else {
                 // 강제 로그인
@@ -85,7 +87,7 @@ public class SocialNaverSerivce {
 
 
 //            토큰 관리
-            TokenFactory tokenFactory = userService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
+            TokenFactory tokenFactory = memberService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
 
             String refreshToken =  tokenFactory.getRefreshToken();
 
@@ -101,7 +103,7 @@ public class SocialNaverSerivce {
                     .userEmail(member.getUserEmail())
                     .accessToken(tokenFactory.getAccessToken())
                     .refreshToken(tokenFactory.getRefreshToken())
-                    .userRank(member.getUserRank())
+                    .userRank(comfortUtils.getUserRank(member.getPoint()))
                     .build();
             return socialResponseDto;
 

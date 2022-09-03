@@ -86,7 +86,6 @@ public class JwtTokenProvider {
     //Request의 Header에서 token 값을 가져옴
     //"X-AUTH-TOKEN":"TOKEN 깞"
     public String resolveToken(HttpServletRequest request) {
-        System.out.println("request = " + request.getHeader("Authorization"));
         return request.getHeader("Authorization");
     }
     public String cutToken(String token){

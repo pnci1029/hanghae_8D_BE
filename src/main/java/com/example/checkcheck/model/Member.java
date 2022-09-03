@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data @NoArgsConstructor
-@Table(name = "users")
+@Table(name = "member")
 public class Member {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +28,8 @@ public class Member {
     @Column
     String userRealEmail;
 
-    @Column
-    private String userRank;
+//    @Column
+//    private String userRank;
 
     @Column
     private int point= 0;
@@ -42,7 +42,7 @@ public class Member {
 
 
     @Builder
-    public Member(String nickName, String password, String userEmail, String userRank,
+    public Member(String nickName, String password, String userEmail,
                   LocalDateTime createdAt, String provider, Double socialId, String userRealEmail) {
         this.nickName = nickName;
         this.password = password;
@@ -50,8 +50,11 @@ public class Member {
         this.provider = provider;
         this.socialId = socialId;
         this.userRealEmail = userRealEmail;
-        this.userRank = userRank;
 
+    }
+
+    public void updatePoint(int newPoint) {
+        point = newPoint;
     }
 
 }

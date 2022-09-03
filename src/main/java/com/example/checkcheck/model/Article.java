@@ -1,5 +1,7 @@
 package com.example.checkcheck.model;
 
+import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
+import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.util.TimeStamped;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
@@ -28,9 +30,6 @@ public class Article extends TimeStamped {
     private String content;
 
     @Column(nullable = false)
-    private String category;
-
-    @Column(nullable = false)
     private int price;
 
     @Column(nullable = false)
@@ -40,12 +39,17 @@ public class Article extends TimeStamped {
     @JsonManagedReference
     private List<Image> images;
 
+//    이거 왜 숫자로 나오냐,,,?
+    @Column
+    private Category category;
+
     @Builder
-    public Article(String nickName, String title, String content,
-                   String category, int price, int selectedPrice, List<Image> images) {
+    public Article(String nickName, String title, String content, Category category,
+                   int price, int selectedPrice, List<Image> images) {
 //        this.articlesId = articlesId;
         this.nickName = nickName;
         this.title = title;
+        this.category = category;
         this.content = content;
         this.price = price;
         this.selectedPrice = selectedPrice;

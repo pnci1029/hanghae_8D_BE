@@ -6,9 +6,10 @@ import com.example.checkcheck.dto.userinfo.KakaoUserInfoDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.RefreshTokenRepository;
-import com.example.checkcheck.repository.UserRepository;
+import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
-import com.example.checkcheck.service.UserService;
+import com.example.checkcheck.service.MemberService;
+import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,9 +38,10 @@ public class SocialKakaoService {
     @Value("${cloud.security.oauth2.client.registration.kakao.client-secret}")
     private String clientSecret;
 
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ComfortUtils comfortUtils;
 
 
 
@@ -61,7 +63,7 @@ public class SocialKakaoService {
         forceLoginKakaoUser(kakaoMember, response);
 
         // User 권한 확인
-        TokenFactory tokenFactory = userService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
+        TokenFactory tokenFactory = memberService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(kakaoUserInfo.getUserEmail())
@@ -69,7 +71,8 @@ public class SocialKakaoService {
                 .accessToken(tokenFactory.getAccessToken())
                 .refreshToken(tokenFactory.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
-                .userRank(kakaoMember.getUserRank())
+
+                .userRank(comfortUtils.getUserRank(kakaoMember.getPoint()))
                 .build();
 
 //        리프레시 토큰
@@ -115,10 +118,8 @@ public class SocialKakaoService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         String accessToken=jsonNode.get("access_token").asText();
-        String refreshToken=jsonNode.get("refresh_token").asText();
 
         return accessToken;
-//        return new TokenFactory(accessToken, refreshToken);
     }
 
     //2번
@@ -160,7 +161,7 @@ public class SocialKakaoService {
         // 재가입 방지
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Double kakaoId = Double.valueOf(kakaoUserInfoDto.getKakaoId());
-        Member findKakao = userRepository.findByUserEmail("k_"+kakaoUserInfoDto.getUserEmail())
+        Member findKakao = memberRepository.findByUserEmail("k_"+kakaoUserInfoDto.getUserEmail())
                 .orElse(null);
 
         //DB에 중복된 계정이 없으면 회원가입 처리
@@ -178,12 +179,12 @@ public class SocialKakaoService {
                     .userEmail("k_"+email)
                     .password(encodedPassword)
                     .userRealEmail(email)
-                    .userRank("Bronze")
+//                    .userRank("Bronze")
 //                    .createdAt(createdAt)
 //                    .socialId(kakaoId)
                     .provider(provider)
                     .build();
-            userRepository.save(kakaoMember);
+            memberRepository.save(kakaoMember);
 
 
             return kakaoMember;
