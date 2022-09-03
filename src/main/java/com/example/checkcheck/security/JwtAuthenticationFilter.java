@@ -32,7 +32,6 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 
         } else if(token != null && !jwtTokenProvider.validateToken(token)){
             String result = jwtTokenProvider.resolveRefreshToken((HttpServletRequest) request);
-            System.out.println("result = " + result);
             if(result == null){
                 throw new JwtException("access token 이 만료 되었습니다.");
             }

@@ -4,6 +4,8 @@ import com.example.checkcheck.dto.responseDto.SocialResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.GoogleUserInfoDto;
 import com.example.checkcheck.model.Member;
+import com.example.checkcheck.model.RefreshToken;
+import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.repository.UserRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.UserService;
@@ -41,19 +43,18 @@ public class SocialGoogleService {
 
     private final UserRepository userRepository;
     private final UserService userService;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     //header 에 Content-type 지정
     //1번
     @Transactional
     public SocialResponseDto googleLogin(String code, HttpServletResponse response)
             throws JsonProcessingException {
-        TokenFactory tokenFactory = getAccessToken(code);
+        String getAccessToken = getAccessToken(code);
         // 1. "인가코드" 로 "액세스 토큰" 요청
-        String accessToken = tokenFactory.getAccessToken();
-        String refreshToken = tokenFactory.getRefreshToken();
 
         // 2. 토큰으로 카카오 API 호출
-        GoogleUserInfoDto googleUserInfo = getGoogleUserInfo(accessToken);
+        GoogleUserInfoDto googleUserInfo = getGoogleUserInfo(getAccessToken);
 
         // 3. 카카오ID로 회원가입 처리
         Member member = signupGoogleUser(googleUserInfo);
@@ -64,15 +65,18 @@ public class SocialGoogleService {
         // User 권한 확인
 
         //  5. response Header에 JWT 토큰 추가
-        String jwtToken = userService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
+        TokenFactory tokenFactory1 = userService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
+        RefreshToken refreshToken = new RefreshToken(member.getUserEmail(), tokenFactory1.getRefreshToken());
+        refreshTokenRepository.save(refreshToken);
+
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(member.getUserEmail())
                 .nickName(member.getNickName())
-                .accessToken(accessToken)
+                .accessToken("Bearer "+tokenFactory1.getAccessToken())
                 .userRank(member.getUserRank())
-                .refreshToken(refreshToken)
-                .jwtToken("Bearer "+jwtToken)
+                .refreshToken(tokenFactory1.getRefreshToken())
+//                .jwtToken("Bearer "+jwtToken)
                 .build();
 
 //        return new ResponseEntity<>(new FinalResponseDto<>
@@ -82,7 +86,7 @@ public class SocialGoogleService {
 
     //header 에 Content-type 지정
     //1번
-    public TokenFactory getAccessToken(String code) throws JsonProcessingException {
+    public String getAccessToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -117,7 +121,8 @@ public class SocialGoogleService {
         String accessToken = jsonNode.get("access_token").asText();
 //        String refreshToken = jsonNode.get("refresh_token").asText();
         String refreshToken = null;
-        return new TokenFactory(accessToken, refreshToken);
+//        return new TokenFactory(accessToken, refreshToken);
+        return accessToken;
     }
 
     //2번

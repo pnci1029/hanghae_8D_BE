@@ -2,6 +2,7 @@ package com.example.checkcheck.service;
 
 import com.example.checkcheck.dto.requestDto.RefreshTokenRequestDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
+import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -18,28 +19,36 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public String accessAndRefreshTokenProcess(String username, HttpServletResponse response) {
-        String refreshToken = jwtTokenProvider.createRefreshToken();
+    public TokenFactory accessAndRefreshTokenProcess(String username, HttpServletResponse response) {
+        String refreshToken = jwtTokenProvider.createRefreshToken(username);
+        System.out.println("refreshToken = " + refreshToken);
         String token = jwtTokenProvider.createToken(username);
         response.setHeader("Authorization", "Bearer "+token);
         response.setHeader("Access-Token-Expire-Time", String.valueOf(30*60*1000L));
-        System.out.println("token111 = " + token);
-        return token;
+        System.out.println("accesstoken = " + token);
+
+        return new TokenFactory(token, refreshToken);
     }
 
     @Transactional
-    public TokenFactory refreshAccessToken(String accessToken, RefreshTokenRequestDto refreshTokenRequest) throws AuthenticationException {
-        String refreshToken = refreshTokenRequest.getRefreshToken();
-        if (!jwtTokenProvider.validateToken(refreshToken)) {
-            throw new AuthenticationException("refresh token이 유효하지 않습니다.");
+    public TokenFactory refreshAccessToken(String refreshToken
+//            , RefreshTokenRequestDto refreshTokenRequest
+    ) throws AuthenticationException {
+//        String refreshToken = refreshTokenRequest.getRefreshToken();
+
+        String id = jwtTokenProvider.getPayload(refreshToken);
+//        String existingRefreshToken = refreshTokenRepository.findByTokenValue(id);
+        System.out.println("id = " + id);
+        RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
+        String compareToken = refresh.getTokenValue();
+
+        System.out.println("compareToken = " + compareToken);
+        if (!compareToken.equals(refreshToken)) {
+            throw new AuthenticationException("refresh token이 유효하지 않습니다.222");
         }
 
-        String id = jwtTokenProvider.getPayload(accessToken);
-//        String existingRefreshToken = refreshTokenRepository.findByTokenValue(id);
-        String existingRefreshToken = String.valueOf(refreshTokenRepository.findByTokenValue(id));
-
-        if (!existingRefreshToken.equals(refreshToken)) {
-            throw new AuthenticationException("refresh token이 유효하지 않습니다.");
+        if (!jwtTokenProvider.validateRefreshToken(refreshToken)) {
+            throw new AuthenticationException("refresh token이 유효하지 않습니다.111");
         }
 
         String newAccessToken = jwtTokenProvider.createToken(id);

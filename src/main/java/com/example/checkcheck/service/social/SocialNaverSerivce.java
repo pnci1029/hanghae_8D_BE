@@ -1,6 +1,7 @@
 package com.example.checkcheck.service.social;
 
 import com.example.checkcheck.dto.responseDto.SocialResponseDto;
+import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.NaverUserInfoDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
@@ -84,10 +85,11 @@ public class SocialNaverSerivce {
 
 
 //            토큰 관리
-            String jwtToken = userService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
+            TokenFactory tokenFactory = userService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
+
+            String refreshToken =  tokenFactory.getRefreshToken();
 
             String accessToken = naverUser.getAccessToken();
-            String refreshToken = naverUser.getRefreshToken();
 
 
 //            리프레시 토큰 저장
@@ -97,11 +99,9 @@ public class SocialNaverSerivce {
             SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                     .nickName(member.getNickName()) // 1
                     .userEmail(member.getUserEmail())
-                    .accessToken(accessToken)
-                    .refreshToken(refreshToken)
+                    .accessToken(tokenFactory.getAccessToken())
+                    .refreshToken(tokenFactory.getRefreshToken())
                     .userRank(member.getUserRank())
-                    .refreshToken(refreshToken)
-                    .jwtToken("Bearer "+jwtToken)
                     .build();
             return socialResponseDto;
 
