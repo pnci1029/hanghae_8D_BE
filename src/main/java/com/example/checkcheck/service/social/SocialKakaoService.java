@@ -49,12 +49,10 @@ public class SocialKakaoService {
     public SocialResponseDto kakaoLogin(String code, HttpServletResponse response)
             throws JsonProcessingException {
         // 1. "인가코드" 로 "액세스 토큰" 요청
-        TokenFactory tokenFactory = getAccessToken(code);
-        String accessToken = tokenFactory.getAccessToken();
-        String refreshToken = tokenFactory.getRefreshToken();
+        String getAccessToken = getAccessToken(code);
 
         // 2. 토큰으로 카카오 API 호출
-        KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+        KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(getAccessToken);
 
         // 3. 카카오ID로 회원가입 처리
         Member kakaoMember = signupKakaoUser(kakaoUserInfo);
@@ -63,21 +61,21 @@ public class SocialKakaoService {
         forceLoginKakaoUser(kakaoMember, response);
 
         // User 권한 확인
-        String jwtToken = userService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
+        TokenFactory tokenFactory = userService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(kakaoUserInfo.getUserEmail())
                 .nickName(kakaoUserInfo.getNickname())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .jwtToken("Bearer "+jwtToken)
+                .accessToken(tokenFactory.getAccessToken())
+                .refreshToken(tokenFactory.getRefreshToken())
+//                .jwtToken("Bearer "+jwtToken)
                 .userRank(kakaoMember.getUserRank())
                 .build();
 
 //        리프레시 토큰
         RefreshToken token = RefreshToken.builder()
                 .key("k_"+socialResponseDto.getUserEmail())
-                .value(refreshToken)
+                .value(tokenFactory.getRefreshToken())
                 .build();
         refreshTokenRepository.save(token);
 
@@ -88,7 +86,7 @@ public class SocialKakaoService {
 
     //header 에 Content-type 지정
     //1번
-    public TokenFactory getAccessToken(String code) throws JsonProcessingException {
+    public String getAccessToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -119,7 +117,8 @@ public class SocialKakaoService {
         String accessToken=jsonNode.get("access_token").asText();
         String refreshToken=jsonNode.get("refresh_token").asText();
 
-        return new TokenFactory(accessToken, refreshToken);
+        return accessToken;
+//        return new TokenFactory(accessToken, refreshToken);
     }
 
     //2번

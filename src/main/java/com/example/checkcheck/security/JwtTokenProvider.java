@@ -30,8 +30,8 @@ public class JwtTokenProvider {
 
     // 토큰 유효시간
     // 프론트엔드와 약속해야 함
-//    private final Long tokenValidTime = 30*60*1000L;  // 30분
-    private final Long tokenValidTime = 10*1000L;  // 20초
+    private final Long tokenValidTime = 30*60*1000L;  // 30분
+//    private final Long tokenValidTime = 20*1000L;  // 20초
     private final Long refreshTokenValidTime = 7*24*60*60*1000L;  // 1주일
 
     private final UserDetailsService userDetailsService;
@@ -58,10 +58,11 @@ public class JwtTokenProvider {
         return token;
     }
 
-    public String createRefreshToken() {
+    public String createRefreshToken(String username) {
         Date now = new Date();
         String refreshToken= Jwts.builder()
                 .setIssuedAt(now)
+                .setSubject(username)
                 .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
@@ -85,6 +86,7 @@ public class JwtTokenProvider {
     //Request의 Header에서 token 값을 가져옴
     //"X-AUTH-TOKEN":"TOKEN 깞"
     public String resolveToken(HttpServletRequest request) {
+        System.out.println("request = " + request.getHeader("Authorization"));
         return request.getHeader("Authorization");
     }
     public String cutToken(String token){
@@ -109,6 +111,16 @@ public class JwtTokenProvider {
         }
     }
 
+    public boolean validateRefreshToken(String token) {
+        try {
+            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(setTokenName(token));
+
+            return !claims.getBody().getExpiration().before(new Date());
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
+    }
+
     // Bearer 삭제
     private String setTokenName(String bearerToken){
         return bearerToken.replace("Bearer ", "");
@@ -117,7 +129,6 @@ public class JwtTokenProvider {
 
     public String getPayload(String token) throws AuthenticationException {
         try {
-//            유틸클래스
             return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
         } catch (ExpiredJwtException e) {
             return e.getClaims().getSubject();
@@ -125,6 +136,7 @@ public class JwtTokenProvider {
             throw new AuthenticationException("유효하지 않은 토큰입니다.");
         }
     }
+
 
 
 }

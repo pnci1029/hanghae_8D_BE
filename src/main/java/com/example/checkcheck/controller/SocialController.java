@@ -47,12 +47,12 @@ public class SocialController {
         return socialGoogleService.googleLogin(code, response);
     }
 
-    @PostMapping(value = "/token")
-    public TokenFactory refreshAccessToken(HttpServletRequest request,
-                                           @ModelAttribute RefreshTokenRequestDto refreshToken) throws AuthenticationException {
-        String accessToken = jwtTokenProvider.resolveToken(request);
-
-        return userService.refreshAccessToken(accessToken, refreshToken);
+    @GetMapping(value = "/token")
+    public TokenFactory refreshAccessToken(HttpServletRequest request
+//                                           @ModelAttribute (value = "refreshToken")RefreshTokenRequestDto refreshToken
+    ) throws AuthenticationException {
+        String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+        return userService.refreshAccessToken(refreshToken);
     }
 
 
