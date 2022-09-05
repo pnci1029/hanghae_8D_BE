@@ -6,9 +6,10 @@ import com.example.checkcheck.dto.userinfo.KakaoUserInfoDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.RefreshTokenRepository;
-import com.example.checkcheck.repository.UserRepository;
+import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
-import com.example.checkcheck.service.UserService;
+import com.example.checkcheck.service.MemberService;
+import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,9 +38,10 @@ public class SocialKakaoService {
     @Value("${cloud.security.oauth2.client.registration.kakao.client-secret}")
     private String clientSecret;
 
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ComfortUtils comfortUtils;
 
 
 
@@ -49,12 +51,10 @@ public class SocialKakaoService {
     public SocialResponseDto kakaoLogin(String code, HttpServletResponse response)
             throws JsonProcessingException {
         // 1. "인가코드" 로 "액세스 토큰" 요청
-        TokenFactory tokenFactory = getAccessToken(code);
-        String accessToken = tokenFactory.getAccessToken();
-        String refreshToken = tokenFactory.getRefreshToken();
+        String getAccessToken = getAccessToken(code);
 
         // 2. 토큰으로 카카오 API 호출
-        KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+        KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(getAccessToken);
 
         // 3. 카카오ID로 회원가입 처리
         Member kakaoMember = signupKakaoUser(kakaoUserInfo);
@@ -63,21 +63,22 @@ public class SocialKakaoService {
         forceLoginKakaoUser(kakaoMember, response);
 
         // User 권한 확인
-        String jwtToken = userService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
+        TokenFactory tokenFactory = memberService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
-                .userEmail(kakaoUserInfo.getUserEmail())
+                .userEmail(kakaoMember.getUserEmail())
                 .nickName(kakaoUserInfo.getNickname())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .jwtToken("Bearer "+jwtToken)
-                .userRank(kakaoMember.getUserRank())
+                .accessToken(tokenFactory.getAccessToken())
+                .refreshToken(tokenFactory.getRefreshToken())
+//                .jwtToken("Bearer "+jwtToken)
+
+                .userRank(comfortUtils.getUserRank(kakaoMember.getPoint()))
                 .build();
 
 //        리프레시 토큰
         RefreshToken token = RefreshToken.builder()
                 .key("k_"+socialResponseDto.getUserEmail())
-                .value(refreshToken)
+                .value(tokenFactory.getRefreshToken())
                 .build();
         refreshTokenRepository.save(token);
 
@@ -88,7 +89,7 @@ public class SocialKakaoService {
 
     //header 에 Content-type 지정
     //1번
-    public TokenFactory getAccessToken(String code) throws JsonProcessingException {
+    public String getAccessToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -117,9 +118,8 @@ public class SocialKakaoService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         String accessToken=jsonNode.get("access_token").asText();
-        String refreshToken=jsonNode.get("refresh_token").asText();
 
-        return new TokenFactory(accessToken, refreshToken);
+        return accessToken;
     }
 
     //2번
@@ -161,7 +161,7 @@ public class SocialKakaoService {
         // 재가입 방지
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Double kakaoId = Double.valueOf(kakaoUserInfoDto.getKakaoId());
-        Member findKakao = userRepository.findByUserEmail("k_"+kakaoUserInfoDto.getUserEmail())
+        Member findKakao = memberRepository.findByUserEmail("k_"+kakaoUserInfoDto.getUserEmail())
                 .orElse(null);
 
         //DB에 중복된 계정이 없으면 회원가입 처리
@@ -179,12 +179,12 @@ public class SocialKakaoService {
                     .userEmail("k_"+email)
                     .password(encodedPassword)
                     .userRealEmail(email)
-                    .userRank("Bronze")
+//                    .userRank("Bronze")
 //                    .createdAt(createdAt)
 //                    .socialId(kakaoId)
                     .provider(provider)
                     .build();
-            userRepository.save(kakaoMember);
+            memberRepository.save(kakaoMember);
 
 
             return kakaoMember;

@@ -1,6 +1,6 @@
 package com.example.checkcheck.dto.requestDto;
 
-import com.example.checkcheck.model.Category;
+import com.example.checkcheck.model.articleModel.Category;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -13,8 +13,6 @@ public class SimpleController {
     public String simpleCon(@AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        System.out.println("name = " + name);
-        System.out.println("userDetails username= " + userDetails.getUsername());
         return userDetails.getUsername();
 
     }
