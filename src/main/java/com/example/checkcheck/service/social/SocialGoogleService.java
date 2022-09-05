@@ -6,9 +6,10 @@ import com.example.checkcheck.dto.userinfo.GoogleUserInfoDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.RefreshTokenRepository;
-import com.example.checkcheck.repository.UserRepository;
+import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
-import com.example.checkcheck.service.UserService;
+import com.example.checkcheck.service.MemberService;
+import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,9 +42,10 @@ public class SocialGoogleService {
     @Value("${cloud.security.oauth2.client.registration.google.client-secret}")
     String clientSecret;
 
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ComfortUtils comfortUtils;
 
     //header 에 Content-type 지정
     //1번
@@ -65,7 +67,7 @@ public class SocialGoogleService {
         // User 권한 확인
 
         //  5. response Header에 JWT 토큰 추가
-        TokenFactory tokenFactory1 = userService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
+        TokenFactory tokenFactory1 = memberService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
         RefreshToken refreshToken = new RefreshToken(member.getUserEmail(), tokenFactory1.getRefreshToken());
         refreshTokenRepository.save(refreshToken);
 
@@ -74,7 +76,7 @@ public class SocialGoogleService {
                 .userEmail(member.getUserEmail())
                 .nickName(member.getNickName())
                 .accessToken("Bearer "+tokenFactory1.getAccessToken())
-                .userRank(member.getUserRank())
+                .userRank(comfortUtils.getUserRank(member.getPoint()))
                 .refreshToken(tokenFactory1.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
                 .build();
@@ -117,7 +119,6 @@ public class SocialGoogleService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
-        System.out.println("jsonNode = " + jsonNode.toString());
         String accessToken = jsonNode.get("access_token").asText();
 //        String refreshToken = jsonNode.get("refresh_token").asText();
         String refreshToken = null;
@@ -148,12 +149,8 @@ public class SocialGoogleService {
         String id = jsonNode.get("sub").asText();
 
         String userEmail = jsonNode.get("email").asText();
-        System.out.println("userEmail = " + userEmail);
 
         String userName = jsonNode.get("name").asText();
-        System.out.println("userName = " + userName);
-//        String profileUrl = jsonNode.get("properties")
-//                .get("profile_image").asText();
         return new GoogleUserInfoDto(id, userName, userEmail);
     }
 
@@ -162,11 +159,9 @@ public class SocialGoogleService {
         // 재가입 방지
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Double googleId = Double.valueOf(googleUserInfoDto.getGoogleId());
-        Member findGoogle = userRepository.findByUserRealEmail(googleUserInfoDto.getUserEmail()).orElse(null);
+        Member findGoogle = memberRepository.findByUserRealEmail(googleUserInfoDto.getUserEmail()).orElse(null);
 
 
-        System.out.println("findGoogle = " + findGoogle);
-        //        아이디 여러개생김
 
         //DB에 중복된 계정이 없으면 회원가입 처리
         if (findGoogle == null) {
@@ -183,13 +178,9 @@ public class SocialGoogleService {
                     .userEmail("g_" + email)
                     .userRealEmail(email)
                     .password(encodedPassword)
-//                    .socialId(googleId)
-//                    .createdAt(createdAt)
-//                    .socialId(String.valueOf(kakaoId))
                     .provider(provider)
-                    .userRank("Bronze")
                     .build();
-            userRepository.save(kakaoMember);
+            memberRepository.save(kakaoMember);
 
 
             return kakaoMember;
