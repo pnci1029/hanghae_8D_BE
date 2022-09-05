@@ -8,6 +8,7 @@ import com.example.checkcheck.model.Member;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.ImageRepository;
 import com.example.checkcheck.repository.UserRepository;
+import com.example.checkcheck.service.notification.NotificationService;
 import com.example.checkcheck.service.s3.S3Uploader;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,12 +26,19 @@ public class ArticleService {
     private UserRepository userRepository;
     private S3Uploader s3Uploader;
 
+    /**
+     * 알람 기능 의존성 주입
+     */
+    private NotificationService notificationService;
+
     public ArticleService(ArticleRepository articleRepository, S3Uploader s3Uploader,
-                          ImageRepository imageRepository, UserRepository userRepository) {
+                          ImageRepository imageRepository, UserRepository userRepository,
+                          NotificationService notificationService) {
         this.articleRepository = articleRepository;
         this.s3Uploader = s3Uploader;
         this.imageRepository = imageRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
 
 
@@ -74,5 +82,4 @@ public class ArticleService {
         }
         return null;
     }
-
 }
