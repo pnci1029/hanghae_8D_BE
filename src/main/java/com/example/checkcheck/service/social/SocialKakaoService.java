@@ -68,7 +68,7 @@ public class SocialKakaoService {
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(kakaoMember.getUserEmail())
                 .nickName(kakaoUserInfo.getNickname())
-                .accessToken(tokenFactory.getAccessToken())
+                .accessToken("Bearer "+tokenFactory.getAccessToken())
                 .refreshToken(tokenFactory.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
 
@@ -77,7 +77,7 @@ public class SocialKakaoService {
 
 //        리프레시 토큰
         RefreshToken token = RefreshToken.builder()
-                .key("k_"+socialResponseDto.getUserEmail())
+                .key(socialResponseDto.getUserEmail())
                 .value(tokenFactory.getRefreshToken())
                 .build();
         refreshTokenRepository.save(token);
