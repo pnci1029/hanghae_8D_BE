@@ -12,6 +12,7 @@ public class TokenFactory {
     private String refreshToken;
     private String newAccessToken;
 
+    @Builder
     public TokenFactory(String newAccessToken) {
         this.newAccessToken = newAccessToken;
     }

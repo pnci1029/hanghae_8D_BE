@@ -101,7 +101,7 @@ public class SocialNaverSerivce {
             SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                     .nickName(member.getNickName()) // 1
                     .userEmail(member.getUserEmail())
-                    .accessToken(tokenFactory.getAccessToken())
+                    .accessToken("Bearer "+tokenFactory.getAccessToken())
                     .refreshToken(tokenFactory.getRefreshToken())
                     .userRank(comfortUtils.getUserRank(member.getPoint()))
                     .build();
