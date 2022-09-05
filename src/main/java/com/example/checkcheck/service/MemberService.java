@@ -1,5 +1,6 @@
 package com.example.checkcheck.service;
 
+import com.example.checkcheck.dto.responseDto.RefreshTokenResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.RefreshTokenRepository;
@@ -28,10 +29,8 @@ public class MemberService {
     }
 
     @Transactional
-    public TokenFactory refreshAccessToken(String refreshToken) throws AuthenticationException {
-
+    public RefreshTokenResponseDto refreshAccessToken(String refreshToken) throws AuthenticationException {
         try {
-
             String id = jwtTokenProvider.getPayload(refreshToken);
             RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
             String compareToken = refresh.getTokenValue();
@@ -46,8 +45,8 @@ public class MemberService {
 
             String newAccessToken = jwtTokenProvider.createToken(id);
 
-
-            return new TokenFactory(newAccessToken);
+//            return new TokenFactory(newAccessToken);
+            return new RefreshTokenResponseDto(newAccessToken);
         } catch (NullPointerException np) {
             throw new AuthenticationException("올바른 RefreshToken을 헤더에 넣어주세요");
         }

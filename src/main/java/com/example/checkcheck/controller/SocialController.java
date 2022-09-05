@@ -1,5 +1,6 @@
 package com.example.checkcheck.controller;
 
+import com.example.checkcheck.dto.responseDto.RefreshTokenResponseDto;
 import com.example.checkcheck.dto.responseDto.SocialResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.security.JwtTokenProvider;
@@ -45,7 +46,7 @@ public class SocialController {
     }
 
     @GetMapping(value = "/auth/user/token")
-    public TokenFactory refreshAccessToken(HttpServletRequest request
+    public RefreshTokenResponseDto refreshAccessToken(HttpServletRequest request
 //                                           @ModelAttribute (value = "refreshToken")RefreshTokenRequestDto refreshToken
     ) throws AuthenticationException {
         String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
