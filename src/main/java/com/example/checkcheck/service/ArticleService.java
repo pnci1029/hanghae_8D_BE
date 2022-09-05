@@ -11,6 +11,7 @@ import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.ImageRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
+import com.example.checkcheck.service.notification.NotificationService;
 import com.example.checkcheck.service.s3.S3Uploader;
 import com.example.checkcheck.util.ComfortUtils;
 import com.example.checkcheck.util.Time;
@@ -36,18 +37,28 @@ public class ArticleService {
     private ComfortUtils comfortUtils;
     private Time time;
 
-    public ArticleService(ArticleRepository articleRepository, ImageRepository imageRepository, MemberRepository memberRepository, S3Uploader s3Uploader, ComfortUtils comfortUtils, Time time) {
+    private NotificationService notificationService;
+
+    public ArticleService(
+            ArticleRepository articleRepository,
+            ImageRepository imageRepository,
+            MemberRepository memberRepository,
+            S3Uploader s3Uploader,
+            ComfortUtils comfortUtils,
+            Time time,
+            NotificationService notificationService) {
         this.articleRepository = articleRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;
         this.s3Uploader = s3Uploader;
         this.comfortUtils = comfortUtils;
         this.time = time;
+        this.notificationService = notificationService;
     }
 
     @Transactional
     public ResponseEntity<Object> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
-                                              UserDetailsImpl userDetails) throws IOException {
+                                               UserDetailsImpl userDetails) throws IOException {
 
         String nickName = userDetails.getMember().getNickName();
         String userEmail = userDetails.getUsername();
