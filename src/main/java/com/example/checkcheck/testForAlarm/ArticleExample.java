@@ -1,6 +1,6 @@
 package com.example.checkcheck.testForAlarm;
 
-import com.example.checkcheck.model.Article;
+import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.util.TimeStamped;
 
 import javax.persistence.*;

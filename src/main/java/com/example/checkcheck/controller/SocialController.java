@@ -1,10 +1,9 @@
 package com.example.checkcheck.controller;
 
-import com.example.checkcheck.dto.requestDto.RefreshTokenRequestDto;
 import com.example.checkcheck.dto.responseDto.SocialResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.security.JwtTokenProvider;
-import com.example.checkcheck.service.UserService;
+import com.example.checkcheck.service.MemberService;
 import com.example.checkcheck.service.social.SocialGoogleService;
 import com.example.checkcheck.service.social.SocialKakaoService;
 import com.example.checkcheck.service.social.SocialNaverSerivce;
@@ -18,41 +17,39 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
 public class SocialController {
 
     private final SocialKakaoService socialKakaoService;
     private final SocialNaverSerivce socialNaverSerivce;
     private final SocialGoogleService socialGoogleService;
-    private final UserService userService;
+    private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 
     //소셜 카카오 로그인
-    @GetMapping("/signin/kakao")
+    @GetMapping("/user/signin/kakao")
     public SocialResponseDto kakaoLogin(
             @RequestParam(value = "code") String code, HttpServletResponse response) throws JsonProcessingException {
-//        System.out.println(code);
         return socialKakaoService.kakaoLogin(code, response);
     }
 
-    @GetMapping("/signin/naver")
+    @GetMapping("/user/signin/naver")
     public SocialResponseDto naverLogin(
             @RequestParam(value = "code") String code, String state, HttpServletResponse response) {
         return socialNaverSerivce.naverLogin(code, state, response);
     }
 
-    @GetMapping("/signin/google")
+    @GetMapping("/user/signin/google")
     public SocialResponseDto googleLogin(
             @RequestParam(value = "code") String code, HttpServletResponse response) throws JsonProcessingException {
         return socialGoogleService.googleLogin(code, response);
     }
 
-    @PostMapping(value = "/token")
-    public TokenFactory refreshAccessToken(HttpServletRequest request,
-                                           @ModelAttribute RefreshTokenRequestDto refreshToken) throws AuthenticationException {
-        String accessToken = jwtTokenProvider.resolveToken(request);
-
-        return userService.refreshAccessToken(accessToken, refreshToken);
+    @GetMapping(value = "/auth/user/token")
+    public TokenFactory refreshAccessToken(HttpServletRequest request
+//                                           @ModelAttribute (value = "refreshToken")RefreshTokenRequestDto refreshToken
+    ) throws AuthenticationException {
+        String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
+        return memberService.refreshAccessToken(refreshToken);
     }
 
 

@@ -5,8 +5,8 @@ import com.example.checkcheck.dto.responseDto.NotificationResponseDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.Notification;
 import com.example.checkcheck.repository.EmitterRepository;
+import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.NotificationRepository;
-import com.example.checkcheck.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +26,7 @@ public class NotificationService {
 
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
 
     //TODO : 나중에 ERROR CODE Customizing 필요
@@ -34,7 +34,7 @@ public class NotificationService {
         if (requestDto == null) {
             return;
         }
-        Member member = userRepository.findById(id).orElseThrow(
+        Member member = memberRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다")
 
         );
@@ -57,7 +57,7 @@ public class NotificationService {
     }
 
     public List<NotificationResponseDto> getNotification(String userEmail) {
-        Member member = userRepository.findByUserEmail(userEmail).orElseThrow(
+        Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다")
         );
         List<NotificationResponseDto> responseDtoList = new ArrayList<>();
@@ -70,7 +70,7 @@ public class NotificationService {
 
     @Transactional
     public String readOk(String userEmail){
-        Member member = userRepository.findByUserEmail(userEmail).orElseThrow(
+        Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다")
         );
         List<Notification> notificationList = notificationRepository.findByMemberOrderByCreatedAtDesc(member);
@@ -84,7 +84,7 @@ public class NotificationService {
 
     @Transactional
     public String deleteNotification(String userEmail){
-        Member member = userRepository.findByUserEmail(userEmail).orElseThrow(
+        Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다")
         );
 
