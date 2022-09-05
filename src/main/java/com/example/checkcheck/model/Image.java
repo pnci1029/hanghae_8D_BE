@@ -1,5 +1,6 @@
 package com.example.checkcheck.model;
 
+import com.example.checkcheck.model.articleModel.Article;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -27,7 +28,7 @@ public class Image {
 
     @ManyToOne
     @JsonBackReference
-    @JoinColumn(name="ARTICLE_ID")
+    @JoinColumn(name="article_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Article article;
 
