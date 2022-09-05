@@ -107,4 +107,51 @@ public class ArticleService {
         }
         return resultBox;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // 게시글 번호 확인
+    @Transactional
+    public Article isPresentArticle(Long id) {
+        Optional<Article> optionalArticle = articleRepository.findById(id);
+        return optionalArticle.orElse(null);
+    }
 }
