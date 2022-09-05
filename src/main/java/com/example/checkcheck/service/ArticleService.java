@@ -5,8 +5,10 @@ import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.model.Article;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.Member;
+import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.ImageRepository;
+import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.UserRepository;
 import com.example.checkcheck.service.notification.NotificationService;
 import com.example.checkcheck.service.s3.S3Uploader;
@@ -23,7 +25,7 @@ public class ArticleService {
 
     private ArticleRepository articleRepository;
     private ImageRepository imageRepository;
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
     private S3Uploader s3Uploader;
 
     /**
@@ -32,12 +34,12 @@ public class ArticleService {
     private NotificationService notificationService;
 
     public ArticleService(ArticleRepository articleRepository, S3Uploader s3Uploader,
-                          ImageRepository imageRepository, UserRepository userRepository,
+                          ImageRepository imageRepository, MemberRepository memberRepository,
                           NotificationService notificationService) {
         this.articleRepository = articleRepository;
         this.s3Uploader = s3Uploader;
         this.imageRepository = imageRepository;
-        this.userRepository = userRepository;
+        this.memberRepository = memberRepository;
         this.notificationService = notificationService;
     }
 
@@ -58,7 +60,7 @@ public class ArticleService {
         articleRepository.save(articles);
 
 //        유저 포인트
-        Optional<Member> users = userRepository.findByUserEmail(nickname);
+        Optional<Member> users = memberRepository.findByUserEmail(nickname);
 
         if (multipartFile != null) {
 
