@@ -66,7 +66,7 @@ public class SocialKakaoService {
         TokenFactory tokenFactory = memberService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
-                .userEmail(kakaoUserInfo.getUserEmail())
+                .userEmail(kakaoMember.getUserEmail())
                 .nickName(kakaoUserInfo.getNickname())
                 .accessToken(tokenFactory.getAccessToken())
                 .refreshToken(tokenFactory.getRefreshToken())

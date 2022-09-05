@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,62 +75,36 @@ public class ArticleService {
 //        작성시간
         String time1 = comfortUtils.getTime(articles.getCreatedAt());
 
-//        이미지업로드
-//        if (multipartFile != null) {
-//
-//            List<Image> imgbox = new ArrayList<>();
-//            //          이미지 업로드
-//            for (MultipartFile uploadedFile : multipartFile) {
-//
-//                Image imagePostEntity = Image.builder()
-//                        .image(s3Uploader.upload(uploadedFile))
-//                        .userEmail(userEmail)
-//                        .article(articles)
-//                        .build();
-//                imgbox.add(imagePostEntity);
-//
-//                imageRepository.save(imagePostEntity);
-//            }
-//
-//        }
+////        이미지업로드
+        if (multipartFile != null) {
+
+            List<Image> imgbox = new ArrayList<>();
+            //          이미지 업로드
+            for (MultipartFile uploadedFile : multipartFile) {
+
+                Image imagePostEntity = Image.builder()
+                        .image(s3Uploader.upload(uploadedFile))
+                        .userEmail(userEmail)
+                        .article(articles)
+                        .build();
+                imgbox.add(imagePostEntity);
+
+                imageRepository.save(imagePostEntity);
+            }
+
+        }
 
         return ResponseEntity.ok().build();
     }
 
-//    @Transactional
-//    public Slice<ArticleResponseDto> showAllArticle(Category category, Process process, int size, int page) {
-//        List<ArticleResponseDto> resultList = new ArrayList<>();
-//
-////        전체 조회
-//        if (process.toString().equals("all")) {
-//            List<Article> articleList = articleRepository.findByCategory(category);
-//            for (Article article : articleList) {
-//                ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-//                        .article(article)
-//                        .build();
-//                resultList.add(articleResponseDto);
-//            }
-//
-////            진행상태에 따른 조회
-//        } else {
-//            List<Article> articleList = articleRepository.findByCategoryAndProcess(category, process);
-//            for (Article article : articleList) {
-//                List<String> imageBox = new ArrayList<>();
-//
-//                List<Image> imageList = imageRepository.findByArticle_ArticleId(article.getArticleId());
-//                for (Image image : imageList) {
-//                    imageBox.add(image.getImage());
-//                }
-//                ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-//                        .article(article)
-//                        .image(imageBox)
-//                        .build();
-//                resultList.add(articleResponseDto);
-//            }
-//        }
-//
-//
-////            return resultList;
-//        return null;
-//    }
+    public List<ArticleResponseDto> getArticleCarousel() {
+        List<ArticleResponseDto> articleResult = articleRepository.articleCarousel();
+        Collections.shuffle(articleResult);
+
+        List<ArticleResponseDto> resultBox = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            resultBox.add(articleResult.get(i));
+        }
+        return resultBox;
+    }
 }

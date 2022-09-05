@@ -30,21 +30,26 @@ public class MemberService {
     @Transactional
     public TokenFactory refreshAccessToken(String refreshToken) throws AuthenticationException {
 
-        String id = jwtTokenProvider.getPayload(refreshToken);
-        RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
-        String compareToken = refresh.getTokenValue();
+        try {
 
-        if (!compareToken.equals(refreshToken)) {
-            throw new AuthenticationException("refresh token이 유효하지 않습니다.222");
+            String id = jwtTokenProvider.getPayload(refreshToken);
+            RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
+            String compareToken = refresh.getTokenValue();
+
+            if (!compareToken.equals(refreshToken)) {
+                throw new AuthenticationException("refresh token이 유효하지 않습니다.222");
+            }
+
+            if (!jwtTokenProvider.validateRefreshToken(refreshToken)) {
+                throw new AuthenticationException("refresh token이 유효하지 않습니다.111");
+            }
+
+            String newAccessToken = jwtTokenProvider.createToken(id);
+
+
+            return new TokenFactory(newAccessToken);
+        } catch (NullPointerException np) {
+            throw new AuthenticationException("올바른 RefreshToken을 헤더에 넣어주세요");
         }
-
-        if (!jwtTokenProvider.validateRefreshToken(refreshToken)) {
-            throw new AuthenticationException("refresh token이 유효하지 않습니다.111");
-        }
-
-        String newAccessToken = jwtTokenProvider.createToken(id);
-
-
-        return new TokenFactory(newAccessToken);
     }
 }

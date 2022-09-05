@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user")
 public class SocialController {
 
     private final SocialKakaoService socialKakaoService;
@@ -27,25 +26,25 @@ public class SocialController {
     private final JwtTokenProvider jwtTokenProvider;
 
     //소셜 카카오 로그인
-    @GetMapping("/signin/kakao")
+    @GetMapping("/user/signin/kakao")
     public SocialResponseDto kakaoLogin(
             @RequestParam(value = "code") String code, HttpServletResponse response) throws JsonProcessingException {
         return socialKakaoService.kakaoLogin(code, response);
     }
 
-    @GetMapping("/signin/naver")
+    @GetMapping("/user/signin/naver")
     public SocialResponseDto naverLogin(
             @RequestParam(value = "code") String code, String state, HttpServletResponse response) {
         return socialNaverSerivce.naverLogin(code, state, response);
     }
 
-    @GetMapping("/signin/google")
+    @GetMapping("/user/signin/google")
     public SocialResponseDto googleLogin(
             @RequestParam(value = "code") String code, HttpServletResponse response) throws JsonProcessingException {
         return socialGoogleService.googleLogin(code, response);
     }
 
-    @GetMapping(value = "/token")
+    @GetMapping(value = "/auth/user/token")
     public TokenFactory refreshAccessToken(HttpServletRequest request
 //                                           @ModelAttribute (value = "refreshToken")RefreshTokenRequestDto refreshToken
     ) throws AuthenticationException {

@@ -12,4 +12,5 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
     List<Article> findByCategoryAndProcess(Category category, Process process);
 
     List<Article> findByCategory(Category category);
+
 }

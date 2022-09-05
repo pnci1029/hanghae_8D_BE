@@ -56,5 +56,18 @@ public class TestDataRunner implements ApplicationRunner {
             articleRepository.save(articles);
         }
 
+        for (int i = 0; i < 42; i++) {
+            Article articles = Article.builder()
+                    .nickName(testUser.getNickName())
+                    .title("5555")
+                    .content("7777")
+                    .price(5555)
+                    .category(Category.food)
+                    .process(Process.done)
+                    .userRank("B")
+                    .build();
+            articleRepository.save(articles);
+        }
+
     }
 }

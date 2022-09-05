@@ -48,4 +48,9 @@ public class ArticleController {
 //        return articleService.showAllArticle(category, process, size, page);
         return articleRepository.articleScroll(pageable, category, process);
     }
+
+    @GetMapping("/main/randomcards")
+    public List<ArticleResponseDto> getArticleCarousel() {
+        return articleService.getArticleCarousel();
+    }
 }

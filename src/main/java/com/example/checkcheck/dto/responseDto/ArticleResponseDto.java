@@ -18,10 +18,10 @@ public class ArticleResponseDto {
     private Process process;
     private String title;
     private String userRank;
-    private List<String> image;
+    private String image;
 
     @Builder
-    public ArticleResponseDto(Article article, List<String> image) {
+    public ArticleResponseDto(Article article, String image) {
         this.articleId = article.getArticleId();
         this.price = article.getPrice();
         this.nickName = article.getNickName();
