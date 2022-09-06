@@ -1,10 +1,12 @@
 package com.example.checkcheck.service;
 
+import com.example.checkcheck.dto.requestDto.CommentChoiseRequestDto;
 import com.example.checkcheck.dto.requestDto.CommentRequestDto;
 import com.example.checkcheck.dto.responseDto.CommentResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
+import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.model.commentModel.Comment;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.CommentRepository;
@@ -27,6 +29,7 @@ public class CommentService {
     private final MemberRepository memberRepository;
     private final ArticleService articleService;
 
+
     // 댓글 작성
     @Transactional
     public ResponseDto<?> createComment(Long articlesId, CommentRequestDto requestDto, Member member) {
@@ -41,8 +44,10 @@ public class CommentService {
                 .comment(requestDto.getComment())
                 .article(article)
                 .member(member)
+                .isSelected(false)
                 .type(requestDto.getType())
                 .build();
+
         commentRepository.save(comment);
 
         return ResponseDto.success(
@@ -107,5 +112,69 @@ public class CommentService {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         return optionalComment.orElse(null);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void commentChoose(Long articlesId,CommentChoiseRequestDto commentChoiseRequestDto) {
+        Long commentsId = commentChoiseRequestDto.getCommentsId();
+        Comment targetComment = commentRepository.findById(commentsId).orElseThrow(
+                () -> new NullPointerException("채택할 댓글이 없습니다.")
+        );
+
+
+        Article targetArticle = articleRepository.findById(articlesId).orElseThrow(
+                () -> new NullPointerException("게시글이 존재하지않습니다")
+        );
+
+        Optional<Member> targetMember = memberRepository.findById(targetComment.getMember().getMemberId());
+        int point = targetComment.getMember().getPoint();
+        targetMember.get().updatePoint(point+50);
+
+        targetArticle.setProcess(Process.done);
+
+        targetComment.chooseComment(true);
+        System.out.println("target = " + targetComment.getIsSelected());
+        commentRepository.save(targetComment);
+        articleRepository.save(targetArticle);
+
+
+    }
+//    Optional<Member> targetMember = memberRepository.findById(comment.getMember().getMemberId());
+//    int point = comment.getMember().getPoint();
+//        targetMember.get().updatePoint(point+1);
 
 }

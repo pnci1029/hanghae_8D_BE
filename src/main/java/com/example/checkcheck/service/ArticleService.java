@@ -140,10 +140,13 @@ public class ArticleService {
             imageBox.add(realImage);
         }
 
+        String category = comfortUtils.getCategoryKorean(article.getCategory());
+
         ArticleDetailResponseDto articleResponseDto = ArticleDetailResponseDto.builder()
                 .article(article)
                 .isMyArticles(isMyArticles)
                 .image(imageBox)
+                .category(category)
                 .build();
 
 

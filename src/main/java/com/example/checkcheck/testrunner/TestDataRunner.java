@@ -52,6 +52,7 @@ public class TestDataRunner implements ApplicationRunner {
                     .category(Category.etc)
                     .process(Process.process)
                     .userRank("S")
+                    .member(testUser)
                     .build();
             articleRepository.save(articles);
         }
@@ -65,6 +66,7 @@ public class TestDataRunner implements ApplicationRunner {
                     .category(Category.food)
                     .process(Process.done)
                     .userRank("B")
+                    .member(testUser)
                     .build();
             articleRepository.save(articles);
         }
@@ -78,6 +80,7 @@ public class TestDataRunner implements ApplicationRunner {
                     .category(Category.etc)
                     .process(Process.process)
                     .userRank("B")
+                    .member(testUser)
                     .build();
             articleRepository.save(articles);
         }

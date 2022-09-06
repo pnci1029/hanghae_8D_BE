@@ -1,6 +1,7 @@
 package com.example.checkcheck.dto.responseDto;
 
 import com.example.checkcheck.model.articleModel.Article;
+import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.util.TimeStamped;
 import lombok.Builder;
@@ -14,24 +15,29 @@ import java.util.List;
 @Setter
 public class ArticleDetailResponseDto extends TimeStamped {
 
-    private Long articleId;
+    private Long articlesId;
     private int price;
     private String nickName;
     private Process process;
     private String title;
+    private String content;
+
     private String userRank;
     private List<String> images;
     private Boolean isMyArticles;
+    private String category;
 
     @Builder
-    public ArticleDetailResponseDto(Article article, List<String> image, Boolean isMyArticles) {
-        this.articleId = article.getArticleId();
+    public ArticleDetailResponseDto(Article article, List<String> image, Boolean isMyArticles, String category) {
+        this.articlesId = article.getArticleId();
         this.price = article.getPrice();
         this.nickName = article.getNickName();
         this.process = article.getProcess();
         this.title = article.getTitle();
+        this.content = article.getContent();
         this.userRank = article.getUserRank();
         this.images = image;
         this.isMyArticles = isMyArticles;
+        this.category = category;
     }
 }

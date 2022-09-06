@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.sasl.AuthenticationException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
@@ -22,6 +23,13 @@ public class MemberService {
     public TokenFactory accessAndRefreshTokenProcess(String username, HttpServletResponse response) {
         String refreshToken = jwtTokenProvider.createRefreshToken(username);
         String token = jwtTokenProvider.createToken(username);
+
+        //        리프레시 토큰 HTTPonly
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
+        response.addCookie(cookie);
         response.setHeader("Authorization", "Bearer "+token);
         response.setHeader("Access-Token-Expire-Time", String.valueOf(30*60*1000L));
 
