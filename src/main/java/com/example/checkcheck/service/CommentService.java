@@ -207,7 +207,8 @@ public class CommentService {
 //        댓글 작성자 랭크
         String userRank = comfortUtils.getUserRank(targetMember.get().getPoint());
 
-        CommentChoiseResponseDto commentChoiseResponseDto = CommentChoiseResponseDto.builder()
+
+        return CommentChoiseResponseDto.builder()
                 .comment(targetComment)
                 .article(targetArticle)
                 .isMyComment(isMyComment)
@@ -215,8 +216,6 @@ public class CommentService {
                 .process(targetArticle.getProcess())
                 .commentsUserRank(userRank)
                 .build();
-
-        return commentChoiseResponseDto;
     }
 //    Optional<Member> targetMember = memberRepository.findById(comment.getMember().getMemberId());
 //    int point = comment.getMember().getPoint();

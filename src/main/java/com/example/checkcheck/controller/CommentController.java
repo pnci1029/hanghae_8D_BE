@@ -2,6 +2,7 @@ package com.example.checkcheck.controller;
 
 import com.example.checkcheck.dto.requestDto.CommentChoiseRequestDto;
 import com.example.checkcheck.dto.requestDto.CommentRequestDto;
+import com.example.checkcheck.dto.responseDto.CommentChoiseResponseDto;
 import com.example.checkcheck.dto.responseDto.CommentResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.dto.responseDto.StatusResponseDto;
@@ -74,7 +75,8 @@ public class CommentController {
 
     // 댓글 채택
     @PatchMapping("/api/auth/detail/comments/{articlesId}")
-    public void choose(@PathVariable Long articlesId ,@RequestBody CommentChoiseRequestDto commentChoiseRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        commentService.commentChoose(articlesId,commentChoiseRequestDto, userDetails);
+    public ResponseEntity<Object> choose(@PathVariable Long articlesId ,@RequestBody CommentChoiseRequestDto commentChoiseRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        CommentChoiseResponseDto commentChoiseResponseDto = commentService.commentChoose(articlesId,commentChoiseRequestDto, userDetails);
+        return new ResponseEntity<>(new StatusResponseDto("댓글 채택 성공", commentChoiseResponseDto), HttpStatus.OK);
     }
 }
