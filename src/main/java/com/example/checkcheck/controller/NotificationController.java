@@ -1,7 +1,6 @@
 package com.example.checkcheck.controller;
 
 import com.example.checkcheck.dto.responseDto.NotificationResponseDto;
-import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.EmitterService;
 import com.example.checkcheck.service.notification.NotificationService;
 import com.example.checkcheck.util.LoadUser;
@@ -11,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -38,21 +36,19 @@ public class NotificationController {
 
     }
 
-    @ApiOperation(value = "알림 전체 읽음 처리")
-    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "access_token")
-    @GetMapping("/notifications/read")
-    public ResponseEntity<String> readOk() {
-        LoadUser.loginAndEmailCheck();
-        return ResponseEntity.status(HttpStatus.OK)
-                .contentType(new MediaType("applicaton", "text", StandardCharsets.UTF_8))
-                .body(notificationService.readOk(LoadUser.getEmail()));
-    }
+//    @ApiOperation(value = "알림 전체 읽음 처리")
+//    @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "access_token")
+//    @GetMapping("/notifications/read")
+//    public ResponseEntity<String> readOk() {
+//        return ResponseEntity.status(HttpStatus.OK)
+//                .contentType(new MediaType("applicaton", "text", StandardCharsets.UTF_8))
+//                .body(notificationService.readOk(LoadUser.getEmail()));
+//    }
 
     @ApiOperation(value = "알림 전체 삭제")
     @ApiImplicitParam(name = "Authorization", value = "Access Token", required = true, allowEmptyValue = false, paramType = "header", dataTypeClass = String.class, example = "access_token")
     @DeleteMapping("/notifications")
     public ResponseEntity<String> deleteNotification() {
-        LoadUser.loginAndEmailCheck();
         return ResponseEntity.status(HttpStatus.OK)
                 .contentType(new MediaType("applicaton", "text", StandardCharsets.UTF_8))
                 .body(notificationService.deleteNotification(LoadUser.getEmail()));

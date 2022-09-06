@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class CommentRequestDto {
-
+    private Long articleId;
     private Type type;
     private String comment;
 
