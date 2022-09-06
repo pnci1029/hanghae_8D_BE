@@ -42,7 +42,16 @@ public class CommentService {
 
     // 댓글 작성
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, Member member) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+
+        String userEmail = userDetails.getUsername();
+        String nickName = userDetails.getMember().getNickName();
+
+        Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
+        int userPoint = userDetails.getMember().getPoint();
+        memberBox.get().updatePoint(userPoint);
+
+        String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
 
         // 게시글 확인
         Article article = articleService.isPresentArticle(requestDto.getArticleId());
@@ -52,15 +61,23 @@ public class CommentService {
 
         Comment comment = Comment.builder()
                 .comment(requestDto.getComment())
+                .nickName(nickName)
+                .userRank(userRank)
                 .article(article)
-                .member(member)
+                .member(userDetails.getMember())
                 .isSelected(false)
                 .type(requestDto.getType())
                 .build();
 
         commentRepository.save(comment);
 
-        if (!article.getMember().getUserEmail().equals(member.getUserEmail())) {
+        Boolean isMyComment = false;
+        if (comment.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
+            isMyComment = true;
+        }
+        String rightNow = comfortUtils.getTime(comment.getCreatedAt());
+
+        if (!article.getMember().getUserEmail().equals(userEmail)) {
             NotificationRequestDto notificationRequestDto =
                     new NotificationRequestDto(
                             AlarmType.COMMENT, "새로운 댓글이 작성되었습니다!"
@@ -74,16 +91,18 @@ public class CommentService {
             CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
                 .type(comment.getType())
+                .nickName(comment.getNickName())
+                .userRank(comment.getUserRank())
                 .comment(comment.getComment())
-                .createdAt(comment.getCreatedAt())
+                .createdAt(rightNow)
+                .isMyComment(isMyComment)
                 .build();
-
-
     }
 
     // 모든 댓글 조회
     @Transactional
-    public ResponseDto<?> readAllComment(Long articlesId) {
+    public ResponseDto<?> readAllComment(Long articlesId, UserDetailsImpl userDetails) {
+
         // 게시글 확인
         Article article = articleService.isPresentArticle(articlesId);
         if (null == article) {
@@ -94,13 +113,24 @@ public class CommentService {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
         for (Comment comment : commentList) {
+
+            String rightNow = comfortUtils.getTime(comment.getCreatedAt());
+
+            Boolean isMyComment = false;
+            if (comment.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
+                isMyComment = true;
+            }
+
             commentResponseDtoList.add(
                     CommentResponseDto.builder()
                             .commentId(comment.getCommentId())
                             .type(comment.getType())
+                            .userRank(comment.getUserRank())
+                            .nickName(comment.getNickName())
                             .comment(comment.getComment())
-                            .createdAt(comment.getCreatedAt())
-//                            .isSelected(comment.getIsSelected())
+                            .createdAt(rightNow)
+                            .isSelected(comment.isSelected())
+                            .isMyComment(isMyComment)
                             .build()
             );
         }
