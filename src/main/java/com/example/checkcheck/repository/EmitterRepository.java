@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class EmitterRepository {
 
-    private Map<Long, SseEmitter> userEmitterMap = new ConcurrentHashMap<>();
+    private static Map<Long, SseEmitter> userEmitterMap = new ConcurrentHashMap<>();
 
     public void addOrReplaceEmitter(Long id, SseEmitter emitter) {
         userEmitterMap.put(id, emitter);

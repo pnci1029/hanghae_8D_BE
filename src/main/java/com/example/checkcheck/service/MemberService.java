@@ -6,10 +6,12 @@ import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.security.sasl.AuthenticationException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
@@ -18,11 +20,20 @@ public class MemberService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-
+    private final HttpServletResponse httpServletResponse;
     public TokenFactory accessAndRefreshTokenProcess(String username, HttpServletResponse response) {
         String refreshToken = jwtTokenProvider.createRefreshToken(username);
         String token = jwtTokenProvider.createToken(username);
-        response.setHeader("Authorization", "Bearer "+token);
+
+        //        리프레시 토큰 HTTPonly
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+
+        httpServletResponse.setStatus(500);
+
+        response.addCookie(cookie);
+        response.setHeader("Authorization", token);
         response.setHeader("Access-Token-Expire-Time", String.valueOf(30*60*1000L));
 
         return new TokenFactory(token, refreshToken);

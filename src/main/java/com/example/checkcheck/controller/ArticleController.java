@@ -1,7 +1,9 @@
 package com.example.checkcheck.controller;
 
 import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
+import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
+import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
@@ -31,16 +33,16 @@ public class ArticleController {
     }
 
     @PostMapping(value = "/auth/form", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Object> upload(@RequestPart(required = false) ArticleRequestDto articlesDto,
-                                         @RequestPart(required = false) List<MultipartFile> multipartFile,
-                                         @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<?> upload(@RequestPart(required = false) ArticleRequestDto articlesDto,
+                                 @RequestPart(required = false) List<MultipartFile> multipartFile,
+                                 @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return articleService.postArticles(multipartFile, articlesDto, userDetails);
     }
 
     @GetMapping("/main/list")
     public Slice<ArticleResponseDto> getAllArticle(@RequestParam(value = "category") Category category,
                                                    @RequestParam(value = "process") Process process,
-                                                    Pageable pageable
+                                                   Pageable pageable
 //                                                   @RequestParam(value = "size") int size,
 //                                                   @RequestParam(value = "page") int page
     ) {
@@ -53,4 +55,16 @@ public class ArticleController {
     public List<ArticleResponseDto> getArticleCarousel() {
         return articleService.getArticleCarousel();
     }
+
+    @GetMapping("/auth/detail/{articlesId}")
+    public ArticleDetailResponseDto getArticleDetail(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return articleService.getArticleDetail(articlesId, userDetails);
+    }
+
+    @DeleteMapping("/auth/detail/{articlesId}")
+    public ResponseDto<?> deleteArticle(@PathVariable Long articlesId,
+                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+       return  articleService.deleteArticle(articlesId, userDetails);
+    }
+
 }

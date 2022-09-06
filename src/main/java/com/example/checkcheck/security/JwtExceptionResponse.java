@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 @Getter
@@ -12,7 +13,7 @@ import lombok.Setter;
 public class JwtExceptionResponse {
     private final Boolean response;
     private final String message;
-//    private final HttpStatus httpStatus;
+    private final int status;
 
     public String convertToJson() throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper(); //ObjectMapper는 json 파싱할때 쓰는 객체
