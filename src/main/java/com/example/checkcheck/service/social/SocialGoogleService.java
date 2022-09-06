@@ -75,7 +75,7 @@ public class SocialGoogleService {
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(member.getUserEmail())
                 .nickName(member.getNickName())
-                .accessToken("Bearer "+tokenFactory1.getAccessToken())
+                .accessToken(tokenFactory1.getAccessToken())
                 .userRank(comfortUtils.getUserRank(member.getPoint()))
                 .refreshToken(tokenFactory1.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)

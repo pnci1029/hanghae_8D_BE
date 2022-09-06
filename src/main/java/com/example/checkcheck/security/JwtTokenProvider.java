@@ -1,6 +1,8 @@
 package com.example.checkcheck.security;
 
 
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,9 +32,9 @@ public class JwtTokenProvider {
 
     // 토큰 유효시간
     // 프론트엔드와 약속해야 함
-    private final Long tokenValidTime = 30*60*1000L;  // 30분
-//    private final Long tokenValidTime = 20*1000L;  // 20초
-    private final Long refreshTokenValidTime = 7*24*60*60*1000L;  // 1주일
+//    private final Long tokenValidTime = 30*60*1000L;  // 30분
+    private final Long tokenValidTime = 60 * 1000L;  // 20초
+    private final Long refreshTokenValidTime = 7 * 24 * 60 * 60 * 1000L;  // 1주일
 
     private final UserDetailsService userDetailsService;
 
@@ -45,7 +47,7 @@ public class JwtTokenProvider {
     public String createToken(String userPk) {
         Claims claims = Jwts.claims().setSubject(userPk);
         Date now = new Date();
-        String token= Jwts.builder()
+        String token = Jwts.builder()
                 .setClaims(claims)//정보저장
                 .setIssuedAt(now)//토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + tokenValidTime))
@@ -53,20 +55,21 @@ public class JwtTokenProvider {
                 //signature에 들어갈 secret값 세팅
                 .compact();
 
-        response.addHeader(AUTH_HEADER,"Bearer " + token);
+        response.addHeader(AUTH_HEADER, token);
 //        헤더에넣기
         return token;
     }
 
     public String createRefreshToken(String username) {
         Date now = new Date();
-        String refreshToken= Jwts.builder()
+        String refreshToken = Jwts.builder()
                 .setIssuedAt(now)
                 .setSubject(username)
                 .setExpiration(new Date(now.getTime() + refreshTokenValidTime))
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
-        response.addHeader("RefreshToken","Bearer " + refreshToken);
+        response.addHeader("RefreshToken",refreshToken);
+//        response.addHeader("RefreshToken","Bearer " + refreshToken);
         return refreshToken;
     }
 
@@ -88,12 +91,14 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest request) {
         return request.getHeader("Authorization");
     }
-    public String cutToken(String token){
+
+    public String cutToken(String token) {
         if (StringUtils.hasText(token) && token.startsWith("Bearer")) {
             return token.substring(7);
         }
         return null;
     }
+
     public String resolveRefreshToken(HttpServletRequest request) {
         return request.getHeader("RefreshToken");
     }
@@ -105,6 +110,17 @@ public class JwtTokenProvider {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(setTokenName(token));
 
             return !claims.getBody().getExpiration().before(new Date());
+
+//        } catch (UnsupportedJwtException e) {
+//            throw new UnsupportedJwtException("지원하지 않는 JWT토큰입니다");
+////        } catch (ExpiredJwtException e) {
+////            throw new ExpiredJwtException(Jwts.header(), Jwts.claims(), "만료된 토큰입니다");
+//        } catch (IllegalArgumentException e) {
+//            throw new IllegalArgumentException("잘못된 JWT 토큰입니다");
+//        } catch (SignatureException e) {
+//            throw new CustomException(ErrorCode.Signature_Exception);
+//        } catch (MalformedJwtException e) {
+//            throw new CustomException(ErrorCode.Malformed_JwtException);
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
@@ -121,7 +137,7 @@ public class JwtTokenProvider {
     }
 
     // Bearer 삭제
-    private String setTokenName(String bearerToken){
+    private String setTokenName(String bearerToken) {
         return bearerToken.replace("Bearer ", "");
     }
 
@@ -135,7 +151,6 @@ public class JwtTokenProvider {
             throw new AuthenticationException("유효하지 않은 토큰입니다.");
         }
     }
-
 
 
 }

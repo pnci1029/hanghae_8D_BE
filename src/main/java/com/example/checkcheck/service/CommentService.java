@@ -3,6 +3,7 @@ package com.example.checkcheck.service;
 import com.example.checkcheck.dto.requestDto.CommentChoiseRequestDto;
 import com.example.checkcheck.dto.requestDto.CommentRequestDto;
 import com.example.checkcheck.dto.requestDto.NotificationRequestDto;
+import com.example.checkcheck.dto.responseDto.CommentChoiseResponseDto;
 import com.example.checkcheck.dto.responseDto.CommentResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.exception.CustomException;
@@ -15,7 +16,9 @@ import com.example.checkcheck.model.commentModel.Comment;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.CommentRepository;
 import com.example.checkcheck.repository.MemberRepository;
+import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
+import com.example.checkcheck.util.ComfortUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +36,7 @@ public class CommentService {
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
     private final ArticleService articleService;
-
+    private final ComfortUtils comfortUtils;
     private final NotificationService notificationService;
 
 
@@ -167,29 +170,53 @@ public class CommentService {
 
 
 
-    public void commentChoose(Long articlesId,CommentChoiseRequestDto commentChoiseRequestDto) {
+    public CommentChoiseResponseDto commentChoose(Long articlesId, CommentChoiseRequestDto commentChoiseRequestDto, UserDetailsImpl userDetails) {
         Long commentsId = commentChoiseRequestDto.getCommentsId();
+
+        Article targetArticle = articleRepository.findById(articlesId).orElseThrow(
+                () -> new NullPointerException("게시글이 존재하지않습니다.")
+        );
+
+        if (!targetArticle.getMember().getUserEmail().equals(userDetails.getUsername())) {
+            throw new IllegalArgumentException("게시글 작성자만 채택할수있습니다.");
+        }
+
         Comment targetComment = commentRepository.findById(commentsId).orElseThrow(
                 () -> new NullPointerException("채택할 댓글이 없습니다.")
         );
 
-
-        Article targetArticle = articleRepository.findById(articlesId).orElseThrow(
-                () -> new NullPointerException("게시글이 존재하지않습니다")
-        );
-
+//      채택 댓글 포인트
         Optional<Member> targetMember = memberRepository.findById(targetComment.getMember().getMemberId());
         int point = targetComment.getMember().getPoint();
         targetMember.get().updatePoint(point+50);
 
+//        게시글 상태 변경
         targetArticle.setProcess(Process.done);
-
+//        댓글 상태 변경
         targetComment.chooseComment(true);
-        System.out.println("target = " + targetComment.getIsSelected());
+//        저장
         commentRepository.save(targetComment);
         articleRepository.save(targetArticle);
 
+//        로그인 사용자와 채택댓글 작성자 비교
+        boolean isMyComment =false;
+        if (userDetails.getUsername().equals(targetComment.getMember().getUserEmail())) {
+            isMyComment = true;
+        }
 
+//        댓글 작성자 랭크
+        String userRank = comfortUtils.getUserRank(targetMember.get().getPoint());
+
+        CommentChoiseResponseDto commentChoiseResponseDto = CommentChoiseResponseDto.builder()
+                .comment(targetComment)
+                .article(targetArticle)
+                .isMyComment(isMyComment)
+                .isSelected(true)
+                .process(targetArticle.getProcess())
+                .commentsUserRank(userRank)
+                .build();
+
+        return commentChoiseResponseDto;
     }
 //    Optional<Member> targetMember = memberRepository.findById(comment.getMember().getMemberId());
 //    int point = comment.getMember().getPoint();

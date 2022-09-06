@@ -43,17 +43,14 @@ public class NotificationService {
 
         );
         Map result = objectMapper.convertValue(requestDto, Map.class);
-        System.out.println(result);
+        System.out.println("result = " + result);
         SseEmitter.SseEventBuilder sseEvent = SseEmitter.event()
                 .id(id.toString()) //2번유저(85아티클작성자)
                 .name("sse")
                 .data(result);
 
-
-        Optional<SseEmitter> sseEmitter1 = emitterRepository.get(id);
-        System.out.println(sseEmitter1.orElse(null));
-
         emitterRepository.get(id).ifPresentOrElse(sseEmitter -> {
+            System.out.println("sseEmitter = " + sseEmitter);
             try {
                 sseEmitter.send(sseEvent);
             } catch (IOException | IllegalStateException e) {
