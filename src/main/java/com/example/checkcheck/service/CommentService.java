@@ -5,6 +5,8 @@ import com.example.checkcheck.dto.requestDto.CommentRequestDto;
 import com.example.checkcheck.dto.requestDto.NotificationRequestDto;
 import com.example.checkcheck.dto.responseDto.CommentResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.AlarmType;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
@@ -37,12 +39,12 @@ public class CommentService {
 
     // 댓글 작성
     @Transactional
-    public ResponseDto<?> createComment(Long articlesId, CommentRequestDto requestDto, Member member) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto, Member member) {
 
         // 게시글 확인
-        Article article = articleService.isPresentArticle(articlesId);
+        Article article = articleService.isPresentArticle(requestDto.getArticleId());
         if (null == article) {
-            return ResponseDto.fail("NOT_FOUND", "게시물이 존재하지 않습니다.");
+            throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
         }
 
         Comment comment = Comment.builder()
@@ -62,16 +64,18 @@ public class CommentService {
                     );
             System.out.println(article.getMember().getMemberId());
             notificationService.sendNotification(article.getMember().getMemberId(), notificationRequestDto);
+            //85번 article (1번유저) -> 86번 article(2번유저) - 1번유저의 코멘트 -> 2번 유저에게 전달
 
         }
-        return ResponseDto.success(
+            return
             CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
                 .type(comment.getType())
                 .comment(comment.getComment())
                 .createdAt(comment.getCreatedAt())
-                .build()
-        );
+                .build();
+
+
     }
 
     // 모든 댓글 조회

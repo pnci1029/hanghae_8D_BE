@@ -7,6 +7,7 @@ import com.example.checkcheck.model.Notification;
 import com.example.checkcheck.repository.EmitterRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.NotificationRepository;
+import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,8 @@ public class NotificationService {
     private final MemberRepository memberRepository;
     private final ObjectMapper objectMapper;
 
+    private final ComfortUtils comfortUtils;
+
     //TODO : 나중에 ERROR CODE Customizing 필요
     public void sendNotification(Long id, NotificationRequestDto requestDto) {
         if (requestDto == null) {
@@ -42,9 +45,13 @@ public class NotificationService {
         Map result = objectMapper.convertValue(requestDto, Map.class);
         System.out.println(result);
         SseEmitter.SseEventBuilder sseEvent = SseEmitter.event()
-                .id(id.toString())
+                .id(id.toString()) //2번유저(85아티클작성자)
                 .name("sse")
                 .data(result);
+
+
+        Optional<SseEmitter> sseEmitter1 = emitterRepository.get(id);
+        System.out.println(sseEmitter1.orElse(null));
 
         emitterRepository.get(id).ifPresentOrElse(sseEmitter -> {
             try {
@@ -56,7 +63,7 @@ public class NotificationService {
 
         notificationRepository.save(new Notification(requestDto, member));
     }
-
+    @Transactional
     public List<NotificationResponseDto> getNotification(String userEmail) {
         Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(
                 () -> new IllegalArgumentException("유저를 찾을 수 없습니다")
@@ -64,23 +71,25 @@ public class NotificationService {
         List<NotificationResponseDto> responseDtoList = new ArrayList<>();
         List<Notification> notificationList = notificationRepository.findByMemberOrderByCreatedAtDesc(member);
         for (Notification n : notificationList) {
-            responseDtoList.add(new NotificationResponseDto(n));
+            String timeCheck = comfortUtils.getTime(n.getCreatedAt());
+            n.changeState();
+            responseDtoList.add(new NotificationResponseDto(n, timeCheck));
         }
         return responseDtoList;
     }
 
-    @Transactional
-    public String readOk(String userEmail){
-        Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(
-                () -> new IllegalArgumentException("유저를 찾을 수 없습니다")
-        );
-        List<Notification> notificationList = notificationRepository.findByMemberOrderByCreatedAtDesc(member);
-        for (Notification n : notificationList) {
-            n.changeState();
-        }
-
-        return "읽음 처리 완료";
-    }
+//    @Transactional
+//    public String readOk(String userEmail){
+//        Member member = memberRepository.findByUserEmail(userEmail).orElseThrow(
+//                () -> new IllegalArgumentException("유저를 찾을 수 없습니다")
+//        );
+//        List<Notification> notificationList = notificationRepository.findByMemberOrderByCreatedAtDesc(member);
+//        for (Notification n : notificationList) {
+//            n.changeState();
+//        }
+//
+//        return "읽음 처리 완료";
+//    }
 
 
     @Transactional
