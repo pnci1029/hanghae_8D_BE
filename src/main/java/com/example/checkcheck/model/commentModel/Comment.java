@@ -3,9 +3,11 @@ package com.example.checkcheck.model.commentModel;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.util.TimeStamped;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Builder
 @AllArgsConstructor
@@ -20,8 +22,22 @@ public class Comment extends TimeStamped {
     @Column(name = "comment_id")
     private Long commentId;
 
+    @Size(max = 80)
     @Column(nullable = false)
     private String comment;
+
+    @Column(nullable = false)
+    private String nickName;
+
+    @Column(nullable = false)
+    private String userRank;
+
+//    @Column(nullable = false)
+////    @JsonProperty("isSelected")
+//    private boolean isSelected;
+
+    @Column(nullable = false)
+    private boolean isMyComment;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -32,7 +48,7 @@ public class Comment extends TimeStamped {
     private Article article;
 
     @Column
-    private Boolean isSelected;
+    private boolean isSelected;
 
 
     @ManyToOne(fetch = FetchType.LAZY)

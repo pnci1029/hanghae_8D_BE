@@ -22,7 +22,7 @@ public class CommentController {
     // 댓글 작성
     @PostMapping("/api/auth/detail/comments")
     public ResponseEntity<Object> createComment(@RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userDetails.getMember());
+        CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userDetails);
         return new ResponseEntity<>(new StatusResponseDto("댓글 등록 성공", commentResponseDto), HttpStatus.OK);
 
         //        return ResponseEntity.status(HttpStatus.OK)
@@ -33,8 +33,8 @@ public class CommentController {
 
     // 댓글 조회
     @GetMapping("/api/auth/detail/comments/{articlesId}")
-    public ResponseDto<?> readAllComment(@PathVariable Long articlesId) {
-        return commentService.readAllComment(articlesId);
+    public ResponseDto<?> readAllComment(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return commentService.readAllComment(articlesId, userDetails);
     }
 
 

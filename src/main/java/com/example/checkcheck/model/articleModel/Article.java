@@ -79,4 +79,13 @@ public class Article extends TimeStamped {
         this.member = member;
     }
 
+
+
+
+
+
+
+
+    @Column
+    private int articleCount;
 }

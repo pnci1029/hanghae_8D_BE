@@ -1,5 +1,6 @@
 package com.example.checkcheck.repository;
 
+import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
@@ -16,4 +17,7 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 
     Optional<Article> findByArticleId(Long articleId);
 
+
+
+    List<Article> findAllByMember(Member member);
 }
