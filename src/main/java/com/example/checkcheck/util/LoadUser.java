@@ -11,8 +11,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 */
 public class LoadUser {
     public static String getEmail(){
-        Member principal = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return principal.getUserEmail();
+//        Member principal = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println("username = " + username);
+        return username;
     }
 
 

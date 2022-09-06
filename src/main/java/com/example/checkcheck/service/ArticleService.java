@@ -16,6 +16,7 @@ import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
 import com.example.checkcheck.service.s3.S3Uploader;
 import com.example.checkcheck.util.ComfortUtils;
+import com.example.checkcheck.util.LoadUser;
 import com.example.checkcheck.util.Time;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +41,7 @@ public class ArticleService {
     private Time time;
 
     private NotificationService notificationService;
+    private LoadUser loadUser;
 
     public ArticleService(
             ArticleRepository articleRepository,
@@ -65,8 +67,9 @@ public class ArticleService {
             String nickName = userDetails.getMember().getNickName();
             String userEmail = userDetails.getUsername();
 
-
-            //        유저 포인트
+        String email = LoadUser.getEmail();
+        System.out.println("email = " + email);
+        //        유저 포인트
             Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
             int userPoint = userDetails.getMember().getPoint() + 2;
             memberBox.get().updatePoint(userPoint);
