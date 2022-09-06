@@ -1,5 +1,6 @@
 package com.example.checkcheck.dto.requestDto;
 
+import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.commentModel.Type;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,4 +13,6 @@ public class CommentRequestDto {
 
     private Type type;
     private String comment;
+
+
 }

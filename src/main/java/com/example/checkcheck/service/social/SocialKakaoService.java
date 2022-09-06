@@ -68,7 +68,7 @@ public class SocialKakaoService {
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(kakaoMember.getUserEmail())
                 .nickName(kakaoUserInfo.getNickname())
-                .accessToken("Bearer "+tokenFactory.getAccessToken())
+                .accessToken(tokenFactory.getAccessToken())
                 .refreshToken(tokenFactory.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
 

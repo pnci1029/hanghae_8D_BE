@@ -2,6 +2,7 @@ package com.example.checkcheck.controller;
 
 import com.example.checkcheck.dto.requestDto.CommentChoiseRequestDto;
 import com.example.checkcheck.dto.requestDto.CommentRequestDto;
+import com.example.checkcheck.dto.responseDto.CommentChoiseResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.CommentService;
@@ -19,6 +20,11 @@ public class CommentController {
     @PostMapping("/api/auth/detail/comments/{articlesId}")
     public ResponseDto<?> createComment(@PathVariable Long articlesId, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.createComment(articlesId, requestDto, userDetails.getMember());
+
+        //        return ResponseEntity.status(HttpStatus.OK)
+//                .contentType(new MediaType("applicaton", "text", StandardCharsets.UTF_8))
+//                .body(message);
+//        rsp.setContentType(String.valueOf(new MediaType("applicaton", "text", StandardCharsets.UTF_8)));
     }
 
     // 댓글 조회
@@ -64,7 +70,8 @@ public class CommentController {
 
     // 댓글 채택
     @PatchMapping("/api/auth/detail/comments/{articlesId}")
-    public void choose(@PathVariable Long articlesId ,@RequestBody CommentChoiseRequestDto commentChoiseRequestDto) {
-        commentService.commentChoose(articlesId,commentChoiseRequestDto);
+    public CommentChoiseResponseDto choose(@PathVariable Long articlesId , @RequestBody CommentChoiseRequestDto commentChoiseRequestDto,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetails) {
+       return commentService.commentChoose(articlesId,commentChoiseRequestDto, userDetails);
     }
 }

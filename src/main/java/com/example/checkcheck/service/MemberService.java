@@ -6,6 +6,7 @@ import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,8 +30,9 @@ public class MemberService {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
 
+
         response.addCookie(cookie);
-        response.setHeader("Authorization", "Bearer "+token);
+        response.setHeader("Authorization", token);
         response.setHeader("Access-Token-Expire-Time", String.valueOf(30*60*1000L));
 
         return new TokenFactory(token, refreshToken);

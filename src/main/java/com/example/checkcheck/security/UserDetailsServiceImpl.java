@@ -1,5 +1,7 @@
 package com.example.checkcheck.security;
 
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;

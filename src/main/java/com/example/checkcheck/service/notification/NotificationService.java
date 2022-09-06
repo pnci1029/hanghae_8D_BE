@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -39,13 +40,17 @@ public class NotificationService {
 
         );
         Map result = objectMapper.convertValue(requestDto, Map.class);
-        System.out.println(result);
+        System.out.println("result = " + result);
         SseEmitter.SseEventBuilder sseEvent = SseEmitter.event()
                 .id(id.toString())
                 .name("sse")
                 .data(result);
 
+        System.out.println("id = " + id);
+        System.out.println("emitterRepository = " + emitterRepository.get(member.getMemberId()));
+//        여기부터가 문제
         emitterRepository.get(id).ifPresentOrElse(sseEmitter -> {
+            System.out.println("sseEmitter = " + sseEmitter);
             try {
                 sseEmitter.send(sseEvent);
             } catch (IOException | IllegalStateException e) {
