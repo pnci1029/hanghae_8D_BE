@@ -1,7 +1,9 @@
 package com.example.checkcheck.service;
 
 import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
+import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
+import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
@@ -57,8 +59,8 @@ public class ArticleService {
     }
 
     @Transactional
-    public ResponseEntity<Object> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
-                                               UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<?> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
+                                       UserDetailsImpl userDetails) throws IOException {
 
         String nickName = userDetails.getMember().getNickName();
         String userEmail = userDetails.getUsername();
@@ -80,6 +82,7 @@ public class ArticleService {
                 .category(articleRequestDto.getCategory())
                 .process(Process.process)
                 .userRank(userRank)
+                .member(userDetails.getMember())
                 .build();
         articleRepository.save(articles);
 
@@ -91,21 +94,21 @@ public class ArticleService {
 
             List<Image> imgbox = new ArrayList<>();
             //          이미지 업로드
-            for (MultipartFile uploadedFile : multipartFile) {
-
-                Image imagePostEntity = Image.builder()
-                        .image(s3Uploader.upload(uploadedFile))
-                        .userEmail(userEmail)
-                        .article(articles)
-                        .build();
-                imgbox.add(imagePostEntity);
-
-                imageRepository.save(imagePostEntity);
-            }
+//            for (MultipartFile uploadedFile : multipartFile) {
+//
+//                Image imagePostEntity = Image.builder()
+//                        .image(s3Uploader.upload(uploadedFile))
+//                        .userEmail(userEmail)
+//                        .article(articles)
+//                        .build();
+//                imgbox.add(imagePostEntity);
+//
+//                imageRepository.save(imagePostEntity);
+//            }
 
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseDto.success("작성 성공");
     }
 
     public List<ArticleResponseDto> getArticleCarousel() {
@@ -119,10 +122,49 @@ public class ArticleService {
         return resultBox;
     }
 
+//  게시글 상세페이지
+    public ArticleDetailResponseDto getArticleDetail(Long id, UserDetailsImpl userDetails) {
+        Article article = articleRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("게시글이 존재하지않습니다")
+        );
+        Boolean isMyArticles = false;
+        if (article.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
+            isMyArticles = true;
+        }
+
+        List<Image> articleList = imageRepository.findByArticle_ArticleId(id);
+
+        List<String> imageBox = new ArrayList<>();
+        for (Image image : articleList) {
+            String realImage = image.getImage();
+            imageBox.add(realImage);
+        }
+
+        String category = comfortUtils.getCategoryKorean(article.getCategory());
+
+        ArticleDetailResponseDto articleResponseDto = ArticleDetailResponseDto.builder()
+                .article(article)
+                .isMyArticles(isMyArticles)
+                .image(imageBox)
+                .category(category)
+                .build();
 
 
+        return articleResponseDto;
+    }
 
+    @Transactional
+    public ResponseDto<?> deleteArticle(Long articlesId, UserDetailsImpl userDetails) {
+        Optional<Article> target = articleRepository.findById(articlesId);
+        System.out.println("userDetails = " + userDetails.getUsername());
+        System.out.println("target.get().getMember().getUserEmail() = " + target.get().getMember().getUserEmail());
 
+        if (!userDetails.getUsername().equals(target.get().getMember().getUserEmail())) {
+            return ResponseDto.fail("400", "게시글 작성자만 삭제가 가능합니다.");
+        }
+        articleRepository.deleteById(target.get().getArticleId());
+        return ResponseDto.success("삭제 성공");
+    }
 
 
 
@@ -165,4 +207,7 @@ public class ArticleService {
         Optional<Article> optionalArticle = articleRepository.findById(id);
         return optionalArticle.orElse(null);
     }
+
+
+
 }

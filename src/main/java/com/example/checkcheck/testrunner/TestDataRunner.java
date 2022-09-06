@@ -43,7 +43,7 @@ public class TestDataRunner implements ApplicationRunner {
         Member testUser = new Member("1234", "1234121","k_1234@naver.com", LocalDateTime.now(),"true",null, "1234@gmail.com");
         userRepository.save(testUser);
 
-        for (int i = 0; i < 42; i++) {
+        for (int i = 0; i < 15; i++) {
             Article articles = Article.builder()
                     .nickName(testUser.getNickName())
                     .title("1111")
@@ -52,11 +52,12 @@ public class TestDataRunner implements ApplicationRunner {
                     .category(Category.etc)
                     .process(Process.process)
                     .userRank("S")
+                    .member(testUser)
                     .build();
             articleRepository.save(articles);
         }
 
-        for (int i = 0; i < 42; i++) {
+        for (int i = 0; i < 15; i++) {
             Article articles = Article.builder()
                     .nickName(testUser.getNickName())
                     .title("5555")
@@ -65,6 +66,21 @@ public class TestDataRunner implements ApplicationRunner {
                     .category(Category.food)
                     .process(Process.done)
                     .userRank("B")
+                    .member(testUser)
+                    .build();
+            articleRepository.save(articles);
+        }
+
+        for (int i = 0; i < 15; i++) {
+            Article articles = Article.builder()
+                    .nickName(testUser.getNickName())
+                    .title("666666666666")
+                    .content("6666666666666")
+                    .price(5555)
+                    .category(Category.etc)
+                    .process(Process.process)
+                    .userRank("B")
+                    .member(testUser)
                     .build();
             articleRepository.save(articles);
         }
