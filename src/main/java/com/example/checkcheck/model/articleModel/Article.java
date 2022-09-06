@@ -5,17 +5,16 @@ import com.example.checkcheck.model.Member;
 import com.example.checkcheck.util.TimeStamped;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.List;
 
-@Data
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 public class Article extends TimeStamped {
 

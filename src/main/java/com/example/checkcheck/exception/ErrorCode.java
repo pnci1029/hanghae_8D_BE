@@ -33,6 +33,8 @@ public enum ErrorCode {
     NEED_EMAIL(HttpStatus.BAD_REQUEST,"400","이메일은 필수로 동의 해주셔야 합니다."),
 
     FILE_NULL(HttpStatus.BAD_REQUEST, "400", "파일을 입력해주세요."),
+    Malformed_JwtException(HttpStatus.UNAUTHORIZED, "401", "올바른 JWT 토큰을 입력해주세요"),
+    Signature_Exception(HttpStatus.BAD_REQUEST, "404", "변조된 JWT 토큰입니다"),
 
 
 
@@ -54,7 +56,7 @@ public enum ErrorCode {
     ;
 
     // 추후 추가 코드
-
+    private boolean success;
     private final HttpStatus httpStatus;
     private final String errorCode;
     private final String msg;

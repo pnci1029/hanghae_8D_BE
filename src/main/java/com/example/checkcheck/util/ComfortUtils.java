@@ -1,10 +1,16 @@
 package com.example.checkcheck.util;
 
 
+import com.example.checkcheck.model.articleModel.Category;
+import com.example.checkcheck.repository.NotificationRepository;
+import com.example.checkcheck.service.notification.NotificationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
 @Component
 public class ComfortUtils {
 
@@ -32,6 +38,25 @@ public class ComfortUtils {
             return "P";
         } else
             return "D";
+    }
+
+    public String getCategoryKorean(Category category) {
+        if (category.equals(Category.clothes)) {
+            return "의류/잡화";
+        } else if (category.equals(Category.digital)) {
+            return "디지털/생활가전";
+        } else if (category.equals(Category.sports)) {
+            return "스포츠/레저";
+        } else if (category.equals(Category.interior)) {
+            return "가구/인테리어";
+        } else if (category.equals(Category.hobby)) {
+            return "도서/여행/취미";
+        } else if (category.equals(Category.food)) {
+            return "식품";
+        } else if (category.equals(Category.pet)) {
+            return "반려동물, 식물";
+        } else
+            return "기타";
     }
 
 

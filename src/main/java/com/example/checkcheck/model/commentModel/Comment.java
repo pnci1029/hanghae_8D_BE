@@ -3,10 +3,7 @@ package com.example.checkcheck.model.commentModel;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.util.TimeStamped;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Entity
 public class Comment extends TimeStamped {
 
@@ -33,8 +31,29 @@ public class Comment extends TimeStamped {
     @JoinColumn(name = "article_id")
     private Article article;
 
+    @Column
+    private Boolean isSelected;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public void chooseComment(Boolean selectedComment) {
+        isSelected = selectedComment;
+    }
 }

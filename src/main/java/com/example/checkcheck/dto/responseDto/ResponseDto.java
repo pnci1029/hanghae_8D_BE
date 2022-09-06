@@ -2,6 +2,7 @@ package com.example.checkcheck.dto.responseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.http.ResponseEntity;
 
 @Getter
 @AllArgsConstructor
@@ -10,6 +11,7 @@ public class ResponseDto<T> {
   private T data;
   private Error error;
 
+
   public static <T> ResponseDto<T> success(T data) {
     return new ResponseDto<>(true, data, null);
   }
@@ -17,6 +19,7 @@ public class ResponseDto<T> {
   public static <T> ResponseDto<T> fail(String code, String message) {
     return new ResponseDto<>(false, null, new Error(code, message));
   }
+
 
   @Getter
   @AllArgsConstructor
