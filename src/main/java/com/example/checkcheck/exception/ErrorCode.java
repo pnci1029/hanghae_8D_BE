@@ -54,7 +54,7 @@ public enum ErrorCode {
     ;
 
     // 추후 추가 코드
-
+    private boolean success;
     private final HttpStatus httpStatus;
     private final String errorCode;
     private final String msg;

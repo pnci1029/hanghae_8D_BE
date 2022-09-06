@@ -19,6 +19,11 @@ public class CommentController {
     @PostMapping("/api/auth/detail/comments/{articlesId}")
     public ResponseDto<?> createComment(@PathVariable Long articlesId, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.createComment(articlesId, requestDto, userDetails.getMember());
+
+        //        return ResponseEntity.status(HttpStatus.OK)
+//                .contentType(new MediaType("applicaton", "text", StandardCharsets.UTF_8))
+//                .body(message);
+//        rsp.setContentType(String.valueOf(new MediaType("applicaton", "text", StandardCharsets.UTF_8)));
     }
 
     // 댓글 조회

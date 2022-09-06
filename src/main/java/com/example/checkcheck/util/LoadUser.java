@@ -3,6 +3,7 @@ package com.example.checkcheck.util;
 import com.example.checkcheck.exception.CustomException;
 import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
+import com.example.checkcheck.security.UserDetailsImpl;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 /**

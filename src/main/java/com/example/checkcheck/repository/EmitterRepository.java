@@ -10,8 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class EmitterRepository {
 
-    private Map<Long, SseEmitter> userEmitterMap = new ConcurrentHashMap<>();
-
+    private static Map<Long, SseEmitter> userEmitterMap = new ConcurrentHashMap<>();
+    //save 자체가 되지 않고 null값이 뜨고 있음, Cache에 저장하고 불러와야함
     public void addOrReplaceEmitter(Long id, SseEmitter emitter) {
         userEmitterMap.put(id, emitter);
     }

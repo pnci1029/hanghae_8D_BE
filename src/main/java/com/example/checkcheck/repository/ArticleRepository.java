@@ -14,4 +14,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 
     List<Article> findByCategory(Category category);
 
+    Optional<Article> findByArticleId(Long articleId);
+
 }

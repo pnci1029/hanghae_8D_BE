@@ -2,8 +2,10 @@ package com.example.checkcheck.service;
 
 import com.example.checkcheck.dto.requestDto.CommentChoiseRequestDto;
 import com.example.checkcheck.dto.requestDto.CommentRequestDto;
+import com.example.checkcheck.dto.requestDto.NotificationRequestDto;
 import com.example.checkcheck.dto.responseDto.CommentResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.model.AlarmType;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Process;
@@ -11,6 +13,7 @@ import com.example.checkcheck.model.commentModel.Comment;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.CommentRepository;
 import com.example.checkcheck.repository.MemberRepository;
+import com.example.checkcheck.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,8 @@ public class CommentService {
     private final ArticleRepository articleRepository;
     private final MemberRepository memberRepository;
     private final ArticleService articleService;
+
+    private final NotificationService notificationService;
 
 
     // 댓글 작성
@@ -50,6 +55,15 @@ public class CommentService {
 
         commentRepository.save(comment);
 
+        if (!article.getMember().getUserEmail().equals(member.getUserEmail())) {
+            NotificationRequestDto notificationRequestDto =
+                    new NotificationRequestDto(
+                            AlarmType.COMMENT, "새로운 댓글이 작성되었습니다!"
+                    );
+            System.out.println(article.getMember().getMemberId());
+            notificationService.sendNotification(article.getMember().getMemberId(), notificationRequestDto);
+
+        }
         return ResponseDto.success(
             CommentResponseDto.builder()
                 .commentId(comment.getCommentId())
