@@ -42,7 +42,16 @@ public class CommentService {
 
     // 댓글 작성
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, Member member) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+
+        String userEmail = userDetails.getUsername();
+        String nickName = userDetails.getMember().getNickName();
+
+        Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
+        int userPoint = userDetails.getMember().getPoint();
+        memberBox.get().updatePoint(userPoint);
+
+        String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
 
         // 게시글 확인
         Article article = articleService.isPresentArticle(requestDto.getArticleId());
@@ -52,15 +61,23 @@ public class CommentService {
 
         Comment comment = Comment.builder()
                 .comment(requestDto.getComment())
+                .nickName(nickName)
+                .userRank(userRank)
                 .article(article)
-                .member(member)
+                .member(userDetails.getMember())
                 .isSelected(false)
                 .type(requestDto.getType())
                 .build();
 
         commentRepository.save(comment);
 
-        if (!article.getMember().getUserEmail().equals(member.getUserEmail())) {
+        Boolean isMyComment = false;
+        if (comment.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
+            isMyComment = true;
+        }
+        String rightNow = comfortUtils.getTime(comment.getCreatedAt());
+
+        if (!article.getMember().getUserEmail().equals(userEmail)) {
             NotificationRequestDto notificationRequestDto =
                     new NotificationRequestDto(
                             AlarmType.COMMENT, "새로운 댓글이 작성되었습니다!"
@@ -207,8 +224,7 @@ public class CommentService {
 //        댓글 작성자 랭크
         String userRank = comfortUtils.getUserRank(targetMember.get().getPoint());
 
-
-        return CommentChoiseResponseDto.builder()
+        CommentChoiseResponseDto commentChoiseResponseDto = CommentChoiseResponseDto.builder()
                 .comment(targetComment)
                 .article(targetArticle)
                 .isMyComment(isMyComment)
@@ -216,6 +232,8 @@ public class CommentService {
                 .process(targetArticle.getProcess())
                 .commentsUserRank(userRank)
                 .build();
+
+        return commentChoiseResponseDto;
     }
 //    Optional<Member> targetMember = memberRepository.findById(comment.getMember().getMemberId());
 //    int point = comment.getMember().getPoint();
