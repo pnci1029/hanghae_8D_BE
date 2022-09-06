@@ -2,10 +2,15 @@ package com.example.checkcheck.util;
 
 
 import com.example.checkcheck.model.articleModel.Category;
+import com.example.checkcheck.repository.NotificationRepository;
+import com.example.checkcheck.service.notification.NotificationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
 @Component
 public class ComfortUtils {
 
