@@ -16,6 +16,6 @@ import java.time.ZoneId;
 public class TimeStamped {
 
     @CreatedDate // 생성시간
-    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     private LocalDateTime createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));;
 }

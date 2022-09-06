@@ -2,9 +2,7 @@ package com.example.checkcheck.model;
 
 import com.example.checkcheck.model.articleModel.Article;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -12,7 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class Member {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
