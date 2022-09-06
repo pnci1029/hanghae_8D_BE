@@ -20,10 +20,10 @@ public class JwtExceptionFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         try {
             chain.doFilter(request, response); // go to JwtAuthenticationFilter
-        } catch (JwtException e) {
-            setErrorResponse(HttpStatus.OK, response, e);
-        } catch (NoSuchElementException e) {
+        } catch (JwtException | NullPointerException e) {
             setErrorResponse(HttpStatus.BAD_REQUEST, response, e);
+        } catch (NoSuchElementException e) {
+            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e);
         }
     }
 

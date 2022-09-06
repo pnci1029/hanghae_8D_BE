@@ -30,7 +30,7 @@ public class MemberService {
         cookie.setPath("/");
 
         response.addCookie(cookie);
-        response.setHeader("Authorization", "Bearer "+token);
+        response.setHeader("Authorization", token);
         response.setHeader("Access-Token-Expire-Time", String.valueOf(30*60*1000L));
 
         return new TokenFactory(token, refreshToken);

@@ -62,38 +62,38 @@ public class ArticleService {
     public ResponseDto<?> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
                                        UserDetailsImpl userDetails) throws IOException {
 
-        String nickName = userDetails.getMember().getNickName();
-        String userEmail = userDetails.getUsername();
+            String nickName = userDetails.getMember().getNickName();
+            String userEmail = userDetails.getUsername();
 
 
-        //        유저 포인트
-        Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
-        int userPoint= userDetails.getMember().getPoint()+2;
-        memberBox.get().updatePoint(userPoint);
+            //        유저 포인트
+            Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
+            int userPoint = userDetails.getMember().getPoint() + 2;
+            memberBox.get().updatePoint(userPoint);
 
-        String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
+            String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
 
-        //        게시글
-        Article articles = Article.builder()
-                .nickName(nickName)
-                .title(articleRequestDto.getTitle())
-                .content(articleRequestDto.getContent())
-                .price(articleRequestDto.getPrice())
-                .category(articleRequestDto.getCategory())
-                .process(Process.process)
-                .userRank(userRank)
-                .member(userDetails.getMember())
-                .build();
-        articleRepository.save(articles);
+            //        게시글
+            Article articles = Article.builder()
+                    .nickName(nickName)
+                    .title(articleRequestDto.getTitle())
+                    .content(articleRequestDto.getContent())
+                    .price(articleRequestDto.getPrice())
+                    .category(articleRequestDto.getCategory())
+                    .process(Process.process)
+                    .userRank(userRank)
+                    .member(userDetails.getMember())
+                    .build();
+            articleRepository.save(articles);
 
 //        작성시간
-        String time1 = comfortUtils.getTime(articles.getCreatedAt());
+            String time1 = comfortUtils.getTime(articles.getCreatedAt());
 
 ////        이미지업로드
-        if (multipartFile != null) {
+            if (multipartFile != null) {
 
-            List<Image> imgbox = new ArrayList<>();
-            //          이미지 업로드
+                List<Image> imgbox = new ArrayList<>();
+                //          이미지 업로드
 //            for (MultipartFile uploadedFile : multipartFile) {
 //
 //                Image imagePostEntity = Image.builder()
@@ -106,9 +106,10 @@ public class ArticleService {
 //                imageRepository.save(imagePostEntity);
 //            }
 
-        }
+            }
 
-        return ResponseDto.success("작성 성공");
+            return ResponseDto.success("작성 성공");
+
     }
 
     public List<ArticleResponseDto> getArticleCarousel() {

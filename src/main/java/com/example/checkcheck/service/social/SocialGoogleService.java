@@ -75,7 +75,7 @@ public class SocialGoogleService {
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(member.getUserEmail())
                 .nickName(member.getNickName())
-                .accessToken("Bearer "+tokenFactory1.getAccessToken())
+                .accessToken(tokenFactory1.getAccessToken())
                 .userRank(comfortUtils.getUserRank(member.getPoint()))
                 .refreshToken(tokenFactory1.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
@@ -97,8 +97,8 @@ public class SocialGoogleService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", client_id);
         body.add("client_secret", clientSecret);
-        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
-//        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
+//        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
+        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
         body.add("code", code);
 //        System.out.println(code);
 
