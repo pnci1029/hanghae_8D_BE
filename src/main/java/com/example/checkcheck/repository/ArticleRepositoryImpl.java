@@ -8,6 +8,7 @@ import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.security.UserDetailsImpl;
+import com.example.checkcheck.util.ComfortUtils;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +25,12 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
     private final ImageRepository imageRepository;
+    private final ComfortUtils comfortUtils;
 
-    public ArticleRepositoryImpl(JPAQueryFactory jpaQueryFactory, ImageRepository imageRepository) {
+    public ArticleRepositoryImpl(JPAQueryFactory jpaQueryFactory, ImageRepository imageRepository, ComfortUtils comfortUtils) {
         this.jpaQueryFactory = jpaQueryFactory;
         this.imageRepository = imageRepository;
+        this.comfortUtils = comfortUtils;
     }
 
     public Slice<ArticleResponseDto> articleScroll(Pageable pageable, Category category, Process process) {
@@ -47,7 +50,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         } else if (category.equals(Category.all)) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-                    .where(article.process.eq(Process.process))
+                    .where(article.process.eq(process))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.createdAt.desc())
@@ -69,7 +72,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         else {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-                    .where(article.category.eq(category).and(article.process.eq(Process.process)))
+                    .where(article.category.eq(category).and(article.process.eq(process)))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.createdAt.desc())
@@ -85,14 +88,15 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                     images = image.getImage();
                     break;
                 }
+                String userRank = comfortUtils.getUserRank(article.getMember().getPoint());
                 ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                         .article(article)
+                        .userRank(userRank)
                         .image(images)
                         .build();
                 content.add(articleResponseDto);
             }
 
-            Integer total = content.size();
 
 
             boolean hasNext = false;

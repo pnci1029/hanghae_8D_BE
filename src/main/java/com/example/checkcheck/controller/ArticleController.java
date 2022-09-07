@@ -52,7 +52,6 @@ public class ArticleController {
         return articleRepository.articleScroll(pageable, category, process);
     }
 
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @GetMapping("/main/randomcards")
     public ResponseDto<?> getArticleCarousel() {
         return articleService.getArticleCarousel();

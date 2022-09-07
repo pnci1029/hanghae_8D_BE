@@ -1,6 +1,8 @@
 package com.example.checkcheck.security;
 
 import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.exception.ErrorCode;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
@@ -35,6 +37,13 @@ public class JwtExceptionFilter extends GenericFilterBean {
             setErrorResponse(HttpStatus.UNAUTHORIZED, response, e);
             httpServletResponse.setStatus(300);
         }
+//        } catch (ExpiredJwtException e) {
+//            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.getErrorCode());
+//        } catch (JwtException e) {
+//            request.setAttribute("exception", ErrorCode.UNKNOWN_ERROR.getErrorCode());
+//        } catch (NullPointerException e) {
+//            request.setAttribute("exception", ErrorCode.NullPoint_Token.getErrorCode());
+//        }
     }
 
     public void setErrorResponse(HttpStatus status, ServletResponse response, Throwable e) throws IOException {

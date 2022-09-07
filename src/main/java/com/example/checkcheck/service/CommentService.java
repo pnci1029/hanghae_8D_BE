@@ -87,16 +87,17 @@ public class CommentService {
             //85번 article (1번유저) -> 86번 article(2번유저) - 1번유저의 코멘트 -> 2번 유저에게 전달
 
         }
-            return
-            CommentResponseDto.builder()
-                .commentId(comment.getCommentId())
-                .type(comment.getType())
-                .nickName(comment.getNickName())
-                .userRank(comment.getUserRank())
-                .comment(comment.getComment())
-                .createdAt(rightNow)
-                .isMyComment(isMyComment)
-                .build();
+        return
+                CommentResponseDto.builder()
+                        .commentId(comment.getCommentId())
+                        .type(comment.getType())
+                        .nickName(comment.getNickName())
+                        .userRank(comment.getUserRank())
+                        .comment(comment.getComment())
+                        .createdAt(rightNow)
+                        .isSelected(false)
+                        .isMyComment(isMyComment)
+                        .build();
     }
 
     // 모든 댓글 조회
@@ -165,41 +166,6 @@ public class CommentService {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public CommentChoiseResponseDto commentChoose(Long articlesId, CommentChoiseRequestDto commentChoiseRequestDto, UserDetailsImpl userDetails) {
         Long commentsId = commentChoiseRequestDto.getCommentsId();
 
@@ -218,7 +184,7 @@ public class CommentService {
 //      채택 댓글 포인트
         Optional<Member> targetMember = memberRepository.findById(targetComment.getMember().getMemberId());
         int point = targetComment.getMember().getPoint();
-        targetMember.get().updatePoint(point+50);
+        targetMember.get().updatePoint(point + 50);
 
 //        게시글 상태 변경
         targetArticle.setProcess(Process.done);
@@ -229,14 +195,13 @@ public class CommentService {
         articleRepository.save(targetArticle);
 
 //        로그인 사용자와 채택댓글 작성자 비교
-        boolean isMyComment =false;
+        boolean isMyComment = false;
         if (userDetails.getUsername().equals(targetComment.getMember().getUserEmail())) {
             isMyComment = true;
         }
 
 //        댓글 작성자 랭크
         String userRank = comfortUtils.getUserRank(targetMember.get().getPoint());
-
 
 
         return CommentChoiseResponseDto.builder()
