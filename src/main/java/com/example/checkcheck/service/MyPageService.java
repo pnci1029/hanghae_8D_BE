@@ -5,6 +5,7 @@ import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
+import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
@@ -13,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -51,26 +54,38 @@ public class MyPageService {
 
     // 마이페이지 작성 게시글 조회
     @Transactional
-    public ResponseDto<?> readMyPageArticle(Long articleId, UserDetailsImpl userDetails) {
-        Article article = articleService.isPresentArticle(articleId);
-        if (null == article) {
-            return ResponseDto.fail("400", "게시물이 존재하지 않습니다.");
-        }
-        Member member = userDetails.getMember();
-        if (!article.getMember().getMemberId().equals(member.getMemberId())) {
-            return ResponseDto.fail("400", "회원 정보가 일치하지 않습니다.");
-        }
+    public ResponseDto<?> readMyPageArticle(UserDetailsImpl userDetails, Process process) {
 
-        return ResponseDto.success(
-                MyPageResponseDto.builder()
-                        .articlesId(article.getArticleId())
-                        .title(article.getTitle())
-                        .process(article.getProcess())
-                        .price(article.getPrice())
-                        .image(article.getImages())
-                        .point(member.getPoint())
-                        .build()
-        );
+        return ResponseDto.success(articleRepository.myPageInfo(userDetails, process));
+
+//        //      마이페이지 조회 유저정보
+//        String userEmail = userDetails.getMember().getUserEmail();
+//
+//        //       유저 작성글 조회
+//        List<Article> articleUserEmil = articleRepository.findByUserEmail(userEmail);
+//
+//        for (Article articles : articleUserEmil) {
+//
+////        Article article = articleService.isPresentArticle(articles.getArticleId());
+//        if (articles == null) {
+//            return ResponseDto.fail("400", "게시물이 존재하지 않습니다.");
+//        }
+//        Member member = userDetails.getMember();
+//        if (!articles.getMember().getMemberId().equals(member.getMemberId())) {
+//            return ResponseDto.fail("400", "회원 정보가 일치하지 않습니다.");
+//        }
+//            MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
+//                    .articlesId(articles.getArticleId())
+//                    .title(articles.getTitle())
+//                    .process(articles.getProcess())
+//                    .price(articles.getPrice())
+//                    .image(articles.getImages())
+//                    .point(member.getPoint())
+//                    .build();
+//
+//            resultList.add(myPageResponseDto);
+//        }
+//        return ResponseDto.success(resultList);
     }
 
 

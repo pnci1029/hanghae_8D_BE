@@ -82,7 +82,6 @@ public class SocialNaverSerivce {
             }
 
 
-            System.out.println("결과는"+ member.getUserEmail());
             // User 권한 확인
 
 

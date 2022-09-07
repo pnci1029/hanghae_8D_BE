@@ -67,8 +67,6 @@ public class ArticleService {
             String nickName = userDetails.getMember().getNickName();
             String userEmail = userDetails.getUsername();
 
-        String email = LoadUser.getEmail();
-        System.out.println("email = " + email);
         //        유저 포인트
             Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
             int userPoint = userDetails.getMember().getPoint() + 2;
@@ -86,6 +84,7 @@ public class ArticleService {
                     .process(Process.process)
                     .userRank(userRank)
                     .member(userDetails.getMember())
+                    .userEmail(userEmail)
                     .build();
             articleRepository.save(articles);
 

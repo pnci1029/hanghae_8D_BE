@@ -61,10 +61,13 @@ public class Article extends TimeStamped {
     @Enumerated(value = EnumType.STRING)
     private Process process;
 
+    @Column
+    private String userEmail;
+
 
 
     @Builder
-    public Article(String nickName, String title, String content, Category category,
+    public Article(String nickName, String title, String content, Category category, String userEmail,
                    int price, int selectedPrice, List<Image> images, Process process, String userRank,
                    Member member) {
         this.nickName = nickName;
@@ -77,6 +80,7 @@ public class Article extends TimeStamped {
         this.process = process;
         this.userRank = userRank;
         this.member = member;
+        this.userEmail = userEmail;
     }
 
 

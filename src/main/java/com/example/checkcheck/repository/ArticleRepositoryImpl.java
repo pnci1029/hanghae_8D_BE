@@ -1,10 +1,12 @@
 package com.example.checkcheck.repository;
 
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
+import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
+import com.example.checkcheck.security.UserDetailsImpl;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
@@ -125,4 +127,37 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         }
         return articleResult;
     }
+
+//    마이페이지 게시글 조회
+    public List<MyPageResponseDto> myPageInfo(UserDetailsImpl userDetails, Process process) {
+        List<MyPageResponseDto> resultList = new ArrayList<>();
+
+
+        List<Article> result = new ArrayList<>();
+        if (process.equals(Process.all)) {
+            result = jpaQueryFactory
+                    .selectFrom(article)
+                    .where(article.member.eq(userDetails.getMember()))
+                    .fetch();
+        } else {
+            result = jpaQueryFactory
+                    .selectFrom(article)
+                    .where(article.member.eq(userDetails.getMember()).and(article.process.eq(process)))
+                    .fetch();
+        }
+
+        for (Article articles : result) {
+            MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
+                    .articlesId(articles.getArticleId())
+                    .title(articles.getTitle())
+                    .process(articles.getProcess())
+                    .price(articles.getPrice())
+                    .image(articles.getImages())
+                    .point(articles.getMember().getPoint())
+                    .build();
+            resultList.add(myPageResponseDto);
+        }
+        return resultList;
+    }
+
 }
