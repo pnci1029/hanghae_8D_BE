@@ -20,7 +20,6 @@ public class MemberService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final HttpServletResponse httpServletResponse;
     public TokenFactory accessAndRefreshTokenProcess(String username, HttpServletResponse response) {
         String refreshToken = jwtTokenProvider.createRefreshToken(username);
         String token = jwtTokenProvider.createToken(username);
@@ -30,7 +29,6 @@ public class MemberService {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
 
-        httpServletResponse.setStatus(500);
 
         response.addCookie(cookie);
         response.setHeader("Authorization", token);

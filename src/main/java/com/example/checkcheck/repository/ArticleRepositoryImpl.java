@@ -2,6 +2,7 @@ package com.example.checkcheck.repository;
 
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
+import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Category;
@@ -133,30 +134,39 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         List<MyPageResponseDto> resultList = new ArrayList<>();
 
 
-        List<Article> result = new ArrayList<>();
-        if (process.equals(Process.all)) {
-            result = jpaQueryFactory
-                    .selectFrom(article)
-                    .where(article.member.eq(userDetails.getMember()))
-                    .fetch();
-        } else {
-            result = jpaQueryFactory
-                    .selectFrom(article)
-                    .where(article.member.eq(userDetails.getMember()).and(article.process.eq(process)))
-                    .fetch();
-        }
+            List<Article> result = new ArrayList<>();
+            if (process.equals(Process.all)) {
+                result = jpaQueryFactory
+                        .selectFrom(article)
+                        .where(article.member.eq(userDetails.getMember()))
+                        .fetch();
+            } else {
+                result = jpaQueryFactory
+                        .selectFrom(article)
+                        .where(article.member.eq(userDetails.getMember()).and(article.process.eq(process)))
+                        .fetch();
+            }
 
-        for (Article articles : result) {
-            MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
-                    .articlesId(articles.getArticleId())
-                    .title(articles.getTitle())
-                    .process(articles.getProcess())
-                    .price(articles.getPrice())
-                    .image(articles.getImages())
-                    .point(articles.getMember().getPoint())
-                    .build();
-            resultList.add(myPageResponseDto);
-        }
+//        썸네일 이미지만 저장
+            String image = "";
+            List<Image> imageList = imageRepository.findByUserEmail(userDetails.getUsername());
+            for (Image images : imageList) {
+                image = images.getImage();
+                break;
+            }
+
+            for (Article articles : result) {
+                MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
+                        .articlesId(articles.getArticleId())
+                        .title(articles.getTitle())
+                        .process(articles.getProcess())
+                        .price(articles.getPrice())
+                        .image(image)
+                        .point(articles.getMember().getPoint())
+                        .build();
+                resultList.add(myPageResponseDto);
+            }
+
         return resultList;
     }
 

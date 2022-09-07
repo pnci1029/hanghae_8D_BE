@@ -11,6 +11,7 @@ import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.ArticleService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -51,13 +52,14 @@ public class ArticleController {
         return articleRepository.articleScroll(pageable, category, process);
     }
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @GetMapping("/main/randomcards")
-    public List<ArticleResponseDto> getArticleCarousel() {
+    public ResponseDto<?> getArticleCarousel() {
         return articleService.getArticleCarousel();
     }
 
     @GetMapping("/auth/detail/{articlesId}")
-    public ArticleDetailResponseDto getArticleDetail(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseDto<?> getArticleDetail(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return articleService.getArticleDetail(articlesId, userDetails);
     }
 

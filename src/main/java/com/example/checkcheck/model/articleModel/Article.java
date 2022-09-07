@@ -2,6 +2,7 @@ package com.example.checkcheck.model.articleModel;
 
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.Member;
+import com.example.checkcheck.model.commentModel.Comment;
 import com.example.checkcheck.util.TimeStamped;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -50,6 +52,9 @@ public class Article extends TimeStamped {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Member member;
 
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Comment> comment=new ArrayList<>();
 //    이거 왜 숫자로 나오냐,,,?
 //    @Column
 //    private Category category;

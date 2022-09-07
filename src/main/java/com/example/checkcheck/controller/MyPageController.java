@@ -24,12 +24,14 @@ public class MyPageController {
     @GetMapping("/api/auth/profile/list")
     public ResponseDto<?> readMyPageArticle(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                             @RequestParam(value = "process")Process process) {
-        return ResponseDto.success(articleRepository.myPageInfo(userDetails, process));
+
+        return(userDetails != null) ? ResponseDto.success(articleRepository.myPageInfo(userDetails, process))
+                                        :ResponseDto.fail("400","aaaaaaaaa");
 //        return myPageService.readMyPageArticle(userDetails, process);
     }
 
 
-    @DeleteMapping("/api/auth/profile/")
+    @DeleteMapping("/api/auth/profile")
     public ResponseDto<?> deleteMember(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return myPageService.deleteMember(userDetails);
     }
