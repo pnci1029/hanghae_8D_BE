@@ -55,7 +55,7 @@ public class Article extends TimeStamped {
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Comment> comment=new ArrayList<>();
-    //    이거 왜 숫자로 나오냐,,,?
+//    이거 왜 숫자로 나오냐,,,?
 //    @Column
 //    private Category category;
     @Column(nullable = false)

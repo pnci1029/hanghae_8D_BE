@@ -17,8 +17,8 @@ public class MyPageResponseDto {
     private Long articlesId;
     private String title;
     private int price;
-    private List<Image> image;
+    private String image;
     private Process process;
-    private int point = 0;
+    private int point;
 
 }

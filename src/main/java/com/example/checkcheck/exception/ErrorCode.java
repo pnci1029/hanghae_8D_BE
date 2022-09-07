@@ -24,19 +24,25 @@ public enum ErrorCode {
     INVALID_OLD_PWD(HttpStatus.BAD_REQUEST, "400", "기존 비밀번호가 옳바르지 않습니다."),
 
     NOT_LOGIN(HttpStatus.BAD_REQUEST, "400", "로그인이 필요합니다."),
+    UNKNOWN_ERROR(HttpStatus.BAD_REQUEST,"400", "토큰이 존재하지 않습니다1."),
+    NullPoint_Token(HttpStatus.BAD_REQUEST,"400", "토큰이 존재하지 않습니다2."),
 
     NOT_EXPIRED_TOKEN_YET(HttpStatus.BAD_REQUEST,"400", "토큰이 만료되지 않았습니다."),
-
+    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST,"401", "만료된 토큰입니다."),
+    ACCESS_DENIED(HttpStatus.BAD_REQUEST,"403", "권한이 없습니다."),
 
     INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST,"400","유효하지 않은 리프레시 토큰입니다."),
 
     NEED_EMAIL(HttpStatus.BAD_REQUEST,"400","이메일은 필수로 동의 해주셔야 합니다."),
 
     FILE_NULL(HttpStatus.BAD_REQUEST, "400", "파일을 입력해주세요."),
-    Malformed_JwtException(HttpStatus.UNAUTHORIZED, "401", "올바른 JWT 토큰을 입력해주세요"),
+    UnSupported_Token(HttpStatus.UNAUTHORIZED, "401", "올바른 JWT 토큰을 입력해주세요"),
     Signature_Exception(HttpStatus.BAD_REQUEST, "404", "변조된 JWT 토큰입니다"),
 
-
+    // 알림 URL, MESSAGE
+    NOT_VALIDURL(HttpStatus.BAD_REQUEST,"400","요효하지 않는 URL 입니다."),
+    NOT_VALIDMESSAGE(HttpStatus.BAD_REQUEST,"400","유효하지 않는 내용입니다."),
+    NOT_EXIST_NOTIFICATION(HttpStatus.NOT_FOUND,"404","존재하지 않는 알림입니다."),
 
     // 게시글
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 게시글이 존재하지 않습니다"),
