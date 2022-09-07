@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Getter
 public class CommentResponseDto {
 
-    private Long commentId;
+    private Long commentsId;
     private Type type;
     private String nickName;
     private String userRank;

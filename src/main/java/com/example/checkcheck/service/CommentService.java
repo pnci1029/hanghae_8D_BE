@@ -4,6 +4,7 @@ import com.example.checkcheck.dto.requestDto.CommentChoiseRequestDto;
 import com.example.checkcheck.dto.requestDto.CommentRequestDto;
 import com.example.checkcheck.dto.requestDto.NotificationRequestDto;
 import com.example.checkcheck.dto.responseDto.CommentChoiseResponseDto;
+import com.example.checkcheck.dto.responseDto.CommentListResponseDto;
 import com.example.checkcheck.dto.responseDto.CommentResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.exception.CustomException;
@@ -51,7 +52,7 @@ public class CommentService {
         String nickName = userDetails.getMember().getNickName();
 
         Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
-        int userPoint = userDetails.getMember().getPoint();
+        int userPoint = userDetails.getMember().getPoint() + 1;
         memberBox.get().updatePoint(userPoint);
 
         String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
@@ -61,7 +62,6 @@ public class CommentService {
         if (null == article) {
             throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
         }
-
         Comment comment = Comment.builder()
                 .comment(requestDto.getComment())
                 .nickName(nickName)
@@ -94,12 +94,13 @@ public class CommentService {
 
         return
                 CommentResponseDto.builder()
-                        .commentId(comment.getCommentId())
+                        .commentsId(comment.getCommentId())
                         .type(comment.getType())
                         .nickName(comment.getNickName())
                         .userRank(comment.getUserRank())
                         .comment(comment.getComment())
                         .createdAt(rightNow)
+                        .isSelected(comment.isSelected())
                         .isMyComment(isMyComment)
                         .build();
     }
@@ -117,29 +118,43 @@ public class CommentService {
         List<Comment> commentList = commentRepository.findAllByArticle(article);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
+//        isMyArticles 초기화
+        Boolean isMyArticles = false;
+
         for (Comment comment : commentList) {
 
-            String rightNow = comfortUtils.getTime(comment.getCreatedAt());
-
-            Boolean isMyComment = false;
-            if (comment.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
-                isMyComment = true;
+            if (article.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
+                isMyArticles = true;
             }
 
-            commentResponseDtoList.add(
-                    CommentResponseDto.builder()
-                            .commentId(comment.getCommentId())
-                            .type(comment.getType())
-                            .userRank(comment.getUserRank())
-                            .nickName(comment.getNickName())
-                            .comment(comment.getComment())
-                            .createdAt(rightNow)
-                            .isSelected(comment.isSelected())
-                            .isMyComment(isMyComment)
-                            .build()
-            );
-        }
-        return ResponseDto.success(commentResponseDtoList);
+                String rightNow = comfortUtils.getTime(comment.getCreatedAt());
+
+                Boolean isMyComment = false;
+                if (userDetails.getMember().getUserEmail().equals(comment.getMember().getUserEmail())) {
+                    isMyComment = true;
+                }
+
+                commentResponseDtoList.add(
+                        CommentResponseDto.builder()
+                                .commentsId(comment.getCommentId())
+                                .type(comment.getType())
+                                .userRank(comment.getUserRank())
+                                .nickName(comment.getNickName())
+                                .comment(comment.getComment())
+                                .createdAt(rightNow)
+                                .isSelected(comment.isSelected())
+                                .isMyComment(isMyComment)
+                                .build()
+                );
+
+
+            }
+        CommentListResponseDto commentListResponseDto = CommentListResponseDto.builder()
+                .comments(commentResponseDtoList)
+                .isMyArticles(isMyArticles)
+                .build();
+
+        return ResponseDto.success(commentListResponseDto);
     }
 
     // 댓글 채택
@@ -170,41 +185,6 @@ public class CommentService {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public CommentChoiseResponseDto commentChoose(Long articlesId, CommentChoiseRequestDto commentChoiseRequestDto, UserDetailsImpl userDetails) {
         Long commentsId = commentChoiseRequestDto.getCommentsId();
 
@@ -223,7 +203,7 @@ public class CommentService {
 //      채택 댓글 포인트
         Optional<Member> targetMember = memberRepository.findById(targetComment.getMember().getMemberId());
         int point = targetComment.getMember().getPoint();
-        targetMember.get().updatePoint(point+50);
+        targetMember.get().updatePoint(point + 50);
 
 //        게시글 상태 변경
         targetArticle.setProcess(Process.done);
@@ -234,7 +214,7 @@ public class CommentService {
         articleRepository.save(targetArticle);
 
 //        로그인 사용자와 채택댓글 작성자 비교
-        boolean isMyComment =false;
+        boolean isMyComment = false;
         if (userDetails.getUsername().equals(targetComment.getMember().getUserEmail())) {
             isMyComment = true;
         }

@@ -114,6 +114,9 @@ public class MyPageService {
     @Transactional
     public ResponseDto<?> deleteMember(UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
+        if (null == member) {
+            return ResponseDto.fail("400", "회원 정보가 존재하지 않습니다.");
+        }
         memberRepository.deleteById(member.getMemberId());
         return ResponseDto.success("탈퇴 완료");
     }
