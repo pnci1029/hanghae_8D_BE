@@ -71,7 +71,7 @@ public class Comment extends TimeStamped {
 
 
 
-    public void chooseComment(Boolean selectedComment) {
+    public void chooseComment(boolean selectedComment) {
         isSelected = selectedComment;
     }
 }

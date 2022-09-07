@@ -91,7 +91,9 @@ public class Article extends TimeStamped {
 
 
 
-
+    public void updateProcess(Process newProcess) {
+        process = newProcess;
+    }
 
 
 

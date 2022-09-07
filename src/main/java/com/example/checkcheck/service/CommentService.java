@@ -79,6 +79,7 @@ public class CommentService {
 
         //댓글 생성 시 게시글 작성 유저에게 실시간 알림 전송 ,
         String message = article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!";
+        System.out.println("message = " + message);
 
         //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
         if(!Objects.equals(userDetails.getMember().getMemberId(), article.getMember().getMemberId())) {
@@ -86,7 +87,8 @@ public class CommentService {
             log.info("Alarm message :" + article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!");
         }
 
-        Boolean isMyComment = false;
+
+        boolean isMyComment = false;
         if (comment.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
             isMyComment = true;
         }
@@ -119,7 +121,7 @@ public class CommentService {
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
 //        isMyArticles 초기화
-        Boolean isMyArticles = false;
+        boolean isMyArticles = false;
 
         for (Comment comment : commentList) {
 
@@ -192,21 +194,30 @@ public class CommentService {
                 () -> new NullPointerException("게시글이 존재하지않습니다.")
         );
 
+        Comment targetComment = commentRepository.findById(commentsId).orElseThrow(
+                () -> new NullPointerException("채택할 댓글이 없습니다.")
+        );
+
         if (!targetArticle.getMember().getUserEmail().equals(userDetails.getUsername())) {
             throw new IllegalArgumentException("게시글 작성자만 채택할수있습니다.");
         }
 
-        Comment targetComment = commentRepository.findById(commentsId).orElseThrow(
-                () -> new NullPointerException("채택할 댓글이 없습니다.")
-        );
+        if (targetArticle.getUserEmail().equals(targetComment.getMember().getUserEmail())) {
+            throw new IllegalArgumentException("게시글 작성자와 댓글 작성자가 같습니다.");
+        }
+
+        if (targetArticle.getProcess().equals(Process.done)) {
+            throw new IllegalArgumentException("채택된 댓글이 있어서 채택할수없습니다.");
+        }
 
 //      채택 댓글 포인트
         Optional<Member> targetMember = memberRepository.findById(targetComment.getMember().getMemberId());
         int point = targetComment.getMember().getPoint();
         targetMember.get().updatePoint(point + 50);
 
+        System.out.println("point = " + point);
 //        게시글 상태 변경
-        targetArticle.setProcess(Process.done);
+        targetArticle.updateProcess(Process.done);
 //        댓글 상태 변경
         targetComment.chooseComment(true);
 //        저장

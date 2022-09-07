@@ -3,8 +3,10 @@ package com.example.checkcheck.util;
 
 import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.repository.NotificationRepository;
+import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
