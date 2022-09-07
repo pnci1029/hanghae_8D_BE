@@ -41,8 +41,10 @@ public class MemberService {
     public RefreshTokenResponseDto refreshAccessToken(String refreshToken) throws AuthenticationException {
         try {
             String id = jwtTokenProvider.getPayload(refreshToken);
+            System.out.println("id = " + id);
             RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
             String compareToken = refresh.getTokenValue();
+            System.out.println("compareToken = " + compareToken);
 
             if (!compareToken.equals(refreshToken)) {
                 throw new AuthenticationException("refresh token이 유효하지 않습니다.222");

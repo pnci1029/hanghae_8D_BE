@@ -54,7 +54,7 @@ public class CommentService {
         String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
 
         // 게시글 확인
-        Article article = articleService.isPresentArticle(requestDto.getArticleId());
+        Article article = articleService.isPresentArticle(requestDto.getArticlesId());
         if (null == article) {
             throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
         }

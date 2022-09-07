@@ -26,6 +26,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 @RequiredArgsConstructor
 @Service
@@ -93,9 +94,16 @@ public class SocialNaverSerivce {
             String accessToken = naverUser.getAccessToken();
 
 
-//            리프레시 토큰 저장
+//        리프레시토큰저장 & 있을경우 셋토큰
+            Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(member.getUserEmail());
             RefreshToken token = new RefreshToken(member.getUserEmail(), refreshToken);
-            refreshTokenRepository.save(token);
+            if (existToken.isEmpty()) {
+                refreshTokenRepository.save(token);
+            } else {
+                existToken.get().setTokenKey(token.getTokenKey());
+                existToken.get().setTokenValue(token.getTokenValue());
+            }
+
 
             SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                     .nickName(member.getNickName()) // 1

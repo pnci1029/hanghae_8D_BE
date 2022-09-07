@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -75,12 +76,18 @@ public class SocialKakaoService {
                 .userRank(comfortUtils.getUserRank(kakaoMember.getPoint()))
                 .build();
 
-//        리프레시 토큰
-        RefreshToken token = RefreshToken.builder()
-                .key(socialResponseDto.getUserEmail())
-                .value(tokenFactory.getRefreshToken())
-                .build();
-        refreshTokenRepository.save(token);
+//        리프레시토큰저장 & 있을경우 셋토큰
+        Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(kakaoMember.getUserEmail());
+        if (existToken.isEmpty()) {
+            RefreshToken token = RefreshToken.builder()
+                    .key(socialResponseDto.getUserEmail())
+                    .value(tokenFactory.getRefreshToken())
+                    .build();
+            refreshTokenRepository.save(token);
+        } else {
+            existToken.get().setTokenKey(socialResponseDto.getUserEmail());
+            existToken.get().setTokenValue(tokenFactory.getRefreshToken());
+        }
 
 //        return new ResponseEntity<>(new FinalResponseDto<>
 //                (true, "로그인 성공",kakaoUser), HttpStatus.OK);
