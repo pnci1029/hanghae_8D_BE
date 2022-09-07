@@ -36,7 +36,10 @@ public enum ErrorCode {
     Malformed_JwtException(HttpStatus.UNAUTHORIZED, "401", "올바른 JWT 토큰을 입력해주세요"),
     Signature_Exception(HttpStatus.BAD_REQUEST, "404", "변조된 JWT 토큰입니다"),
 
-
+    // 알림 URL, MESSAGE
+    NOT_VALIDURL(HttpStatus.BAD_REQUEST,"400","요효하지 않는 URL 입니다."),
+    NOT_VALIDMESSAGE(HttpStatus.BAD_REQUEST,"400","유효하지 않는 내용입니다."),
+    NOT_EXIST_NOTIFICATION(HttpStatus.NOT_FOUND,"404","존재하지 않는 알림입니다."),
 
     // 게시글
     BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 게시글이 존재하지 않습니다"),
