@@ -7,7 +7,6 @@ import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
-import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.ImageRepository;
@@ -18,8 +17,6 @@ import com.example.checkcheck.service.s3.S3Uploader;
 import com.example.checkcheck.util.ComfortUtils;
 import com.example.checkcheck.util.LoadUser;
 import com.example.checkcheck.util.Time;
-import org.springframework.data.domain.Slice;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,8 +64,6 @@ public class ArticleService {
             String nickName = userDetails.getMember().getNickName();
             String userEmail = userDetails.getUsername();
 
-        String email = LoadUser.getEmail();
-        System.out.println("email = " + email);
         //        유저 포인트
             Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
             int userPoint = userDetails.getMember().getPoint() + 2;
@@ -86,6 +81,7 @@ public class ArticleService {
                     .process(Process.process)
                     .userRank(userRank)
                     .member(userDetails.getMember())
+                    .userEmail(userEmail)
                     .build();
             articleRepository.save(articles);
 
@@ -97,17 +93,17 @@ public class ArticleService {
 
                 List<Image> imgbox = new ArrayList<>();
                 //          이미지 업로드
-//            for (MultipartFile uploadedFile : multipartFile) {
-//
-//                Image imagePostEntity = Image.builder()
-//                        .image(s3Uploader.upload(uploadedFile))
-//                        .userEmail(userEmail)
-//                        .article(articles)
-//                        .build();
-//                imgbox.add(imagePostEntity);
-//
-//                imageRepository.save(imagePostEntity);
-//            }
+            for (MultipartFile uploadedFile : multipartFile) {
+
+                Image imagePostEntity = Image.builder()
+                        .image(s3Uploader.upload(uploadedFile))
+                        .userEmail(userEmail)
+                        .article(articles)
+                        .build();
+                imgbox.add(imagePostEntity);
+
+                imageRepository.save(imagePostEntity);
+            }
 
             }
 
@@ -115,7 +111,7 @@ public class ArticleService {
 
     }
 
-    public List<ArticleResponseDto> getArticleCarousel() {
+    public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
         List<ArticleResponseDto> articleResult = articleRepository.articleCarousel();
         Collections.shuffle(articleResult);
 
@@ -123,11 +119,11 @@ public class ArticleService {
         for (int i = 0; i < 5; i++) {
             resultBox.add(articleResult.get(i));
         }
-        return resultBox;
+        return ResponseDto.success(resultBox);
     }
 
 //  게시글 상세페이지
-    public ArticleDetailResponseDto getArticleDetail(Long id, UserDetailsImpl userDetails) {
+    public ResponseDto<ArticleDetailResponseDto> getArticleDetail(Long id, UserDetailsImpl userDetails) {
         Article article = articleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지않습니다")
         );
@@ -154,7 +150,7 @@ public class ArticleService {
                 .build();
 
 
-        return articleResponseDto;
+        return ResponseDto.success(articleResponseDto);
     }
 
     @Transactional

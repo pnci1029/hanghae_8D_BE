@@ -20,7 +20,6 @@ public class MemberService {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final HttpServletResponse httpServletResponse;
     public TokenFactory accessAndRefreshTokenProcess(String username, HttpServletResponse response) {
         String refreshToken = jwtTokenProvider.createRefreshToken(username);
         String token = jwtTokenProvider.createToken(username);
@@ -30,7 +29,6 @@ public class MemberService {
         cookie.setHttpOnly(true);
         cookie.setPath("/");
 
-        httpServletResponse.setStatus(500);
 
         response.addCookie(cookie);
         response.setHeader("Authorization", token);
@@ -43,8 +41,10 @@ public class MemberService {
     public RefreshTokenResponseDto refreshAccessToken(String refreshToken) throws AuthenticationException {
         try {
             String id = jwtTokenProvider.getPayload(refreshToken);
+            System.out.println("id = " + id);
             RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
             String compareToken = refresh.getTokenValue();
+            System.out.println("compareToken = " + compareToken);
 
             if (!compareToken.equals(refreshToken)) {
                 throw new AuthenticationException("refresh token이 유효하지 않습니다.222");

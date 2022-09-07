@@ -19,5 +19,9 @@ public interface ArticleRepository extends JpaRepository<Article, Long>, Article
 
 
 
+
     List<Article> findAllByMember(Member member);
+
+    List<Article> findByUserEmail(String userEmail);
+
 }
