@@ -72,11 +72,9 @@ public class CommentController {
 
 
 
-
     // 댓글 채택
     @PatchMapping("/api/auth/detail/comments/{articlesId}")
-    public ResponseEntity<Object> choose(@PathVariable Long articlesId ,@RequestBody CommentChoiseRequestDto commentChoiseRequestDto,
-                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> choose(@PathVariable Long articlesId ,@RequestBody CommentChoiseRequestDto commentChoiseRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         CommentChoiseResponseDto commentChoiseResponseDto = commentService.commentChoose(articlesId,commentChoiseRequestDto, userDetails);
         return new ResponseEntity<>(new StatusResponseDto("댓글 채택 성공", commentChoiseResponseDto), HttpStatus.OK);
     }
