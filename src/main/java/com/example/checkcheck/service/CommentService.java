@@ -20,14 +20,17 @@ import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
 import com.example.checkcheck.util.ComfortUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CommentService {
@@ -71,22 +74,24 @@ public class CommentService {
 
         commentRepository.save(comment);
 
+        //해당 댓글로 이동하는 url
+        String Url = "http://localhost:8080/api/auth/detail/comments/"+article.getArticleId();
+
+        //댓글 생성 시 게시글 작성 유저에게 실시간 알림 전송 ,
+        String message = article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!";
+
+        //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
+        if(!Objects.equals(userDetails.getMember().getMemberId(), article.getMember().getMemberId())) {
+            notificationService.send(article.getMember(), AlarmType.COMMENT, message, Url);
+            log.info("Alarm message :" + article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!");
+        }
+
         Boolean isMyComment = false;
         if (comment.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
             isMyComment = true;
         }
         String rightNow = comfortUtils.getTime(comment.getCreatedAt());
 
-        if (!article.getMember().getUserEmail().equals(userEmail)) {
-            NotificationRequestDto notificationRequestDto =
-                    new NotificationRequestDto(
-                            AlarmType.COMMENT, "새로운 댓글이 작성되었습니다!"
-                    );
-            System.out.println(article.getMember().getMemberId());
-            notificationService.sendNotification(article.getMember().getMemberId(), notificationRequestDto);
-            //85번 article (1번유저) -> 86번 article(2번유저) - 1번유저의 코멘트 -> 2번 유저에게 전달
-
-        }
         return
                 CommentResponseDto.builder()
                         .commentId(comment.getCommentId())
@@ -95,7 +100,6 @@ public class CommentService {
                         .userRank(comment.getUserRank())
                         .comment(comment.getComment())
                         .createdAt(rightNow)
-                        .isSelected(false)
                         .isMyComment(isMyComment)
                         .build();
     }
@@ -166,6 +170,41 @@ public class CommentService {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public CommentChoiseResponseDto commentChoose(Long articlesId, CommentChoiseRequestDto commentChoiseRequestDto, UserDetailsImpl userDetails) {
         Long commentsId = commentChoiseRequestDto.getCommentsId();
 
@@ -184,7 +223,7 @@ public class CommentService {
 //      채택 댓글 포인트
         Optional<Member> targetMember = memberRepository.findById(targetComment.getMember().getMemberId());
         int point = targetComment.getMember().getPoint();
-        targetMember.get().updatePoint(point + 50);
+        targetMember.get().updatePoint(point+50);
 
 //        게시글 상태 변경
         targetArticle.setProcess(Process.done);
@@ -195,11 +234,21 @@ public class CommentService {
         articleRepository.save(targetArticle);
 
 //        로그인 사용자와 채택댓글 작성자 비교
-        boolean isMyComment = false;
+        boolean isMyComment =false;
         if (userDetails.getUsername().equals(targetComment.getMember().getUserEmail())) {
             isMyComment = true;
         }
+        //해당 댓글로 이동하는 url
+        String Url = "http://localhost:8080/api/auth/detail/comments/"+targetComment.getMember().getMemberId();
 
+        //댓글 채택 시 채택된 댓글 유저에게 실시간 알림 전송
+        String message = targetComment.getNickName()+"님! 게시물에 작성된 댓글이 채택되었어요, +50 포인트를 획득하셨습니다, 축하드립니다!";
+
+        //로그인 사용자와 채택댓글 작성자가 다를 경우에는 알림을 보낼 필요가 없다.
+        if(!Objects.equals(userDetails.getMember().getMemberId(), targetComment.getMember().getMemberId())) {
+            notificationService.send(targetComment.getMember(), AlarmType.CHOICE, message, Url);
+            log.info("Alarm message :" + targetComment.getNickName()+"님! 게시물에 작성된 댓글이 채택되었어요, 축하합니다!");
+        }
 //        댓글 작성자 랭크
         String userRank = comfortUtils.getUserRank(targetMember.get().getPoint());
 
