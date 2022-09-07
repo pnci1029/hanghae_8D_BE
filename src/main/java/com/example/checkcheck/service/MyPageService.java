@@ -51,8 +51,8 @@ public class MyPageService {
 
     // 마이페이지 작성 게시글 조회
     @Transactional
-    public ResponseDto<?> readMyPageArticle(Long articleId, UserDetailsImpl userDetails) {
-        Article article = articleService.isPresentArticle(articleId);
+    public ResponseDto<?> readMyPageArticle(Long articlesId, UserDetailsImpl userDetails) {
+        Article article = articleService.isPresentArticle(articlesId);
         if (null == article) {
             return ResponseDto.fail("400", "게시물이 존재하지 않습니다.");
         }
@@ -97,6 +97,9 @@ public class MyPageService {
     @Transactional
     public ResponseDto<?> deleteMember(UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
+        if (null == member) {
+            return ResponseDto.fail("400", "회원 정보가 존재하지 않습니다.");
+        }
         memberRepository.deleteById(member.getMemberId());
         return ResponseDto.success("탈퇴 완료");
     }

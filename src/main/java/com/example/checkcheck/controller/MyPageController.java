@@ -21,13 +21,13 @@ public class MyPageController {
         return myPageService.readMyPage(userDetails);
     }
 
-    @GetMapping("/api/auth/profile/list/{articleId}")
-    public ResponseDto<?> readMyPageArticle(@PathVariable Long articleId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return myPageService.readMyPageArticle(articleId, userDetails);
+    @GetMapping("/api/auth/profile/list/{articlesId}")
+    public ResponseDto<?> readMyPageArticle(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return myPageService.readMyPageArticle(articlesId, userDetails);
     }
 
 
-    @DeleteMapping("/api/auth/profile/")
+    @DeleteMapping("/api/auth/profile")
     public ResponseDto<?> deleteMember(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return myPageService.deleteMember(userDetails);
     }

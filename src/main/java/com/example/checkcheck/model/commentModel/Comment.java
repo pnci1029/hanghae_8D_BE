@@ -3,6 +3,7 @@ package com.example.checkcheck.model.commentModel;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.util.TimeStamped;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
@@ -43,6 +44,7 @@ public class Comment extends TimeStamped {
     @Enumerated(value = EnumType.STRING)
     private Type type;
 
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "article_id")
     private Article article;
@@ -50,7 +52,7 @@ public class Comment extends TimeStamped {
     @Column
     private boolean isSelected;
 
-
+    @JsonManagedReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
