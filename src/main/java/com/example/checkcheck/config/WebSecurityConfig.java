@@ -5,7 +5,6 @@ import com.example.checkcheck.security.JwtAuthenticationFilter;
 import com.example.checkcheck.security.JwtExceptionFilter;
 import com.example.checkcheck.security.JwtTokenProvider;
 import com.example.checkcheck.security.test.JwtAccessDeniedHandler;
-import com.example.checkcheck.security.test.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -27,7 +26,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+//    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public BCryptPasswordEncoder encodePassword() {
@@ -54,7 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // 토큰 인증이므로 세션 사용x
         http.csrf().disable()
                 .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+//                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
 
                 .and()
@@ -72,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/user/token").permitAll()
 
 
-//                .antMatchers("/**").permitAll()
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 
                 // 그 외 어떤 요청이든 '인증'

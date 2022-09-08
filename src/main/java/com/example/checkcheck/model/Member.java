@@ -29,7 +29,7 @@ public class Member {
     private String userEmail;
 
     @Column
-    String userRealEmail;
+    private String userRealEmail;
 
 //    @Column
 //    private String userRank;
