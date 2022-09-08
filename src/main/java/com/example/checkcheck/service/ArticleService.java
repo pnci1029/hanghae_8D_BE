@@ -4,6 +4,8 @@ import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
 import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
@@ -60,11 +62,11 @@ public class ArticleService {
     @Transactional
     public ResponseDto<?> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
                                        UserDetailsImpl userDetails) throws IOException {
-
+//        try {
             String nickName = userDetails.getMember().getNickName();
             String userEmail = userDetails.getUsername();
 
-        //        유저 포인트
+            //        유저 포인트
             Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
             int userPoint = userDetails.getMember().getPoint() + 2;
             memberBox.get().updatePoint(userPoint);
@@ -93,21 +95,24 @@ public class ArticleService {
 
                 List<Image> imgbox = new ArrayList<>();
                 //          이미지 업로드
-            for (MultipartFile uploadedFile : multipartFile) {
+                for (MultipartFile uploadedFile : multipartFile) {
 
-                Image imagePostEntity = Image.builder()
-                        .image(s3Uploader.upload(uploadedFile))
-                        .userEmail(userEmail)
-                        .article(articles)
-                        .build();
-                imgbox.add(imagePostEntity);
+                    Image imagePostEntity = Image.builder()
+                            .image(s3Uploader.upload(uploadedFile))
+                            .userEmail(userEmail)
+                            .article(articles)
+                            .build();
+                    imgbox.add(imagePostEntity);
 
-                imageRepository.save(imagePostEntity);
+                    imageRepository.save(imagePostEntity);
+                }
+
             }
+//        } catch (NullPointerException n) {
+//            throw new CustomException(ErrorCode.NullPoint_Token);
+//        }
 
-            }
-
-            return ResponseDto.success("작성 성공");
+        return ResponseDto.success("작성 성공");
 
     }
 

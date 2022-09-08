@@ -24,12 +24,12 @@ public enum ErrorCode {
     INVALID_OLD_PWD(HttpStatus.BAD_REQUEST, "400", "기존 비밀번호가 옳바르지 않습니다."),
 
     NOT_LOGIN(HttpStatus.BAD_REQUEST, "400", "로그인이 필요합니다."),
-    UNKNOWN_ERROR(HttpStatus.BAD_REQUEST,"400", "토큰이 존재하지 않습니다1."),
-    NullPoint_Token(HttpStatus.BAD_REQUEST,"400", "토큰이 존재하지 않습니다2."),
+    UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED,"403", "토큰이 존재하지 않습니다1."),
+    NullPoint_Token(HttpStatus.UNAUTHORIZED,"403", "토큰이 존재하지 않습니다2."),
 
     NOT_EXPIRED_TOKEN_YET(HttpStatus.BAD_REQUEST,"400", "토큰이 만료되지 않았습니다."),
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST,"401", "만료된 토큰입니다."),
-    ACCESS_DENIED(HttpStatus.BAD_REQUEST,"403", "권한이 없습니다."),
+    ACCESS_DENIED(HttpStatus.BAD_REQUEST,"401", "유효한 토큰이 아닙니다."),
 
     INVALID_REFRESH_TOKEN(HttpStatus.BAD_REQUEST,"400","유효하지 않은 리프레시 토큰입니다."),
 

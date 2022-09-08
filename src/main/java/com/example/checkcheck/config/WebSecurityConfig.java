@@ -3,8 +3,9 @@ package com.example.checkcheck.config;
 
 import com.example.checkcheck.security.JwtAuthenticationFilter;
 import com.example.checkcheck.security.JwtExceptionFilter;
-//import com.example.stomp.security.JwtSecurityConfig;
 import com.example.checkcheck.security.JwtTokenProvider;
+import com.example.checkcheck.security.test.JwtAccessDeniedHandler;
+import com.example.checkcheck.security.test.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
 @Configuration
@@ -28,6 +26,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtExceptionFilter jwtExceptionFilter;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public BCryptPasswordEncoder encodePassword() {
@@ -52,29 +52,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 //        http.cors().configurationSource(corsConfigurationSource());
         // 토큰 인증이므로 세션 사용x
-        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.headers().frameOptions().sameOrigin();
+        http.csrf().disable()
+                .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
 
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.headers().frameOptions().sameOrigin();
 
         http.authorizeRequests()
                 // 회원 관리 처리 API 전부를 login 없이 허용
-//                .antMatchers("/user/duplicate/username").permitAll()
-//                .antMatchers("/user/signup").permitAll()
-//                .antMatchers("/user/login").permitAll()
-//                .antMatchers("/user/refresh").permitAll()
-//                .antMatchers("/user/confirmEmail").permitAll()
-//                .antMatchers("/user/signin/**").permitAll()
-//                .antMatchers("/health/**").permitAll()
-//                .antMatchers("/health").permitAll()
-//                .antMatchers("/user/confirmEmail").permitAll()
-//                .antMatchers("/wss/chat/**").permitAll()
-                .antMatchers("/api/**").permitAll()
-                .antMatchers("/api/main/**").permitAll()
+
+//                .antMatchers("/api/**").permitAll()
                 .antMatchers("/user/**").permitAll()
+                .antMatchers("/api/main/**").permitAll()
                 .antMatchers("/auth/user/token").permitAll()
 
 
-                .antMatchers("/**").permitAll()
+//                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 
                 // 그 외 어떤 요청이든 '인증'

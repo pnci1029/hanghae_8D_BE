@@ -67,4 +67,16 @@ public class ApiExceptionHandler extends RuntimeException{
                 );
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ErrorResponse> nullPointException(NullPointerException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.builder()
+                        .msg(e.getMessage())
+                        .errorCode("400")
+                        .httpStatus(HttpStatus.BAD_REQUEST)
+                        .build()
+                );
+    }
+
 }
