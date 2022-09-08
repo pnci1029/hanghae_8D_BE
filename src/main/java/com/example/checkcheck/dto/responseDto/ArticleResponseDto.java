@@ -7,13 +7,14 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
 
+import java.text.NumberFormat;
 import java.util.List;
 
 @Data
 public class ArticleResponseDto {
 
     private Long articlesId;
-    private int price;
+    private String price;
     private String nickName;
     private Process process;
     private String title;
@@ -23,7 +24,8 @@ public class ArticleResponseDto {
     @Builder
     public ArticleResponseDto(Article article, String image,String userRank) {
         this.articlesId = article.getArticleId();
-        this.price = article.getPrice();
+//        천단위 컴마찍기위해서 넣음
+        this.price = NumberFormat.getInstance().format(article.getPrice());
         this.nickName = article.getNickName();
         this.process = article.getProcess();
         this.title = article.getTitle();

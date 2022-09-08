@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -16,7 +17,7 @@ import java.util.List;
 public class ArticleDetailResponseDto extends TimeStamped {
 
     private Long articlesId;
-    private int price;
+    private String price;
     private String nickName;
     private Process process;
     private String title;
@@ -30,7 +31,8 @@ public class ArticleDetailResponseDto extends TimeStamped {
     @Builder
     public ArticleDetailResponseDto(Article article, List<String> image, Boolean isMyArticles, String category) {
         this.articlesId = article.getArticleId();
-        this.price = article.getPrice();
+//        천단위 컴마찍기위해서 넣음
+        this.price = NumberFormat.getInstance().format(article.getPrice());
         this.nickName = article.getNickName();
         this.process = article.getProcess();
         this.title = article.getTitle();

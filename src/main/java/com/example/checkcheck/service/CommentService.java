@@ -112,22 +112,23 @@ public class CommentService {
     public ResponseDto<?> readAllComment(Long articlesId, UserDetailsImpl userDetails) {
 
         // 게시글 확인
-        Article article = articleService.isPresentArticle(articlesId);
+//        Article article = articleService.isPresentArticle(articlesId);
+        Article article = articleRepository.findById(articlesId).orElse(null);
         if (null == article) {
             return ResponseDto.fail("NOT_FOUND", "게시물이 존재하지 않습니다.");
         }
 
-        List<Comment> commentList = commentRepository.findAllByArticle(article);
+        List<Comment> commentList = commentRepository.getCommentList(articlesId);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
 //        isMyArticles 초기화
-        boolean isMyArticles = false;
+        Boolean isMyArticles = false;
+        if (article.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
+            isMyArticles = true;
+        }
 
         for (Comment comment : commentList) {
 
-            if (article.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
-                isMyArticles = true;
-            }
 
                 String rightNow = comfortUtils.getTime(comment.getCreatedAt());
 

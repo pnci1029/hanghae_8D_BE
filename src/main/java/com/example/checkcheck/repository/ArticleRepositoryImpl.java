@@ -7,19 +7,24 @@ import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
+import com.example.checkcheck.model.commentModel.Comment;
+import com.example.checkcheck.model.commentModel.QComment;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.util.ComfortUtils;
 import com.querydsl.core.QueryResults;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.checkcheck.model.articleModel.QArticle.*;
 import static com.example.checkcheck.model.articleModel.QArticle.article;
+import static com.example.checkcheck.model.commentModel.QComment.*;
 
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
@@ -150,21 +155,23 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                         .where(article.member.eq(userDetails.getMember()).and(article.process.eq(process)))
                         .fetch();
             }
+        for (Article articles : result) {
 
 //        썸네일 이미지만 저장
             String image = "";
-            List<Image> imageList = imageRepository.findByUserEmail(userDetails.getUsername());
+            List<Image> imageList = imageRepository.findByArticle_ArticleId(articles.getArticleId());
             for (Image images : imageList) {
                 image = images.getImage();
                 break;
             }
 
-            for (Article articles : result) {
+
+                String dotNum = NumberFormat.getInstance().format(articles.getPrice());
                 MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
                         .articlesId(articles.getArticleId())
                         .title(articles.getTitle())
                         .process(articles.getProcess())
-                        .price(articles.getPrice())
+                        .price(dotNum)
                         .image(image)
                         .point(articles.getMember().getPoint())
                         .build();
@@ -173,5 +180,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
         return resultList;
     }
+
+
 
 }
