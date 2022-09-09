@@ -62,9 +62,17 @@ public class ArticleController {
         return articleService.getArticleDetail(articlesId, userDetails);
     }
 
+    @PutMapping("/auth/detail/{articlesId}")
+    public ResponseDto<?> putArticle(@RequestPart(required = false) ArticleRequestDto articlesDto,
+                                     @RequestPart(required = false) List<MultipartFile> multipartFile,
+                                     @PathVariable Long articlesId,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return articleService.putArticle(multipartFile, articlesDto, articlesId, userDetails);
+    }
+
+
     @DeleteMapping("/auth/detail/{articlesId}")
-    public ResponseDto<?> deleteArticle(@PathVariable Long articlesId,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseDto<?> deleteArticle(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
        return  articleService.deleteArticle(articlesId, userDetails);
     }
 

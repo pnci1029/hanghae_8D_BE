@@ -213,6 +213,46 @@ public class ArticleService {
         return optionalArticle.orElse(null);
     }
 
+    @Transactional
+    public ResponseDto<?> putArticle(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto, Long articlesId, UserDetailsImpl userDetails) throws IOException {
+        Article targetArticle = articleRepository.findById(articlesId).orElse(null);
+
+        //        이미지 초기화
+        imageRepository.deleteByArticle_ArticleId(articlesId);
+
+        String userEmail = userDetails.getUsername();
+
+        targetArticle.setTitle(articleRequestDto.getTitle());
+        targetArticle.setContent(articleRequestDto.getContent());
+        targetArticle.setPrice(articleRequestDto.getPrice());
+        targetArticle.setCategory(articleRequestDto.getCategory());
 
 
+        articleRepository.save(targetArticle);
+
+//        작성시간
+//        String time1 = comfortUtils.getTime(articles.getCreatedAt());
+//
+//        이미지업로드
+        if (multipartFile != null) {
+
+            List<Image> imgbox = new ArrayList<>();
+            //          이미지 업로드
+            for (MultipartFile uploadedFile : multipartFile) {
+
+                Image imagePostEntity = Image.builder()
+                        .image(s3Uploader.upload(uploadedFile))
+                        .userEmail(userEmail)
+                        .article(targetArticle)
+                        .build();
+                imgbox.add(imagePostEntity);
+
+                imageRepository.save(imagePostEntity);
+            }
+
+        }
+
+
+        return ResponseDto.success("수정 완료");
+    }
 }
