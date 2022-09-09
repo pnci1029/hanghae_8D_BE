@@ -58,7 +58,7 @@ public class ArticleController {
     }
 
     @GetMapping("/auth/detail/{articlesId}")
-    public ResponseDto<?> getArticleDetail(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ArticleDetailResponseDto getArticleDetail(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return articleService.getArticleDetail(articlesId, userDetails);
     }
 

@@ -50,12 +50,20 @@ public class CommentService {
 
         String userEmail = userDetails.getUsername();
         String nickName = userDetails.getMember().getNickName();
+//        댓글 개수  확인용
+        Long memberId = userDetails.getMember().getMemberId();
 
         Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
         int userPoint = userDetails.getMember().getPoint() + 1;
         memberBox.get().updatePoint(userPoint);
 
         String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
+
+//        댓글 개수 제한
+        List<Comment> memberIdCount = commentRepository.findByMember_MemberId(memberId);
+        if (memberIdCount.size()>=10) {
+            throw new IllegalArgumentException("댓글은 10개 이상 작성이 불가능합니다.");
+        }
 
         // 게시글 확인
         Article article = articleService.isPresentArticle(requestDto.getArticlesId());
@@ -109,13 +117,13 @@ public class CommentService {
 
     // 모든 댓글 조회
     @Transactional
-    public ResponseDto<?> readAllComment(Long articlesId, UserDetailsImpl userDetails) {
+    public CommentListResponseDto readAllComment(Long articlesId, UserDetailsImpl userDetails) {
 
         // 게시글 확인
 //        Article article = articleService.isPresentArticle(articlesId);
         Article article = articleRepository.findById(articlesId).orElse(null);
         if (null == article) {
-            return ResponseDto.fail("NOT_FOUND", "게시물이 존재하지 않습니다.");
+            throw new NullPointerException("게시글이 존재하지 않습니다");
         }
 
         List<Comment> commentList = commentRepository.getCommentList(articlesId);
@@ -157,7 +165,7 @@ public class CommentService {
                 .isMyArticles(isMyArticles)
                 .build();
 
-        return ResponseDto.success(commentListResponseDto);
+        return commentListResponseDto;
     }
 
     // 댓글 채택

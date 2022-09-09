@@ -12,4 +12,5 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Long> , CommentRepositoryCustom{
     List<Comment> findAllByArticle(Article article);
 
+    List<Comment> findByMember_MemberId(Long memberId);
 }

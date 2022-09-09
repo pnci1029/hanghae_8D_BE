@@ -128,7 +128,7 @@ public class ArticleService {
     }
 
 //  게시글 상세페이지
-    public ResponseDto<ArticleDetailResponseDto> getArticleDetail(Long id, UserDetailsImpl userDetails) {
+    public ArticleDetailResponseDto getArticleDetail(Long id, UserDetailsImpl userDetails) {
         Article article = articleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지않습니다")
         );
@@ -155,7 +155,7 @@ public class ArticleService {
                 .build();
 
 
-        return ResponseDto.success(articleResponseDto);
+        return articleResponseDto;
     }
 
     @Transactional
