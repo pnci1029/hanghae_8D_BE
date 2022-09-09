@@ -121,9 +121,12 @@ public class ArticleService {
         Collections.shuffle(articleResult);
 
         List<ArticleResponseDto> resultBox = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            resultBox.add(articleResult.get(i));
-        }
+        if (articleResult.size() < 5) {
+            resultBox.addAll(articleResult);
+        } else
+            for (int i = 0; i < 5; i++) {
+                resultBox.add(articleResult.get(i));
+            }
         return ResponseDto.success(resultBox);
     }
 
@@ -152,6 +155,7 @@ public class ArticleService {
                 .isMyArticles(isMyArticles)
                 .image(imageBox)
                 .category(category)
+                .process(comfortUtils.getProcessKorean(article.getProcess()))
                 .build();
 
 

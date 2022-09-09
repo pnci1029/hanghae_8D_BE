@@ -12,7 +12,7 @@ import lombok.Setter;
 public class CommentChoiseResponseDto {
 
     private Long articlesId;
-    private Process process;
+    private String process;
     private String commentsNickName;
     private String selectedPrice;
     private String commentsUserRank;
@@ -20,7 +20,7 @@ public class CommentChoiseResponseDto {
     private Boolean isMyComment;
 
     @Builder
-    public CommentChoiseResponseDto(Article article, Comment comment, Process process, String commentsUserRank, Boolean isSelected, Boolean isMyComment) {
+    public CommentChoiseResponseDto(Article article, Comment comment, String process, String commentsUserRank, Boolean isSelected, Boolean isMyComment) {
         this.articlesId = article.getArticleId();
         this.process = process;
         this.commentsNickName = comment.getArticle().getNickName();

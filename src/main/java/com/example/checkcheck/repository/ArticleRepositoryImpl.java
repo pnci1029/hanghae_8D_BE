@@ -93,11 +93,11 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                     images = image.getImage();
                     break;
                 }
-                String userRank = comfortUtils.getUserRank(article.getMember().getPoint());
                 ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                         .article(article)
-                        .userRank(userRank)
+                        .userRank(comfortUtils.getUserRank(article.getMember().getPoint()))
                         .image(images)
+                        .process(comfortUtils.getProcessKorean(article.getProcess()))
                         .build();
                 content.add(articleResponseDto);
             }
@@ -131,6 +131,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             }
             ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                     .article(article)
+                    .userRank(comfortUtils.getUserRank(article.getMember().getPoint()))
                     .image(images)
                     .build();
             articleResult.add(articleResponseDto);
@@ -170,7 +171,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
                         .articlesId(articles.getArticleId())
                         .title(articles.getTitle())
-                        .process(articles.getProcess())
+                        .process(comfortUtils.getProcessKorean(articles.getProcess()))
                         .price(dotNum)
                         .image(image)
                         .point(articles.getMember().getPoint())

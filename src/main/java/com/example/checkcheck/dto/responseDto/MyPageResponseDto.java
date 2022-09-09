@@ -18,7 +18,7 @@ public class MyPageResponseDto {
     private String title;
     private String price;
     private String image;
-    private Process process;
+    private String process;
     private int point;
 
 }

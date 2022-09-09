@@ -19,7 +19,7 @@ public class ArticleDetailResponseDto extends TimeStamped {
     private Long articlesId;
     private String price;
     private String nickName;
-    private Process process;
+    private String process;
     private String title;
     private String content;
 
@@ -29,12 +29,12 @@ public class ArticleDetailResponseDto extends TimeStamped {
     private String category;
 
     @Builder
-    public ArticleDetailResponseDto(Article article, List<String> image, Boolean isMyArticles, String category) {
+    public ArticleDetailResponseDto(Article article, List<String> image, Boolean isMyArticles, String category, String process) {
         this.articlesId = article.getArticleId();
 //        천단위 컴마찍기위해서 넣음
         this.price = NumberFormat.getInstance().format(article.getPrice());
         this.nickName = article.getNickName();
-        this.process = article.getProcess();
+        this.process = process;
         this.title = article.getTitle();
         this.content = article.getContent();
         this.userRank = article.getUserRank();

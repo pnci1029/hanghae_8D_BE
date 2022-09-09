@@ -258,7 +258,7 @@ public class CommentService {
                 .article(targetArticle)
                 .isMyComment(isMyComment)
                 .isSelected(true)
-                .process(targetArticle.getProcess())
+                .process(comfortUtils.getProcessKorean(targetArticle.getProcess()))
                 .commentsUserRank(userRank)
                 .build();
     }

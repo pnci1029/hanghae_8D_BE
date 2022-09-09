@@ -2,6 +2,7 @@ package com.example.checkcheck.util;
 
 
 import com.example.checkcheck.model.articleModel.Category;
+import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.NotificationRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
@@ -59,6 +60,15 @@ public class ComfortUtils {
             return "반려동물, 식물";
         } else
             return "기타";
+    }
+
+    public String getProcessKorean(Process process) {
+        if (process.equals(Process.process)) {
+            return "진행 중";
+        } else if (process.equals(Process.done)) {
+            return "완료";
+        } else
+            return String.valueOf(process);
     }
 
 
