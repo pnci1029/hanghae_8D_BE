@@ -64,12 +64,14 @@ public class ComfortUtils {
 
     public String getProcessKorean(Process process) {
         if (process.equals(Process.process)) {
-            return "진행 중";
+            return "진행중";
         } else if (process.equals(Process.done)) {
             return "완료";
         } else
             return String.valueOf(process);
     }
+
+
 
 
 }

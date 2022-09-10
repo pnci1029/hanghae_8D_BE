@@ -8,10 +8,8 @@ import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Category;
-import com.example.checkcheck.model.articleModel.CategoryEntity;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
-import com.example.checkcheck.repository.CategoryRepository;
 import com.example.checkcheck.repository.ImageRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
@@ -41,7 +39,6 @@ public class ArticleService {
     private S3Uploader s3Uploader;
     private ComfortUtils comfortUtils;
     private Time time;
-    private CategoryRepository categoryRepository;
 
     private NotificationService notificationService;
     private LoadUser loadUser;
@@ -53,8 +50,7 @@ public class ArticleService {
             S3Uploader s3Uploader,
             ComfortUtils comfortUtils,
             Time time,
-            NotificationService notificationService,
-            CategoryRepository categoryRepository) {
+            NotificationService notificationService) {
         this.articleRepository = articleRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;
@@ -62,7 +58,6 @@ public class ArticleService {
         this.comfortUtils = comfortUtils;
         this.time = time;
         this.notificationService = notificationService;
-        this.categoryRepository = categoryRepository;
     }
 
     @Transactional
@@ -154,14 +149,13 @@ public class ArticleService {
             imageBox.add(realImage);
         }
 
-        String category = comfortUtils.getCategoryKorean(article.getCategory());
 
         ArticleDetailResponseDto articleResponseDto = ArticleDetailResponseDto.builder()
                 .article(article)
                 .isMyArticles(isMyArticles)
                 .image(imageBox)
-                .category(category)
-                .process(String.valueOf(article.getProcess()))
+                .category(comfortUtils.getCategoryKorean(article.getCategory()))
+                .process(comfortUtils.getProcessKorean(article.getProcess()))
                 .build();
 
 

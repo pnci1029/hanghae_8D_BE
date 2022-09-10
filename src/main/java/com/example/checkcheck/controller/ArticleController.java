@@ -5,17 +5,13 @@ import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.articleModel.Category;
-import com.example.checkcheck.model.articleModel.CategoryEntity;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
-import com.example.checkcheck.repository.CategoryRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.ArticleService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,12 +25,10 @@ public class ArticleController {
 
     private ArticleService articleService;
     private ArticleRepository articleRepository;
-    private CategoryRepository categoryRepository;
 
-    public ArticleController(ArticleService articleService, ArticleRepository articleRepository, CategoryRepository categoryRepository) {
+    public ArticleController(ArticleService articleService, ArticleRepository articleRepository) {
         this.articleService = articleService;
         this.articleRepository = articleRepository;
-        this.categoryRepository = categoryRepository;
     }
 
     @PostMapping(value = "/auth/form", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})

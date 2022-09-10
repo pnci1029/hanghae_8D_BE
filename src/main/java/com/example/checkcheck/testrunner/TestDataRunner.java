@@ -49,8 +49,8 @@
 //                    .title("1111")
 //                    .content("1234")
 //                    .price(14141)
-//                    .category(Category.etc)
-//                    .process(Process.process)
+//                    .process("process")
+//                    .category("etc")
 //                    .userRank("S")
 //                    .member(testUser)
 //                    .build();
@@ -63,8 +63,8 @@
 //                    .title("5555")
 //                    .content("7777")
 //                    .price(5555)
-//                    .category(Category.food)
-//                    .process(Process.done)
+//                    .category("food")
+//                    .process("done")
 //                    .userRank("B")
 //                    .member(testUser)
 //                    .build();
@@ -77,8 +77,8 @@
 //                    .title("666666666666")
 //                    .content("6666666666666")
 //                    .price(5555)
-//                    .category(Category.etc)
-//                    .process(Process.process)
+//                    .category("etc")
+//                    .process("process")
 //                    .userRank("B")
 //                    .member(testUser)
 //                    .build();

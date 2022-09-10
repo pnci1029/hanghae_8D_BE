@@ -14,6 +14,7 @@ import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.model.commentModel.Comment;
+import com.example.checkcheck.model.commentModel.Type;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.CommentRepository;
 import com.example.checkcheck.repository.MemberRepository;
@@ -60,7 +61,7 @@ public class CommentService {
         String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
 
 //        댓글 개수 제한
-        List<Comment> memberIdCount = commentRepository.findByMember_MemberId(memberId);
+        List<Comment> memberIdCount = commentRepository.findByMember_MemberIdAndArticleArticleId(memberId, requestDto.getArticlesId());
         if (memberIdCount.size()>=10) {
             throw new IllegalArgumentException("댓글은 10개 이상 작성이 불가능합니다.");
         }
@@ -137,14 +138,29 @@ public class CommentService {
 
         for (Comment comment : commentList) {
 
-
                 String rightNow = comfortUtils.getTime(comment.getCreatedAt());
 
                 Boolean isMyComment = false;
                 if (userDetails.getMember().getUserEmail().equals(comment.getMember().getUserEmail())) {
                     isMyComment = true;
                 }
-
+//                금액 자리 잘라서 보여주기
+            if (comment.getType().equals(Type.price)) {
+                String priceComment = comment.getComment().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",");
+                commentResponseDtoList.add(
+                        CommentResponseDto.builder()
+                                .commentsId(comment.getCommentId())
+                                .type(comment.getType())
+                                .userRank(comment.getUserRank())
+                                .nickName(comment.getNickName())
+                                .comment(priceComment)
+                                .createdAt(rightNow)
+                                .isSelected(comment.isSelected())
+                                .isMyComment(isMyComment)
+                                .build()
+                );
+//                텍스트 댓글
+            }else{
                 commentResponseDtoList.add(
                         CommentResponseDto.builder()
                                 .commentsId(comment.getCommentId())
@@ -156,7 +172,7 @@ public class CommentService {
                                 .isSelected(comment.isSelected())
                                 .isMyComment(isMyComment)
                                 .build()
-                );
+                );}
 
 
             }
@@ -258,7 +274,8 @@ public class CommentService {
                 .article(targetArticle)
                 .isMyComment(isMyComment)
                 .isSelected(true)
-                .process(comfortUtils.getProcessKorean(targetArticle.getProcess()))
+//                이거때문에?
+                .process(String.valueOf(targetArticle.getProcess()))
                 .commentsUserRank(userRank)
                 .build();
     }

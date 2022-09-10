@@ -2,19 +2,13 @@ package com.example.checkcheck.repository;
 
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
-import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Category;
-import com.example.checkcheck.model.articleModel.CategoryEntity;
 import com.example.checkcheck.model.articleModel.Process;
-import com.example.checkcheck.model.commentModel.Comment;
-import com.example.checkcheck.model.commentModel.QComment;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.util.ComfortUtils;
 import com.querydsl.core.QueryResults;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -24,9 +18,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.checkcheck.model.articleModel.QArticle.*;
 import static com.example.checkcheck.model.articleModel.QArticle.article;
-import static com.example.checkcheck.model.commentModel.QComment.*;
 
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
@@ -44,22 +36,20 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 //        전체조회
         QueryResults<Article> articleQueryResults = null;
 
-//        category = String.valueOf(categoryEq(category));
-//        process = String.valueOf(processEq(process));
-//        if (category == null) {
-//            category = Category.all;
-//        }
-//        if (process == null) {
-//            process = Process.all;
-//        }
-        //        전체 불러오기
+        if (category == null) {
+            category = Category.all;
+        }
+        if (process == null) {
+            process = Process.all;
+        }
+//                전체 불러오기
         if (process.equals(Process.all) && category.equals(Category.all)) {
 //        if (process.equals("all") && category.equals("all")) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
-                    .orderBy(article.createdAt.desc())
+                    .orderBy(article.articleId.desc())
                     .fetchResults();
 
             //            프로세스 전체
@@ -70,7 +60,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 //                    .where(article.category.eq(category))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
-                .orderBy(article.createdAt.desc())
+                .orderBy(article.articleId.desc())
                 .fetchResults();
 
             //            카테고리 전체
@@ -81,18 +71,18 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 //                    .where(article.process.eq(process))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
-                    .orderBy(article.createdAt.desc())
+                    .orderBy(article.articleId.desc())
                     .fetchResults();
         }
-        //            선택된값 조회
+//                    선택된값 조회
         else {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
+//                    .where(processEq(String.valueOf(process)),categoryEq(String.valueOf(category)))
                     .where(article.process.eq(process).and(article.category.eq(category)))
-//                    .where(article.process.eq(process).and(article.process.eq(process)))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
-                    .orderBy(article.createdAt.desc())
+                    .orderBy(article.articleId.desc())
                     .fetchResults();
         }
 
@@ -132,7 +122,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
         List<Article> result = jpaQueryFactory
                 .selectFrom(article)
-                .where(article.process.eq(Process.process))
+                .where(article.process.eq(article.process))
                 .fetch();
         for (Article article : result) {
             String images = "";
@@ -143,7 +133,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             }
             ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                     .article(article)
-                    .process(String.valueOf(article.getProcess()))
                     .userRank(comfortUtils.getUserRank(article.getMember().getPoint()))
                     .image(images)
                     .build();
@@ -197,23 +186,23 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     }
 
 
-    private BooleanExpression processEq(String process) {
-        if (process == null) {
-            return null;
-        } else if (process.equals("")) {
-            return null;
-        }
-        return article.process.eq(Process.valueOf(process));
-    }
-
-    private BooleanExpression categoryEq(String category) {
-        if (category == null) {
-            return null;
-        } else if (category.equals("")) {
-            return null;
-        }
-        return article.category.eq(Category.valueOf(category));
-    }
+//    private BooleanExpression processEq(String process) {
+//        if (process == null) {
+//            return null;
+//        } else if (process.equals("")) {
+//            return null;
+//        }
+//        return article.process.eq(process);
+//    }
+//
+//    private BooleanExpression categoryEq(String category) {
+//        if (category == null) {
+//            return null;
+//        } else if (category.equals("")) {
+//            return null;
+//        }
+//        return article.category.eq(category);
+//    }
 
 
 }
