@@ -3,6 +3,7 @@ package com.example.checkcheck.repository;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.model.articleModel.Category;
+import com.example.checkcheck.model.articleModel.CategoryEntity;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.security.UserDetailsImpl;
 import org.springframework.data.domain.Pageable;

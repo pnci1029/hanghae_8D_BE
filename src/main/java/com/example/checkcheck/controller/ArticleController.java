@@ -5,8 +5,10 @@ import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.articleModel.Category;
+import com.example.checkcheck.model.articleModel.CategoryEntity;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
+import com.example.checkcheck.repository.CategoryRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.ArticleService;
 import org.springframework.data.domain.Pageable;
@@ -27,10 +29,12 @@ public class ArticleController {
 
     private ArticleService articleService;
     private ArticleRepository articleRepository;
+    private CategoryRepository categoryRepository;
 
-    public ArticleController(ArticleService articleService, ArticleRepository articleRepository) {
+    public ArticleController(ArticleService articleService, ArticleRepository articleRepository, CategoryRepository categoryRepository) {
         this.articleService = articleService;
         this.articleRepository = articleRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @PostMapping(value = "/auth/form", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -41,15 +45,11 @@ public class ArticleController {
     }
 
     @GetMapping("/main/list")
-    public Slice<ArticleResponseDto> getAllArticle(@RequestParam(value = "category") Category category,
-                                                   @RequestParam(value = "process") Process process,
-                                                   Pageable pageable
-//                                                   @RequestParam(value = "size") int size,
-//                                                   @RequestParam(value = "page") int page
-    ) {
-//        page = page - 1;
-//        return articleService.showAllArticle(category, process, size, page);
-        return articleRepository.articleScroll(pageable, category, process);
+    public Slice<ArticleResponseDto> getAllArticle(@RequestParam(value = "category", required = false) Category category,
+                                                   @RequestParam(value = "process", required = false) Process process,
+                                                   Pageable pageable) {
+
+        return articleService.getAllArticles(pageable, category, process);
     }
 
     @GetMapping("/main/randomcards")

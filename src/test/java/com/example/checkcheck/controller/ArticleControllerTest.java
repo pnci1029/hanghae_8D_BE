@@ -36,7 +36,7 @@ class ArticleControllerTest {
                 .category(Category.clothes)
                 .content("게시글")
                 .images(null)
-                .nickName("호창형")
+                .nickName("홍창형")
                 .price(50000)
                 .selectedPrice(0)
                 .title("제목")

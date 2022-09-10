@@ -6,12 +6,14 @@ import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Category;
+import com.example.checkcheck.model.articleModel.CategoryEntity;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.model.commentModel.Comment;
 import com.example.checkcheck.model.commentModel.QComment;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.util.ComfortUtils;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
@@ -42,8 +44,17 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 //        전체조회
         QueryResults<Article> articleQueryResults = null;
 
+//        category = String.valueOf(categoryEq(category));
+//        process = String.valueOf(processEq(process));
+//        if (category == null) {
+//            category = Category.all;
+//        }
+//        if (process == null) {
+//            process = Process.all;
+//        }
         //        전체 불러오기
         if (process.equals(Process.all) && category.equals(Category.all)) {
+//        if (process.equals("all") && category.equals("all")) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
                     .offset(pageable.getOffset())
@@ -51,33 +62,34 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                     .orderBy(article.createdAt.desc())
                     .fetchResults();
 
+            //            프로세스 전체
+        } else if (process.equals(Process.all)) {
+            articleQueryResults = jpaQueryFactory
+                .selectFrom(article)
+                .where(article.category.eq(category))
+//                    .where(article.category.eq(category))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .orderBy(article.createdAt.desc())
+                .fetchResults();
+
             //            카테고리 전체
-        } else if (category.equals(Category.all)) {
+       } else if (category.equals(Category.all)) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
                     .where(article.process.eq(process))
+//                    .where(article.process.eq(process))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.createdAt.desc())
                     .fetchResults();
         }
-
-        //            프로세스 전체
-        else if (process.equals(Process.all)) {
-            articleQueryResults = jpaQueryFactory
-                .selectFrom(article)
-                .where(article.category.eq(category))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .orderBy(article.createdAt.desc())
-                .fetchResults();
-       }
-
         //            선택된값 조회
         else {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-                    .where(article.category.eq(category).and(article.process.eq(process)))
+                    .where(article.process.eq(process).and(article.category.eq(category)))
+//                    .where(article.process.eq(process).and(article.process.eq(process)))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.createdAt.desc())
@@ -131,6 +143,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             }
             ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                     .article(article)
+                    .process(String.valueOf(article.getProcess()))
                     .userRank(comfortUtils.getUserRank(article.getMember().getPoint()))
                     .image(images)
                     .build();
@@ -171,7 +184,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
                         .articlesId(articles.getArticleId())
                         .title(articles.getTitle())
-                        .process(comfortUtils.getProcessKorean(articles.getProcess()))
+//                        프론트 이슈
+                        .process(String.valueOf(articles.getProcess()))
                         .price(dotNum)
                         .image(image)
                         .point(articles.getMember().getPoint())
@@ -182,6 +196,24 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return resultList;
     }
 
+
+    private BooleanExpression processEq(String process) {
+        if (process == null) {
+            return null;
+        } else if (process.equals("")) {
+            return null;
+        }
+        return article.process.eq(Process.valueOf(process));
+    }
+
+    private BooleanExpression categoryEq(String category) {
+        if (category == null) {
+            return null;
+        } else if (category.equals("")) {
+            return null;
+        }
+        return article.category.eq(Category.valueOf(category));
+    }
 
 
 }

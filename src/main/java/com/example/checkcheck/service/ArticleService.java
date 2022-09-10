@@ -4,13 +4,14 @@ import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
 import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
-import com.example.checkcheck.exception.CustomException;
-import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
+import com.example.checkcheck.model.articleModel.Category;
+import com.example.checkcheck.model.articleModel.CategoryEntity;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
+import com.example.checkcheck.repository.CategoryRepository;
 import com.example.checkcheck.repository.ImageRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
@@ -19,6 +20,8 @@ import com.example.checkcheck.service.s3.S3Uploader;
 import com.example.checkcheck.util.ComfortUtils;
 import com.example.checkcheck.util.LoadUser;
 import com.example.checkcheck.util.Time;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +41,7 @@ public class ArticleService {
     private S3Uploader s3Uploader;
     private ComfortUtils comfortUtils;
     private Time time;
+    private CategoryRepository categoryRepository;
 
     private NotificationService notificationService;
     private LoadUser loadUser;
@@ -49,7 +53,8 @@ public class ArticleService {
             S3Uploader s3Uploader,
             ComfortUtils comfortUtils,
             Time time,
-            NotificationService notificationService) {
+            NotificationService notificationService,
+            CategoryRepository categoryRepository) {
         this.articleRepository = articleRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;
@@ -57,6 +62,7 @@ public class ArticleService {
         this.comfortUtils = comfortUtils;
         this.time = time;
         this.notificationService = notificationService;
+        this.categoryRepository = categoryRepository;
     }
 
     @Transactional
@@ -155,7 +161,7 @@ public class ArticleService {
                 .isMyArticles(isMyArticles)
                 .image(imageBox)
                 .category(category)
-                .process(comfortUtils.getProcessKorean(article.getProcess()))
+                .process(String.valueOf(article.getProcess()))
                 .build();
 
 
@@ -258,5 +264,25 @@ public class ArticleService {
 
 
         return ResponseDto.success("수정 완료");
+    }
+
+    public Slice<ArticleResponseDto> getAllArticles(Pageable pageable, Category category, Process process) {
+
+//        CategoryEntity target = categoryRepository.findByUserEmail(userDetails.getMember().getUserEmail());
+//        if (target == null) {
+//            target = new CategoryEntity(category, process, userDetails.getUsername());
+//            System.out.println("target111 = " + target);
+//        } else {
+//            if (category == null) {
+//                target.updateProcess(process);
+//            } else if (process == null) {
+//                target.updateCategory(category);
+//            } else {
+//                target.updateProcess(process);
+//                target.updateCategory(category);
+//            }
+//        }
+//        CategoryEntity save = categoryRepository.save(target);
+        return articleRepository.articleScroll(pageable, category,process);
     }
 }
