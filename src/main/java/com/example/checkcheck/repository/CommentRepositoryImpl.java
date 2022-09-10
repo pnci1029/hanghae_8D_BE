@@ -23,6 +23,7 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
         List<Comment> result = jpaQueryFactory
                 .selectFrom(comment1)
                 .where(comment1.article.articleId.eq(id))
+                .orderBy(comment1.isSelected.desc())
                 .orderBy(comment1.commentId.asc())
                 .fetch();
 

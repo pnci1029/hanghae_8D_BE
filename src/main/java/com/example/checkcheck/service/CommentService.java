@@ -66,6 +66,14 @@ public class CommentService {
             throw new IllegalArgumentException("댓글은 10개 이상 작성이 불가능합니다.");
         }
 
+//        댓글 숫자 입력 시 글자 수 제한
+        if (requestDto.getType().equals(Type.price)) {
+            if (requestDto.getComment().length() > 8) {
+                throw new IllegalArgumentException("숫자가 너무 큽니다");
+            }
+        }
+
+
         // 게시글 확인
         Article article = articleService.isPresentArticle(requestDto.getArticlesId());
         if (null == article) {
@@ -128,6 +136,7 @@ public class CommentService {
         }
 
         List<Comment> commentList = commentRepository.getCommentList(articlesId);
+//        List<Comment> commentList = commentRepository.findByArticle_ArticleId(articlesId);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
 //        isMyArticles 초기화
