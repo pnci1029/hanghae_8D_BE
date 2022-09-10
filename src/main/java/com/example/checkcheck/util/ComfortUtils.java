@@ -66,7 +66,7 @@ public class ComfortUtils {
         if (process.equals(Process.process)) {
             return "진행중";
         } else if (process.equals(Process.done)) {
-            return "완료";
+            return "채택 성공";
         } else
             return String.valueOf(process);
     }

@@ -151,11 +151,13 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 result = jpaQueryFactory
                         .selectFrom(article)
                         .where(article.member.eq(userDetails.getMember()))
+                        .orderBy(article.articleId.desc())
                         .fetch();
             } else {
                 result = jpaQueryFactory
                         .selectFrom(article)
                         .where(article.member.eq(userDetails.getMember()).and(article.process.eq(process)))
+                        .orderBy(article.articleId.desc())
                         .fetch();
             }
         for (Article articles : result) {
@@ -168,16 +170,23 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 break;
             }
 
+            int point = 0;
+//            게시글 상태에 따라 다른 포인트로 리스폰스
+            if (articles.getProcess().equals(Process.done)) {
+                point = 12;
+            } else {
+              point = 2;
+            }
 
-                String dotNum = NumberFormat.getInstance().format(articles.getPrice());
-                MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
+            String dotNum = NumberFormat.getInstance().format(articles.getPrice());
+            MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
                         .articlesId(articles.getArticleId())
                         .title(articles.getTitle())
 //                        프론트 이슈
-                        .process(String.valueOf(articles.getProcess()))
+                        .process(comfortUtils.getProcessKorean(articles.getProcess()))
                         .price(dotNum)
                         .image(image)
-                        .point(articles.getMember().getPoint())
+                        .point(point)
                         .build();
                 resultList.add(myPageResponseDto);
             }
