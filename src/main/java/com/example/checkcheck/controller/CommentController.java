@@ -2,10 +2,7 @@ package com.example.checkcheck.controller;
 
 import com.example.checkcheck.dto.requestDto.CommentChoiseRequestDto;
 import com.example.checkcheck.dto.requestDto.CommentRequestDto;
-import com.example.checkcheck.dto.responseDto.CommentChoiseResponseDto;
-import com.example.checkcheck.dto.responseDto.CommentResponseDto;
-import com.example.checkcheck.dto.responseDto.ResponseDto;
-import com.example.checkcheck.dto.responseDto.StatusResponseDto;
+import com.example.checkcheck.dto.responseDto.*;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +21,7 @@ public class CommentController {
     @PostMapping(value = "/api/auth/detail/comments")
     public ResponseEntity<Object> createComment(@RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userDetails);
-        return (userDetails != null) ?new ResponseEntity<>(new StatusResponseDto("댓글 등록 성공", commentResponseDto), HttpStatus.OK):
+        return (userDetails.getMember().getUserEmail()!=null) ?new ResponseEntity<>(new StatusResponseDto("댓글 등록 성공", commentResponseDto), HttpStatus.OK):
                                            new ResponseEntity<>(new StatusResponseDto("댓글 등록 실패", null), HttpStatus.BAD_REQUEST);
 
         //        return ResponseEntity.status(HttpStatus.OK)
@@ -35,7 +32,7 @@ public class CommentController {
 
     // 댓글 조회
     @GetMapping("/api/auth/detail/comments/{articlesId}")
-    public ResponseDto<?> readAllComment(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public CommentListResponseDto readAllComment(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return commentService.readAllComment(articlesId, userDetails);
     }
 

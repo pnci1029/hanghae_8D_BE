@@ -11,9 +11,7 @@ import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.ArticleService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,15 +39,11 @@ public class ArticleController {
     }
 
     @GetMapping("/main/list")
-    public Slice<ArticleResponseDto> getAllArticle(@RequestParam(value = "category") Category category,
-                                                   @RequestParam(value = "process") Process process,
-                                                   Pageable pageable
-//                                                   @RequestParam(value = "size") int size,
-//                                                   @RequestParam(value = "page") int page
-    ) {
-//        page = page - 1;
-//        return articleService.showAllArticle(category, process, size, page);
-        return articleRepository.articleScroll(pageable, category, process);
+    public Slice<ArticleResponseDto> getAllArticle(@RequestParam(value = "category", required = false) Category category,
+                                                   @RequestParam(value = "process", required = false) Process process,
+                                                   Pageable pageable) {
+
+        return articleService.getAllArticles(pageable, category, process);
     }
 
     @GetMapping("/main/randomcards")
@@ -58,13 +52,21 @@ public class ArticleController {
     }
 
     @GetMapping("/auth/detail/{articlesId}")
-    public ResponseDto<?> getArticleDetail(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ArticleDetailResponseDto getArticleDetail(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return articleService.getArticleDetail(articlesId, userDetails);
     }
 
+    @PutMapping("/auth/detail/{articlesId}")
+    public ResponseDto<?> putArticle(@RequestPart(required = false) ArticleRequestDto articlesDto,
+                                     @RequestPart(required = false) List<MultipartFile> multipartFile,
+                                     @PathVariable Long articlesId,
+                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return articleService.putArticle(multipartFile, articlesDto, articlesId, userDetails);
+    }
+
+
     @DeleteMapping("/auth/detail/{articlesId}")
-    public ResponseDto<?> deleteArticle(@PathVariable Long articlesId,
-                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseDto<?> deleteArticle(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
        return  articleService.deleteArticle(articlesId, userDetails);
     }
 

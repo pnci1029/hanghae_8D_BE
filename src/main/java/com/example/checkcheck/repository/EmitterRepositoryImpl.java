@@ -20,7 +20,6 @@ public class EmitterRepositoryImpl implements EmitterRepository{
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
     private final Map<String,Object> eventCache = new ConcurrentHashMap<>();
 
-
     @Override // Emitter를 저장
     public SseEmitter save(String emitterId, SseEmitter sseEmitter) {
         emitters.put(emitterId,sseEmitter);

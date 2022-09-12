@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Member {
+public class Member implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -29,7 +30,7 @@ public class Member {
     private String userEmail;
 
     @Column
-    String userRealEmail;
+    private String userRealEmail;
 
 //    @Column
 //    private String userRank;
@@ -40,8 +41,8 @@ public class Member {
     @Column
     private String provider;
 
-    @Column
-    private Double socialId;
+//    @Column
+//    private Double socialId;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -49,12 +50,11 @@ public class Member {
 
     @Builder
     public Member(String nickName, String password, String userEmail,
-                  LocalDateTime createdAt, String provider, Double socialId, String userRealEmail) {
+                  LocalDateTime createdAt, String provider, String userRealEmail) {
         this.nickName = nickName;
         this.password = password;
         this.userEmail = userEmail;
         this.provider = provider;
-        this.socialId = socialId;
         this.userRealEmail = userRealEmail;
 
     }

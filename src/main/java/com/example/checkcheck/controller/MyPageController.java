@@ -1,5 +1,6 @@
 package com.example.checkcheck.controller;
 
+import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
@@ -8,6 +9,8 @@ import com.example.checkcheck.service.MyPageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -22,11 +25,10 @@ public class MyPageController {
     }
 
     @GetMapping("/api/auth/profile/list")
-    public ResponseDto<?> readMyPageArticle(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                            @RequestParam(value = "process")Process process) {
+    public List<MyPageResponseDto> readMyPageArticle(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                     @RequestParam(value = "process")Process process) {
 
-        return(userDetails != null) ? ResponseDto.success(articleRepository.myPageInfo(userDetails, process))
-                                        :ResponseDto.fail("400","aaaaaaaaa");
+        return articleRepository.myPageInfo(userDetails, process);
 //        return myPageService.readMyPageArticle(userDetails, process);
     }
 
