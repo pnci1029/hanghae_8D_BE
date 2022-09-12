@@ -27,6 +27,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -68,19 +69,25 @@ public class SocialKakaoService {
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(kakaoMember.getUserEmail())
                 .nickName(kakaoUserInfo.getNickname())
-                .accessToken("Bearer "+tokenFactory.getAccessToken())
+                .accessToken(tokenFactory.getAccessToken())
                 .refreshToken(tokenFactory.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
 
                 .userRank(comfortUtils.getUserRank(kakaoMember.getPoint()))
                 .build();
 
-//        리프레시 토큰
-        RefreshToken token = RefreshToken.builder()
-                .key(socialResponseDto.getUserEmail())
-                .value(tokenFactory.getRefreshToken())
-                .build();
-        refreshTokenRepository.save(token);
+//        리프레시토큰저장 & 있을경우 셋토큰
+        Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(kakaoMember.getUserEmail());
+        if (existToken.isEmpty()) {
+            RefreshToken token = RefreshToken.builder()
+                    .key(socialResponseDto.getUserEmail())
+                    .value(tokenFactory.getRefreshToken())
+                    .build();
+            refreshTokenRepository.save(token);
+        } else {
+            existToken.get().setTokenKey(socialResponseDto.getUserEmail());
+            existToken.get().setTokenValue(tokenFactory.getRefreshToken());
+        }
 
 //        return new ResponseEntity<>(new FinalResponseDto<>
 //                (true, "로그인 성공",kakaoUser), HttpStatus.OK);
@@ -98,6 +105,7 @@ public class SocialKakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
         body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
+//        body.add("redirect_uri", "http://localhost:3000/user/signin/kakao");
         body.add("code", code);
         body.add("client_secret", clientSecret);
 

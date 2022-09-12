@@ -1,8 +1,12 @@
 package com.example.checkcheck.security;
 
+import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.exception.ErrorCode;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -15,24 +19,40 @@ import java.util.NoSuchElementException;
 
 @Component
 public class JwtExceptionFilter extends GenericFilterBean {
+    private final HttpServletResponse httpServletResponse;
+
+    public JwtExceptionFilter(HttpServletResponse httpServletResponse) {
+        this.httpServletResponse = httpServletResponse;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+
         try {
             chain.doFilter(request, response); // go to JwtAuthenticationFilter
-        } catch (JwtException e) {
-            setErrorResponse(HttpStatus.OK, response, e);
-        } catch (NoSuchElementException e) {
+        } catch (JwtException | NullPointerException e) {
             setErrorResponse(HttpStatus.BAD_REQUEST, response, e);
+            httpServletResponse.setStatus(300);
+        } catch (NoSuchElementException e) {
+            setErrorResponse(HttpStatus.UNAUTHORIZED, response, e);
+            httpServletResponse.setStatus(300);
         }
+//        } catch (ExpiredJwtException e) {
+//            request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.getErrorCode());
+//        } catch (JwtException e) {
+//            request.setAttribute("exception", ErrorCode.UNKNOWN_ERROR.getErrorCode());
+//        } catch (NullPointerException e) {
+//            request.setAttribute("exception", ErrorCode.NullPoint_Token.getErrorCode());
+//        }
     }
 
     public void setErrorResponse(HttpStatus status, ServletResponse response, Throwable e) throws IOException {
         ((HttpServletResponse)response).setStatus(status.value());
         response.setContentType("application/json; charset=UTF-8");
 
-        JwtExceptionResponse jwtExceptionResponse = new JwtExceptionResponse(false, e.getMessage());
+        JwtExceptionResponse jwtExceptionResponse = new JwtExceptionResponse(false, e.getMessage(), status.value());
         response.getWriter().write(jwtExceptionResponse.convertToJson());
+        ((HttpServletResponse) response).setStatus(300);
     }
 }
 

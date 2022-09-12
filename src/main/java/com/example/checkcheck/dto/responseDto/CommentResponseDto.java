@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @Builder
@@ -17,12 +18,13 @@ import java.time.LocalDateTime;
 @Getter
 public class CommentResponseDto {
 
-    private Long commentId;
+    private Long commentsId;
     private Type type;
     private String nickName;
     private String userRank;
+    @Size(max = 80)
     private String comment;
-
-    @JsonFormat(pattern = "yyyy.MM.dd HH:mm", timezone = "Asia/Seoul")
-    private LocalDateTime createdAt;
+    private Boolean isSelected;
+    private Boolean isMyComment;
+    private String createdAt;
 }

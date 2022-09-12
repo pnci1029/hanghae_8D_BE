@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 public class ArticleResponseDto {
 
-    private Long articleId;
+    private Long articlesId;
     private int price;
     private String nickName;
     private Process process;
@@ -21,13 +21,13 @@ public class ArticleResponseDto {
     private String image;
 
     @Builder
-    public ArticleResponseDto(Article article, String image) {
-        this.articleId = article.getArticleId();
+    public ArticleResponseDto(Article article, String image,String userRank) {
+        this.articlesId = article.getArticleId();
         this.price = article.getPrice();
         this.nickName = article.getNickName();
         this.process = article.getProcess();
         this.title = article.getTitle();
-        this.userRank = article.getUserRank();
+        this.userRank = userRank;
         this.image = image;
     }
 

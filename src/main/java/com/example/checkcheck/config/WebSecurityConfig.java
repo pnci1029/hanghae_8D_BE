@@ -50,7 +50,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(corsConfigurationSource());
+//        http.cors().configurationSource(corsConfigurationSource());
         // 토큰 인증이므로 세션 사용x
         http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.headers().frameOptions().sameOrigin();
@@ -69,9 +69,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers("/user/confirmEmail").permitAll()
 //                .antMatchers("/wss/chat/**").permitAll()
                 .antMatchers("/api/**").permitAll()
+                .antMatchers("/api/main/**").permitAll()
                 .antMatchers("/user/**").permitAll()
+                .antMatchers("/auth/user/token").permitAll()
 
-//                .antMatchers("/**").permitAll()
+
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 
                 // 그 외 어떤 요청이든 '인증'
@@ -83,25 +86,25 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 //                    .antMatchers("/**").permitAll()
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.addAllowedOriginPattern("http://localhost:3000");
-        configuration.addAllowedOriginPattern("https://localhost:3000");
-        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app/");
-        configuration.addAllowedOriginPattern("https://auth-6eb37.web.app");
-        configuration.addAllowedOriginPattern("https://test-react-basic.web.app");
-        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app");
-        configuration.addAllowedOriginPattern("https://bungle.life");
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
-        configuration.addExposedHeader("Authorization");
-        configuration.addExposedHeader("RefreshToken");
-        configuration.setAllowCredentials(true);
-//        configuration.validateAllowCredentials();
-        configuration.setMaxAge(3600L);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+//    @Bean
+//    public CorsConfigurationSource corsConfigurationSource() {
+//        CorsConfiguration configuration = new CorsConfiguration();
+////        configuration.addAllowedOriginPattern("http://localhost:3000");
+//        configuration.addAllowedOriginPattern("https://localhost:3000");
+//        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app/");
+//        configuration.addAllowedOriginPattern("https://auth-6eb37.web.app");
+//        configuration.addAllowedOriginPattern("https://test-react-basic.web.app");
+//        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app");
+//        configuration.addAllowedOriginPattern("https://bungle.life");
+//        configuration.addAllowedMethod("*");
+//        configuration.addAllowedHeader("*");
+//        configuration.addExposedHeader("Authorization");
+//        configuration.addExposedHeader("RefreshToken");
+//        configuration.setAllowCredentials(true);
+////        configuration.validateAllowCredentials();
+//        configuration.setMaxAge(3600L);
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
 }

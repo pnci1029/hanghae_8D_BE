@@ -31,6 +31,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -69,13 +70,20 @@ public class SocialGoogleService {
         //  5. response Header에 JWT 토큰 추가
         TokenFactory tokenFactory1 = memberService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
         RefreshToken refreshToken = new RefreshToken(member.getUserEmail(), tokenFactory1.getRefreshToken());
-        refreshTokenRepository.save(refreshToken);
 
+//        리프레시토큰저장 & 있을경우 셋토큰
+        Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(member.getUserEmail());
+        if (existToken.isEmpty()) {
+            refreshTokenRepository.save(refreshToken);
+        }  else {
+            existToken.get().setTokenKey(refreshToken.getTokenKey());
+            existToken.get().setTokenValue(refreshToken.getTokenValue());
+        }
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(member.getUserEmail())
                 .nickName(member.getNickName())
-                .accessToken("Bearer "+tokenFactory1.getAccessToken())
+                .accessToken(tokenFactory1.getAccessToken())
                 .userRank(comfortUtils.getUserRank(member.getPoint()))
                 .refreshToken(tokenFactory1.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
@@ -98,6 +106,7 @@ public class SocialGoogleService {
         body.add("client_id", client_id);
         body.add("client_secret", clientSecret);
         body.add("redirect_uri", "http://localhost:8080/user/signin/google");
+//        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
         body.add("code", code);
 //        System.out.println(code);
 
