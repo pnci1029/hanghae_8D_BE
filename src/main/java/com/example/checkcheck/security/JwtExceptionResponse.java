@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 //@ResponseStatus(HttpStatus.SC_UNAUTHORIZED)
 public class JwtExceptionResponse {
     private final Boolean response;
-    private final String message;
+    private final String mmessage;
     private final int status;
 
     public String convertToJson() throws JsonProcessingException {

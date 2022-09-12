@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 
-public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findAllByArticle(Article article);
+public interface CommentRepository extends JpaRepository<Comment, Long> , CommentRepositoryCustom{
+    List<Comment> findByArticle_ArticleId(Long articlesId);
 
+    List<Comment> findByMember_MemberIdAndArticleArticleId(Long memberId, Long articleId);
 }

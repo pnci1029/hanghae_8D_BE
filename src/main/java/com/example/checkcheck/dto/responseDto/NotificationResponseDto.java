@@ -11,10 +11,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Builder
 public class NotificationResponseDto {
 
     private Long id;
@@ -25,9 +23,20 @@ public class NotificationResponseDto {
 
     private Boolean status;
 
+    @Builder
+    public NotificationResponseDto(Long id, String message, String url, Boolean status) {
+        this.id = id;
+        this.message = message;
+        this.url = url;
+        this.status = status;
+    }
 
     public static NotificationResponseDto create(Notification notification) {
-        return new NotificationResponseDto(notification.getId(), notification.getMessage(),
-                notification.getUrl(), notification.getReadState());
+        return NotificationResponseDto.builder()
+                .id(notification.getId())
+                .message(notification.getMessage())
+                .url(notification.getUrl())
+                .status(notification.getReadState())
+                .build();
     }
 }
