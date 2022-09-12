@@ -29,7 +29,7 @@ public enum ErrorCode {
 
     NOT_LOGIN(HttpStatus.BAD_REQUEST, "400", "로그인이 필요합니다."),
     UNKNOWN_ERROR(HttpStatus.UNAUTHORIZED,"403", "토큰이 존재하지 않습니다1."),
-    NullPoint_Token(HttpStatus.UNAUTHORIZED,"403", "토큰이 존재하지 않습니다2."),
+    NullPoint_Token(HttpStatus.BAD_REQUEST,"400", "토큰이 존재하지 않습니다2."),
 
     NOT_EXPIRED_TOKEN_YET(HttpStatus.BAD_REQUEST,"400", "토큰이 만료되지 않았습니다."),
     EXPIRED_TOKEN(HttpStatus.BAD_REQUEST,"401", "만료된 토큰입니다."),

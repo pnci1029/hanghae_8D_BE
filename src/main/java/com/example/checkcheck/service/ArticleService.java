@@ -255,7 +255,7 @@ public class ArticleService {
             for (MultipartFile uploadedFile : multipartFile) {
 
                 Image imagePostEntity = Image.builder()
-                        .image(s3Uploader.upload(uploadedFile))
+                        .image(marvinS3Uploader.uploadImage(uploadedFile))
                         .userEmail(userEmail)
                         .article(targetArticle)
                         .build();

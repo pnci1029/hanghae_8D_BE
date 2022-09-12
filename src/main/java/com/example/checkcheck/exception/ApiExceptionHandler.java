@@ -32,9 +32,9 @@ public class ApiExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.builder()
-                        .msg(e.getMessage())
-                        .errorCode("400")
-                        .httpStatus(HttpStatus.BAD_REQUEST)
+//                        .msg(e.getMessage())
+                        .errorCode(ErrorCode.NullPoint_Token)
+//                        .httpStatus(HttpStatus.BAD_REQUEST)
                         .build()
                 );
     }
