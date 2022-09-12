@@ -4,6 +4,7 @@ import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
 import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
@@ -37,6 +38,7 @@ public class ArticleService {
     private ComfortUtils comfortUtils;
     private Time time;
 
+
     private NotificationService notificationService;
     private LoadUser loadUser;
 
@@ -47,7 +49,9 @@ public class ArticleService {
             S3Uploader s3Uploader,
             ComfortUtils comfortUtils,
             Time time,
-            NotificationService notificationService) {
+            NotificationService notificationService
+            )
+    {
         this.articleRepository = articleRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;

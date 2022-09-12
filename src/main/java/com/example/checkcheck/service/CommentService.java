@@ -2,7 +2,7 @@ package com.example.checkcheck.service;
 
 import com.example.checkcheck.dto.requestDto.CommentChoiseRequestDto;
 import com.example.checkcheck.dto.requestDto.CommentRequestDto;
-import com.example.checkcheck.dto.requestDto.NotificationRequestDto;
+import com.example.checkcheck.dto.requestDto.MailRequestDto;
 import com.example.checkcheck.dto.responseDto.CommentChoiseResponseDto;
 import com.example.checkcheck.dto.responseDto.CommentListResponseDto;
 import com.example.checkcheck.dto.responseDto.CommentResponseDto;
@@ -18,6 +18,7 @@ import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.CommentRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
+import com.example.checkcheck.service.mail.MailService;
 import com.example.checkcheck.service.notification.NotificationService;
 import com.example.checkcheck.util.ComfortUtils;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +43,9 @@ public class CommentService {
     private final ArticleService articleService;
     private final ComfortUtils comfortUtils;
     private final NotificationService notificationService;
+    private final MailService mailService;
 
-
+    //TODO: 에러메시지 모두 CUSTOM 형식의 에러코드로 수정하는게 어떨까요?
     // 댓글 작성
     @Transactional
     public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
@@ -60,7 +62,7 @@ public class CommentService {
         // 게시글 확인
         Article article = articleService.isPresentArticle(requestDto.getArticlesId());
         if (null == article) {
-            throw new CustomException(ErrorCode.BOARD_NOT_FOUND);
+            throw new CustomException(ErrorCode.ARTICLE_NOT_FOUND);
         }
         Comment comment = Comment.builder()
                 .comment(requestDto.getComment())
@@ -81,9 +83,13 @@ public class CommentService {
         String message = article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!";
 
         //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
-        if(!Objects.equals(userDetails.getMember().getMemberId(), article.getMember().getMemberId())) {
+        if(!Objects.equals(comment.getMember().getMemberId(), article.getMember().getMemberId())) {
             notificationService.send(article.getMember(), AlarmType.COMMENT, message, Url);
-            log.info("Alarm message :" + article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!");
+            log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
+
+        //게시글 작성자에게 이메일전송
+            String maiTitle = "안녕하세요, 고객님 Checkcheck입니다";
+            mailService.mailSend(new MailRequestDto(article.getMember().getUserRealEmail(), maiTitle, message));
         }
 
         Boolean isMyComment = false;
@@ -184,7 +190,6 @@ public class CommentService {
         return optionalComment.orElse(null);
     }
 
-
     public CommentChoiseResponseDto commentChoose(Long articlesId, CommentChoiseRequestDto commentChoiseRequestDto, UserDetailsImpl userDetails) {
         Long commentsId = commentChoiseRequestDto.getCommentsId();
 
@@ -213,22 +218,29 @@ public class CommentService {
         commentRepository.save(targetComment);
         articleRepository.save(targetArticle);
 
+        //해당 댓글로 이동하는 url
+        String Url = "http://localhost:8080/api/auth/detail/comments/"+targetComment.getMember().getMemberId();
+
+        //댓글 채택 시 채택된 댓글 유저에게 실시간 알림 전송
+        String message = targetComment.getNickName()+"님! 게시글에 작성된 댓글이 채택되었어요, +50 포인트를 획득하셨습니다, 축하드립니다!";
+
+        //로그인 사용자와 채택댓글 작성자가 다를 경우에는 알림을 보낼 필요가 없다.
+        if(!Objects.equals(userDetails.getMember().getMemberId(), targetComment.getMember().getMemberId())) {
+            notificationService.send(targetComment.getMember(), AlarmType.CHOICE, message, Url);
+            log.info("Alarm 대상 : {}, Alram 메시지 = {}", targetComment.getNickName(), message);
+
+        // 채택댓글 작성자에게 이메일 전송
+            String maiTitle = "안녕하세요, 고객님 Checkcheck입니다";
+            mailService.mailSend(new MailRequestDto(targetComment.getMember().getUserRealEmail(), maiTitle, message));
+            log.info("메일 전송 Success : {}", maiTitle);
+        }
+
 //        로그인 사용자와 채택댓글 작성자 비교
         boolean isMyComment = false;
         if (userDetails.getUsername().equals(targetComment.getMember().getUserEmail())) {
             isMyComment = true;
         }
-        //해당 댓글로 이동하는 url
-        String Url = "http://localhost:8080/api/auth/detail/comments/"+targetComment.getMember().getMemberId();
 
-        //댓글 채택 시 채택된 댓글 유저에게 실시간 알림 전송
-        String message = targetComment.getNickName()+"님! 게시물에 작성된 댓글이 채택되었어요, +50 포인트를 획득하셨습니다, 축하드립니다!";
-
-        //로그인 사용자와 채택댓글 작성자가 다를 경우에는 알림을 보낼 필요가 없다.
-        if(!Objects.equals(userDetails.getMember().getMemberId(), targetComment.getMember().getMemberId())) {
-            notificationService.send(targetComment.getMember(), AlarmType.CHOICE, message, Url);
-            log.info("Alarm message :" + targetComment.getNickName()+"님! 게시물에 작성된 댓글이 채택되었어요, 축하합니다!");
-        }
 //        댓글 작성자 랭크
         String userRank = comfortUtils.getUserRank(targetMember.get().getPoint());
 
