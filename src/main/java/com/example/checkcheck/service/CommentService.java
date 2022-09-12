@@ -14,6 +14,7 @@ import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.model.commentModel.Comment;
+import com.example.checkcheck.model.commentModel.Type;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.CommentRepository;
 import com.example.checkcheck.repository.MemberRepository;
@@ -52,12 +53,28 @@ public class CommentService {
 
         String userEmail = userDetails.getUsername();
         String nickName = userDetails.getMember().getNickName();
+//        댓글 개수  확인용
+        Long memberId = userDetails.getMember().getMemberId();
 
         Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
         int userPoint = userDetails.getMember().getPoint() + 1;
         memberBox.get().updatePoint(userPoint);
 
         String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
+
+//        댓글 개수 제한
+        List<Comment> memberIdCount = commentRepository.findByMember_MemberIdAndArticleArticleId(memberId, requestDto.getArticlesId());
+        if (memberIdCount.size()>=10) {
+            throw new IllegalArgumentException("댓글은 10개 이상 작성이 불가능합니다.");
+        }
+
+//        댓글 숫자 입력 시 글자 수 제한
+        if (requestDto.getType().equals(Type.price)) {
+            if (requestDto.getComment().length() > 8) {
+                throw new IllegalArgumentException("숫자가 너무 큽니다");
+            }
+        }
+
 
         // 게시글 확인
         Article article = articleService.isPresentArticle(requestDto.getArticlesId());
@@ -81,6 +98,7 @@ public class CommentService {
 
         //댓글 생성 시 게시글 작성 유저에게 실시간 알림 전송 ,
         String message = article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!";
+        System.out.println("message = " + message);
 
         //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
         if(!Objects.equals(comment.getMember().getMemberId(), article.getMember().getMemberId())) {
@@ -92,7 +110,8 @@ public class CommentService {
             mailService.mailSend(new MailRequestDto(article.getMember().getUserRealEmail(), maiTitle, message));
         }
 
-        Boolean isMyComment = false;
+
+        boolean isMyComment = false;
         if (comment.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
             isMyComment = true;
         }
@@ -113,25 +132,26 @@ public class CommentService {
 
     // 모든 댓글 조회
     @Transactional
-    public ResponseDto<?> readAllComment(Long articlesId, UserDetailsImpl userDetails) {
+    public CommentListResponseDto readAllComment(Long articlesId, UserDetailsImpl userDetails) {
 
         // 게시글 확인
-        Article article = articleService.isPresentArticle(articlesId);
+//        Article article = articleService.isPresentArticle(articlesId);
+        Article article = articleRepository.findById(articlesId).orElse(null);
         if (null == article) {
-            return ResponseDto.fail("NOT_FOUND", "게시물이 존재하지 않습니다.");
+            throw new NullPointerException("게시글이 존재하지 않습니다");
         }
 
-        List<Comment> commentList = commentRepository.findAllByArticle(article);
+        List<Comment> commentList = commentRepository.getCommentList(articlesId);
+//        List<Comment> commentList = commentRepository.findByArticle_ArticleId(articlesId);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
 //        isMyArticles 초기화
         Boolean isMyArticles = false;
+        if (article.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
+            isMyArticles = true;
+        }
 
         for (Comment comment : commentList) {
-
-            if (article.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
-                isMyArticles = true;
-            }
 
                 String rightNow = comfortUtils.getTime(comment.getCreatedAt());
 
@@ -139,7 +159,23 @@ public class CommentService {
                 if (userDetails.getMember().getUserEmail().equals(comment.getMember().getUserEmail())) {
                     isMyComment = true;
                 }
-
+//                금액 자리 잘라서 보여주기
+            if (comment.getType().equals(Type.price)) {
+                String priceComment = comment.getComment().replaceAll("\\B(?=(\\d{3})+(?!\\d))", ",");
+                commentResponseDtoList.add(
+                        CommentResponseDto.builder()
+                                .commentsId(comment.getCommentId())
+                                .type(comment.getType())
+                                .userRank(comment.getUserRank())
+                                .nickName(comment.getNickName())
+                                .comment(priceComment)
+                                .createdAt(rightNow)
+                                .isSelected(comment.isSelected())
+                                .isMyComment(isMyComment)
+                                .build()
+                );
+//                텍스트 댓글
+            }else{
                 commentResponseDtoList.add(
                         CommentResponseDto.builder()
                                 .commentsId(comment.getCommentId())
@@ -151,7 +187,7 @@ public class CommentService {
                                 .isSelected(comment.isSelected())
                                 .isMyComment(isMyComment)
                                 .build()
-                );
+                );}
 
 
             }
@@ -160,7 +196,7 @@ public class CommentService {
                 .isMyArticles(isMyArticles)
                 .build();
 
-        return ResponseDto.success(commentListResponseDto);
+        return commentListResponseDto;
     }
 
     // 댓글 채택
@@ -190,6 +226,7 @@ public class CommentService {
         return optionalComment.orElse(null);
     }
 
+
     public CommentChoiseResponseDto commentChoose(Long articlesId, CommentChoiseRequestDto commentChoiseRequestDto, UserDetailsImpl userDetails) {
         Long commentsId = commentChoiseRequestDto.getCommentsId();
 
@@ -197,23 +234,46 @@ public class CommentService {
                 () -> new NullPointerException("게시글이 존재하지않습니다.")
         );
 
-        if (!targetArticle.getMember().getUserEmail().equals(userDetails.getUsername())) {
-            throw new IllegalArgumentException("게시글 작성자만 채택할수있습니다.");
-        }
-
         Comment targetComment = commentRepository.findById(commentsId).orElseThrow(
                 () -> new NullPointerException("채택할 댓글이 없습니다.")
         );
 
+        if (!targetArticle.getMember().getUserEmail().equals(userDetails.getUsername())) {
+            throw new IllegalArgumentException("게시글 작성자만 채택할수있습니다.");
+        }
+
+        if (targetArticle.getUserEmail().equals(targetComment.getMember().getUserEmail())) {
+            throw new IllegalArgumentException("게시글 작성자와 댓글 작성자가 같습니다.");
+        }
+
+        if (targetArticle.getProcess().equals(Process.done)) {
+            throw new IllegalArgumentException("채택된 댓글이 있어서 채택할수없습니다.");
+        }
+        if (targetComment.getType().equals(Type.text)) {
+            throw new IllegalArgumentException("숫자로 입력된 댓글을 채택해주세요");
+        }
+
 //      채택 댓글 포인트
         Optional<Member> targetMember = memberRepository.findById(targetComment.getMember().getMemberId());
-        int point = targetComment.getMember().getPoint();
-        targetMember.get().updatePoint(point + 50);
+        int commentPoint = targetComment.getMember().getPoint();
+        targetMember.get().updatePoint(commentPoint + 50);
 
+//      채택한 게시글 포인트
+        Optional<Member> targetArticleMember = memberRepository.findById(targetArticle.getMember().getMemberId());
+        int articlePoint = targetArticle.getMember().getPoint();
+        targetArticleMember.get().updatePoint(articlePoint + 10);
+
+
+        System.out.println("point = " + commentPoint);
 //        게시글 상태 변경
-        targetArticle.setProcess(Process.done);
+        targetArticle.updateProcess(Process.done);
 //        댓글 상태 변경
         targetComment.chooseComment(true);
+//        선택가격 저장
+        targetArticle.choosePrice(Integer.parseInt(targetComment.getComment()));
+        targetArticle.setSelectedPrice(Integer.parseInt(targetComment.getComment()));
+
+
 //        저장
         commentRepository.save(targetComment);
         articleRepository.save(targetArticle);
@@ -250,7 +310,8 @@ public class CommentService {
                 .article(targetArticle)
                 .isMyComment(isMyComment)
                 .isSelected(true)
-                .process(targetArticle.getProcess())
+//                이거때문에?
+                .process(String.valueOf(targetArticle.getProcess()))
                 .commentsUserRank(userRank)
                 .build();
     }

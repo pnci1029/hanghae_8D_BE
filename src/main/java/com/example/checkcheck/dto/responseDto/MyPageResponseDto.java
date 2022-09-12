@@ -16,9 +16,10 @@ import java.util.List;
 public class MyPageResponseDto {
     private Long articlesId;
     private String title;
-    private int price;
+    private String price;
+    private String selectedPrice;
     private String image;
-    private Process process;
+    private String process;
     private int point;
 
 }

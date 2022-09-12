@@ -8,6 +8,7 @@ import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
+import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.ImageRepository;
@@ -19,6 +20,8 @@ import com.example.checkcheck.service.s3.MarvinS3Uploader;
 import com.example.checkcheck.util.ComfortUtils;
 import com.example.checkcheck.util.LoadUser;
 import com.example.checkcheck.util.Time;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -68,11 +71,11 @@ public class ArticleService {
     @Transactional
     public ResponseDto<?> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
                                        UserDetailsImpl userDetails) throws IOException {
-
+//        try {
             String nickName = userDetails.getMember().getNickName();
             String userEmail = userDetails.getUsername();
 
-        //        유저 포인트
+            //        유저 포인트
             Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
             int userPoint = userDetails.getMember().getPoint() + 2;
             memberBox.get().updatePoint(userPoint);
@@ -90,6 +93,7 @@ public class ArticleService {
                     .userRank(userRank)
                     .member(userDetails.getMember())
                     .userEmail(userEmail)
+                    .selectedPrice(0)
                     .build();
             articleRepository.save(articles);
 
@@ -101,7 +105,8 @@ public class ArticleService {
 
                 List<Image> imgbox = new ArrayList<>();
                 //          이미지 업로드
-            for (MultipartFile uploadedFile : multipartFile) {
+                for (MultipartFile uploadedFile : multipartFile) {
+
 
                 Image imagePostEntity = Image.builder()
                         .image(marvinS3Uploader.uploadImage(uploadedFile))
@@ -110,12 +115,15 @@ public class ArticleService {
                         .build();
                 imgbox.add(imagePostEntity);
 
-                imageRepository.save(imagePostEntity);
-            }
+                    imageRepository.save(imagePostEntity);
+                }
 
             }
+//        } catch (NullPointerException n) {
+//            throw new CustomException(ErrorCode.NullPoint_Token);
+//        }
 
-            return ResponseDto.success("작성 성공");
+        return ResponseDto.success("작성 성공");
 
     }
 
@@ -124,14 +132,17 @@ public class ArticleService {
         Collections.shuffle(articleResult);
 
         List<ArticleResponseDto> resultBox = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            resultBox.add(articleResult.get(i));
-        }
+        if (articleResult.size() < 5) {
+            resultBox.addAll(articleResult);
+        } else
+            for (int i = 0; i < 5; i++) {
+                resultBox.add(articleResult.get(i));
+            }
         return ResponseDto.success(resultBox);
     }
 
 //  게시글 상세페이지
-    public ResponseDto<ArticleDetailResponseDto> getArticleDetail(Long id, UserDetailsImpl userDetails) {
+    public ArticleDetailResponseDto getArticleDetail(Long id, UserDetailsImpl userDetails) {
         Article article = articleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지않습니다")
         );
@@ -148,17 +159,17 @@ public class ArticleService {
             imageBox.add(realImage);
         }
 
-        String category = comfortUtils.getCategoryKorean(article.getCategory());
 
         ArticleDetailResponseDto articleResponseDto = ArticleDetailResponseDto.builder()
                 .article(article)
                 .isMyArticles(isMyArticles)
                 .image(imageBox)
-                .category(category)
+                .category(comfortUtils.getCategoryKorean(article.getCategory()))
+                .process(comfortUtils.getProcessKorean(article.getProcess()))
                 .build();
 
 
-        return ResponseDto.success(articleResponseDto);
+        return articleResponseDto;
     }
 
     @Transactional
@@ -216,6 +227,66 @@ public class ArticleService {
         return optionalArticle.orElse(null);
     }
 
+    @Transactional
+    public ResponseDto<?> putArticle(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto, Long articlesId, UserDetailsImpl userDetails) throws IOException {
+        Article targetArticle = articleRepository.findById(articlesId).orElse(null);
+
+        //        이미지 초기화
+        imageRepository.deleteByArticle_ArticleId(articlesId);
+
+        String userEmail = userDetails.getUsername();
+
+        targetArticle.setTitle(articleRequestDto.getTitle());
+        targetArticle.setContent(articleRequestDto.getContent());
+        targetArticle.setPrice(articleRequestDto.getPrice());
+        targetArticle.setCategory(articleRequestDto.getCategory());
 
 
+        articleRepository.save(targetArticle);
+
+//        작성시간
+//        String time1 = comfortUtils.getTime(articles.getCreatedAt());
+//
+//        이미지업로드
+        if (multipartFile != null) {
+
+            List<Image> imgbox = new ArrayList<>();
+            //          이미지 업로드
+            for (MultipartFile uploadedFile : multipartFile) {
+
+                Image imagePostEntity = Image.builder()
+                        .image(s3Uploader.upload(uploadedFile))
+                        .userEmail(userEmail)
+                        .article(targetArticle)
+                        .build();
+                imgbox.add(imagePostEntity);
+
+                imageRepository.save(imagePostEntity);
+            }
+
+        }
+
+
+        return ResponseDto.success("수정 완료");
+    }
+
+    public Slice<ArticleResponseDto> getAllArticles(Pageable pageable, Category category, Process process) {
+
+//        CategoryEntity target = categoryRepository.findByUserEmail(userDetails.getMember().getUserEmail());
+//        if (target == null) {
+//            target = new CategoryEntity(category, process, userDetails.getUsername());
+//            System.out.println("target111 = " + target);
+//        } else {
+//            if (category == null) {
+//                target.updateProcess(process);
+//            } else if (process == null) {
+//                target.updateCategory(category);
+//            } else {
+//                target.updateProcess(process);
+//                target.updateCategory(category);
+//            }
+//        }
+//        CategoryEntity save = categoryRepository.save(target);
+        return articleRepository.articleScroll(pageable, category,process);
+    }
 }

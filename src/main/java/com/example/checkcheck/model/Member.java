@@ -30,7 +30,7 @@ public class Member implements Serializable {
     private String userEmail;
 
     @Column
-    String userRealEmail;
+    private String userRealEmail;
 
 //    @Column
 //    private String userRank;
@@ -41,8 +41,8 @@ public class Member implements Serializable {
     @Column
     private String provider;
 
-    @Column
-    private Double socialId;
+//    @Column
+//    private Double socialId;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonManagedReference
@@ -50,12 +50,11 @@ public class Member implements Serializable {
 
     @Builder
     public Member(String nickName, String password, String userEmail,
-                  LocalDateTime createdAt, String provider, Double socialId, String userRealEmail) {
+                  LocalDateTime createdAt, String provider, String userRealEmail) {
         this.nickName = nickName;
         this.password = password;
         this.userEmail = userEmail;
         this.provider = provider;
-        this.socialId = socialId;
         this.userRealEmail = userRealEmail;
 
     }

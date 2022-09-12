@@ -1,34 +1,37 @@
 package com.example.checkcheck.dto.responseDto;
 
-import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Process;
-import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.tomcat.jni.Proc;
 
-import java.util.List;
+import java.text.NumberFormat;
 
 @Data
 public class ArticleResponseDto {
 
     private Long articlesId;
-    private int price;
+    private String price;
     private String nickName;
-    private Process process;
+    private String process;
     private String title;
     private String userRank;
     private String image;
+    private String selectedPrice;
 
     @Builder
-    public ArticleResponseDto(Article article, String image,String userRank) {
+    public ArticleResponseDto(Article article, String image, String userRank, String process, String selectedPrice, String price) {
         this.articlesId = article.getArticleId();
-        this.price = article.getPrice();
+//        천단위 컴마찍기위해서 넣음
+//        스트링으로 잘받는지 확인필요
+        this.price = price;
         this.nickName = article.getNickName();
-        this.process = article.getProcess();
+        this.process = process;
         this.title = article.getTitle();
         this.userRank = userRank;
         this.image = image;
+        this.selectedPrice = selectedPrice;
     }
 
 }
