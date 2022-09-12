@@ -39,7 +39,7 @@ public class Article extends TimeStamped {
     @Column(nullable = false)
     private String userRank;
 
-    @Column(nullable = false)
+    @Column
     private int selectedPrice;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
@@ -93,6 +93,10 @@ public class Article extends TimeStamped {
 
     public void updateProcess(Process newProcess) {
         process = newProcess;
+    }
+
+    public void choosePrice(int comment) {
+        selectedPrice = comment;
     }
 
 

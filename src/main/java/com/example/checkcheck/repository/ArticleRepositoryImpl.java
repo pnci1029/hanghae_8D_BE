@@ -55,16 +55,16 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             //            프로세스 전체
         } else if (process.equals(Process.all)) {
             articleQueryResults = jpaQueryFactory
-                .selectFrom(article)
-                .where(article.category.eq(category))
+                    .selectFrom(article)
+                    .where(article.category.eq(category))
 //                    .where(article.category.eq(category))
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1)
-                .orderBy(article.articleId.desc())
-                .fetchResults();
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize() + 1)
+                    .orderBy(article.articleId.desc())
+                    .fetchResults();
 
             //            카테고리 전체
-       } else if (category.equals(Category.all)) {
+        } else if (category.equals(Category.all)) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
                     .where(article.process.eq(process))
@@ -88,33 +88,54 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
 
         List<ArticleResponseDto> content = new ArrayList<>();
-            for (Article article : articleQueryResults.getResults()) {
-                String images = null;
-                List<Image> imageList = imageRepository.findByArticle_ArticleId(article.getArticleId());
-                for (Image image : imageList) {
-                    images = image.getImage();
-                    break;
-                }
+        for (Article article : articleQueryResults.getResults()) {
+            String images = null;
+            List<Image> imageList = imageRepository.findByArticle_ArticleId(article.getArticleId());
+            for (Image image : imageList) {
+                images = image.getImage();
+                break;
+            }
+
+//                진행상태가 진행중일때
+            if (article.getProcess().equals(Process.process)) {
                 ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                         .article(article)
                         .userRank(comfortUtils.getUserRank(article.getMember().getPoint()))
                         .image(images)
                         .process(comfortUtils.getProcessKorean(article.getProcess()))
+//                            게시자가 올린 금액 OK 선택 금액 NUll
+                        .price(NumberFormat.getInstance().format(article.getPrice()))
+                        .selectedPrice(null)
+                        .build();
+                content.add(articleResponseDto);
+//                    완료가 된 경우
+            } else {
+                ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                        .article(article)
+                        .userRank(comfortUtils.getUserRank(article.getMember().getPoint()))
+                        .image(images)
+                        .process(comfortUtils.getProcessKorean(article.getProcess()))
+//                            게시자가 올린 금액 Null 선택 금액 OK
+                        .price(null)
+//                            db날리고 이걸로 수정해서 테스트 -> 지금 0 들어있는 애들때문에  점찍는거안됨
+//                        .selectedPrice(article.getSelectedPrice())
+                        .selectedPrice(NumberFormat.getInstance().format(article.getSelectedPrice()))
                         .build();
                 content.add(articleResponseDto);
             }
 
+        }
 
 
-            boolean hasNext = false;
-            if (content.size() > pageable.getPageSize()) {
-                content.remove(pageable.getPageSize());
-                hasNext = true;
-            }
-            return new SliceImpl<>(content, pageable, hasNext);
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
 
 //
-        }
+    }
 
 
     public List<ArticleResponseDto> articleCarousel() {
@@ -141,25 +162,25 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         return articleResult;
     }
 
-//    마이페이지 게시글 조회
+    //    마이페이지 게시글 조회
     public List<MyPageResponseDto> myPageInfo(UserDetailsImpl userDetails, Process process) {
         List<MyPageResponseDto> resultList = new ArrayList<>();
 
 
-            List<Article> result = new ArrayList<>();
-            if (process.equals(Process.all)) {
-                result = jpaQueryFactory
-                        .selectFrom(article)
-                        .where(article.member.eq(userDetails.getMember()))
-                        .orderBy(article.articleId.desc())
-                        .fetch();
-            } else {
-                result = jpaQueryFactory
-                        .selectFrom(article)
-                        .where(article.member.eq(userDetails.getMember()).and(article.process.eq(process)))
-                        .orderBy(article.articleId.desc())
-                        .fetch();
-            }
+        List<Article> result = new ArrayList<>();
+        if (process.equals(Process.all)) {
+            result = jpaQueryFactory
+                    .selectFrom(article)
+                    .where(article.member.eq(userDetails.getMember()))
+                    .orderBy(article.articleId.desc())
+                    .fetch();
+        } else {
+            result = jpaQueryFactory
+                    .selectFrom(article)
+                    .where(article.member.eq(userDetails.getMember()).and(article.process.eq(process)))
+                    .orderBy(article.articleId.desc())
+                    .fetch();
+        }
         for (Article articles : result) {
 
 //        썸네일 이미지만 저장
@@ -175,21 +196,41 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             if (articles.getProcess().equals(Process.done)) {
                 point = 12;
             } else {
-              point = 2;
+                point = 2;
             }
 
             String dotNum = NumberFormat.getInstance().format(articles.getPrice());
-            MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
+            String SelDotNum = NumberFormat.getInstance().format(articles.getSelectedPrice());
+//            진행 중일 때 리스폰스
+            if (articles.getProcess().equals(Process.process)) {
+                MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
                         .articlesId(articles.getArticleId())
                         .title(articles.getTitle())
 //                        프론트 이슈
                         .process(comfortUtils.getProcessKorean(articles.getProcess()))
                         .price(dotNum)
+                        .selectedPrice(null)
+                        .image(image)
+                        .point(point)
+                        .build();
+                resultList.add(myPageResponseDto);
+                
+//                완료 상태일 때 리스폰스
+            } else {
+                MyPageResponseDto myPageResponseDto = MyPageResponseDto.builder()
+                        .articlesId(articles.getArticleId())
+                        .title(articles.getTitle())
+//                        프론트 이슈
+                        .process(comfortUtils.getProcessKorean(articles.getProcess()))
+                        .price(null)
+                        .selectedPrice(SelDotNum)
                         .image(image)
                         .point(point)
                         .build();
                 resultList.add(myPageResponseDto);
             }
+
+        }
 
         return resultList;
     }

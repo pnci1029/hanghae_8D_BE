@@ -91,6 +91,12 @@ dependencies {
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	//메일 발송
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 }
 
 tasks.named('test') {

@@ -18,17 +18,20 @@ public class ArticleResponseDto {
     private String title;
     private String userRank;
     private String image;
+    private String selectedPrice;
 
     @Builder
-    public ArticleResponseDto(Article article, String image, String userRank, String process) {
+    public ArticleResponseDto(Article article, String image, String userRank, String process, String selectedPrice, String price) {
         this.articlesId = article.getArticleId();
 //        천단위 컴마찍기위해서 넣음
-        this.price = NumberFormat.getInstance().format(article.getPrice());
+//        스트링으로 잘받는지 확인필요
+        this.price = price;
         this.nickName = article.getNickName();
         this.process = process;
         this.title = article.getTitle();
         this.userRank = userRank;
         this.image = image;
+        this.selectedPrice = selectedPrice;
     }
 
 }

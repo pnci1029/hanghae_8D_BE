@@ -85,6 +85,7 @@ public class ArticleService {
                     .userRank(userRank)
                     .member(userDetails.getMember())
                     .userEmail(userEmail)
+                    .selectedPrice(0)
                     .build();
             articleRepository.save(articles);
 

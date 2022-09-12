@@ -220,7 +220,7 @@ public class CommentService {
         return optionalComment.orElse(null);
     }
 
-
+    @Transactional
     public CommentChoiseResponseDto commentChoose(Long articlesId, CommentChoiseRequestDto commentChoiseRequestDto, UserDetailsImpl userDetails) {
         Long commentsId = commentChoiseRequestDto.getCommentsId();
 
@@ -243,17 +243,31 @@ public class CommentService {
         if (targetArticle.getProcess().equals(Process.done)) {
             throw new IllegalArgumentException("채택된 댓글이 있어서 채택할수없습니다.");
         }
+        if (targetComment.getType().equals(Type.text)) {
+            throw new IllegalArgumentException("숫자로 입력된 댓글을 채택해주세요");
+        }
 
 //      채택 댓글 포인트
         Optional<Member> targetMember = memberRepository.findById(targetComment.getMember().getMemberId());
-        int point = targetComment.getMember().getPoint();
-        targetMember.get().updatePoint(point + 50);
+        int commentPoint = targetComment.getMember().getPoint();
+        targetMember.get().updatePoint(commentPoint + 50);
 
-        System.out.println("point = " + point);
+//      채택한 게시글 포인트
+        Optional<Member> targetArticleMember = memberRepository.findById(targetArticle.getMember().getMemberId());
+        int articlePoint = targetArticle.getMember().getPoint();
+        targetArticleMember.get().updatePoint(articlePoint + 10);
+
+
+        System.out.println("point = " + commentPoint);
 //        게시글 상태 변경
         targetArticle.updateProcess(Process.done);
 //        댓글 상태 변경
         targetComment.chooseComment(true);
+//        선택가격 저장
+        targetArticle.choosePrice(Integer.parseInt(targetComment.getComment()));
+        targetArticle.setSelectedPrice(Integer.parseInt(targetComment.getComment()));
+
+
 //        저장
         commentRepository.save(targetComment);
         articleRepository.save(targetArticle);
