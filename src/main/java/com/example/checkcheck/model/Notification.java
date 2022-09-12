@@ -20,7 +20,7 @@ import javax.persistence.*;
 public class Notification extends TimeStamped {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")
     private Long id;
 
@@ -29,10 +29,10 @@ public class Notification extends TimeStamped {
     private AlarmType alarmType;
 
     /**
-     * 알림 message 클래스 Embedded*
+     * 알림 message
      */
-    @Embedded
-    private NotificationMessage message;
+    @Column(nullable = false)
+    private String message;
 
     @Column(nullable = false)
     private Boolean readState;
@@ -40,13 +40,14 @@ public class Notification extends TimeStamped {
     /**
      * 클릭 시 이동할 수 있는 link 필요
      */
-    @Embedded
-    private RedirectUrl url;
+
+    @Column(nullable = false)
+    private String url;
 
     /**
      * 멤버 변수이름 변경
      */
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "receiver_member_id")
     private Member receiver;
@@ -54,22 +55,15 @@ public class Notification extends TimeStamped {
     @Builder
     public Notification(AlarmType alarmType, String message, Boolean readState, String url, Member receiver) {
         this.alarmType = alarmType;
-        this.message = new NotificationMessage(message);
+        this.message = message;
         this.readState = readState;
-        this.url = new RedirectUrl(url);
+        this.url = url;
         this.receiver = receiver;
     }
 
     public void changeState() {
-        this.readState = true;
+        readState = true;
     }
 
-    public String getMessage() {
-        return message.getMessage();
-    }
-
-    public String getUrl() {
-        return url.getUrl();
-    }
 
 }

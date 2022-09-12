@@ -4,6 +4,7 @@ import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
 import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
@@ -14,7 +15,8 @@ import com.example.checkcheck.repository.ImageRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
-import com.example.checkcheck.service.s3.S3Uploader;
+//import com.example.checkcheck.service.s3.S3Uploader;
+import com.example.checkcheck.service.s3.MarvinS3Uploader;
 import com.example.checkcheck.util.ComfortUtils;
 import com.example.checkcheck.util.LoadUser;
 import com.example.checkcheck.util.Time;
@@ -36,9 +38,11 @@ public class ArticleService {
     private ArticleRepository articleRepository;
     private ImageRepository imageRepository;
     private MemberRepository memberRepository;
-    private S3Uploader s3Uploader;
+//    private S3Uploader s3Uploader;
+    private MarvinS3Uploader marvinS3Uploader;
     private ComfortUtils comfortUtils;
     private Time time;
+
 
     private NotificationService notificationService;
     private LoadUser loadUser;
@@ -47,14 +51,18 @@ public class ArticleService {
             ArticleRepository articleRepository,
             ImageRepository imageRepository,
             MemberRepository memberRepository,
-            S3Uploader s3Uploader,
+//            S3Uploader s3Uploader,
+            MarvinS3Uploader marvinS3Uploader,
             ComfortUtils comfortUtils,
             Time time,
-            NotificationService notificationService) {
+            NotificationService notificationService
+            )
+    {
         this.articleRepository = articleRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;
-        this.s3Uploader = s3Uploader;
+//        this.s3Uploader = s3Uploader;
+        this.marvinS3Uploader = marvinS3Uploader;
         this.comfortUtils = comfortUtils;
         this.time = time;
         this.notificationService = notificationService;
@@ -99,12 +107,13 @@ public class ArticleService {
                 //          이미지 업로드
                 for (MultipartFile uploadedFile : multipartFile) {
 
-                    Image imagePostEntity = Image.builder()
-                            .image(s3Uploader.upload(uploadedFile))
-                            .userEmail(userEmail)
-                            .article(articles)
-                            .build();
-                    imgbox.add(imagePostEntity);
+
+                Image imagePostEntity = Image.builder()
+                        .image(marvinS3Uploader.uploadImage(uploadedFile))
+                        .userEmail(userEmail)
+                        .article(articles)
+                        .build();
+                imgbox.add(imagePostEntity);
 
                     imageRepository.save(imagePostEntity);
                 }

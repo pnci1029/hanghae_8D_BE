@@ -13,7 +13,6 @@ import com.example.checkcheck.repository.NotificationRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -79,6 +78,7 @@ public class NotificationService {
                     .data(data));
         } catch (IOException exception) {
             emitterRepository.deleteById(emitterId);
+            log.error("sse 연결오류!!!", exception);
         }
     }
     // Last - event - id 가 존재한다는 것은 받지 못한 데이터가 있다는 것이다.
@@ -101,11 +101,10 @@ public class NotificationService {
         받을 회원의 emitter들을 모두 찾아 해당 emitter를 Send
      */
 
-    @Async
+    @Transactional
     public void send(Member receiver, AlarmType alarmType, String message, String url) {
-
         Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, url));
-
+        log.info("DB 메시지 저장 확인 : {}", message);
         String receiverId = String.valueOf(receiver.getMemberId());
         String eventId = receiverId + "_" + System.currentTimeMillis();
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithByUserId(receiverId);
@@ -116,6 +115,7 @@ public class NotificationService {
                 }
         );
     }
+
 
     private Notification createNotification(Member receiver, AlarmType alarmType, String message, String url) {
         return Notification.builder()

@@ -4,15 +4,19 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-@Getter
-@RequiredArgsConstructor
+
 /**
 * exception 처리를 위해 임의로 만들어두었습니다.
 * TODO: 임시방편으로 만들어두었기 때문에 나중에 우리 서비스에 맞춰서 변경 필요
 *  추후 모든 Controller 형식을 ResponseEntity 형식으로 변경해주기만 하면 됩니다 *
 */
 
+@Getter
+@RequiredArgsConstructor
 public enum ErrorCode {
+
+    OK(HttpStatus.OK,  "200", "true"),
+
 
     // 회원가입 + 로그인 + 이메일 체크
     DUPLE_EMAIL(HttpStatus.BAD_REQUEST, "400", "중복된 이메일 입니다."),
@@ -45,10 +49,8 @@ public enum ErrorCode {
     NOT_EXIST_NOTIFICATION(HttpStatus.NOT_FOUND,"404","존재하지 않는 알림입니다."),
 
     // 게시글
-    BOARD_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 게시글이 존재하지 않습니다"),
-    CHALLENGE_NOT_UPDATE(HttpStatus.BAD_REQUEST, "400", "첼린지는 수정 불가 합니다."),
-    CHALLENGE_CANCEL_APPLY_NOT(HttpStatus.BAD_REQUEST, "400", "해당 챌린지는 마감되어 신청/취소할 수 없습니다."),
-    CHALLENGE_CANCEL_AUTHOR_NOT(HttpStatus.BAD_REQUEST, "400", "첼린지 게시물을 작성한 사용자는 신청/취소할 수 없습니다."),
+    ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 게시글이 존재하지 않습니다"),
+
 
     //댓글
 

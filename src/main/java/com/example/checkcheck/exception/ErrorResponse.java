@@ -1,30 +1,22 @@
 package com.example.checkcheck.exception;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
-// ApiExceptionHandler 에서 사용됨
 @Getter
-@Builder
+@Setter
+@NoArgsConstructor
 public class ErrorResponse {
-    private boolean success;
-    private String msg;
+
+    private HttpStatus status;
     private String errorCode;
-    private HttpStatus httpStatus;
+    private String errorMessage;
 
-    public static ResponseEntity<ErrorResponse> of(ErrorCode code) {
-        return ResponseEntity
-                .status(code.getHttpStatus())
-                .body(
-                        ErrorResponse.builder()
-                                .success(code.isSuccess())
-                                .msg(code.getMsg())
-                                .errorCode(code.getErrorCode())
-                                .httpStatus(code.getHttpStatus())
-                                .build()
-                );
+    public ErrorResponse(ErrorCode errorCode) {
+        this.status = errorCode.getHttpStatus();
+        this.errorCode = errorCode.getErrorCode();
+        this.errorMessage = errorCode.getMsg();
     }
-
 }
