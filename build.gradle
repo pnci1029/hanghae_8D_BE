@@ -67,6 +67,11 @@ dependencies {
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 	implementation 'commons-codec:commons-codec:1.13'
 
+	//메일 발송
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"

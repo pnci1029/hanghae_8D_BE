@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Member {
+public class Member implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

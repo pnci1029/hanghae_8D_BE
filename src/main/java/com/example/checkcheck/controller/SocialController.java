@@ -10,12 +10,15 @@ import com.example.checkcheck.service.social.SocialKakaoService;
 import com.example.checkcheck.service.social.SocialNaverSerivce;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.sasl.AuthenticationException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class SocialController {
