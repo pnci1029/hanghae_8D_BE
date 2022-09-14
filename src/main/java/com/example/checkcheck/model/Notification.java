@@ -1,6 +1,6 @@
 package com.example.checkcheck.model;
 
-import com.example.checkcheck.util.RedirectUrl;
+import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.util.TimeStamped;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * 알림 Entity
@@ -42,7 +43,7 @@ public class Notification extends TimeStamped {
      */
 
     @Column(nullable = false)
-    private String url;
+    private Long articlesId;
 
     /**
      * 멤버 변수이름 변경
@@ -71,6 +72,8 @@ public class Notification extends TimeStamped {
     public void changeState() {
         readState = true;
     }
+
+
 
 
 }
