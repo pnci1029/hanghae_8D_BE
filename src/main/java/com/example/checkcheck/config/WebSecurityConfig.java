@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 
 @RequiredArgsConstructor
 @Configuration
@@ -52,6 +53,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.cors().configurationSource(corsConfigurationSource());
         // 토큰 인증이므로 세션 사용x
         http.csrf().disable()
+                .cors()
+                .and()
                 .exceptionHandling()
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -70,6 +73,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/main/**").permitAll()
                 .antMatchers("/auth/user/token").permitAll()
 
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
@@ -79,6 +83,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .apply(new JwtSecurityConfig(jwtTokenProvider));
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+
+
     }
 
 //                    .antMatchers("/**").permitAll()
