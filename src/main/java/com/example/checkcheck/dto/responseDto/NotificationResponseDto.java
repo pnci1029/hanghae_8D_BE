@@ -15,28 +15,42 @@ import java.time.LocalDateTime;
 @Getter
 public class NotificationResponseDto {
 
-    private Long id;
+    private Long notificationId;
 
     private String message;
 
-    private String url;
+    private Long articlesId;
 
-    private Boolean status;
+    private Boolean readStatus;
+
+    private AlarmType alarmType;
+
+    private String title;
+
+    private String createdAt;
+
 
     @Builder
-    public NotificationResponseDto(Long id, String message, String url, Boolean status) {
-        this.id = id;
+    public NotificationResponseDto(Long id, String message, Long articlesId, Boolean readStatus,
+                                   AlarmType alarmType, String title,String createdAt) {
+        this.notificationId = id;
         this.message = message;
-        this.url = url;
-        this.status = status;
+        this.articlesId = articlesId;
+        this.readStatus = readStatus;
+        this.title = title;
+        this.alarmType = alarmType;
+        this.createdAt = createdAt;
     }
 
     public static NotificationResponseDto create(Notification notification) {
         return NotificationResponseDto.builder()
                 .id(notification.getId())
                 .message(notification.getMessage())
-                .url(notification.getUrl())
-                .status(notification.getReadState())
+                .alarmType(notification.getAlarmType())
+                .articlesId(notification.getArticlesId())
+                .title(notification.getTitle())
+                .readStatus(notification.getReadState())
+                .createdAt(createdAt)
                 .build();
     }
 }
