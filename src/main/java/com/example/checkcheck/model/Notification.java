@@ -52,6 +52,9 @@ public class Notification extends TimeStamped {
     @JoinColumn(name = "receiver_member_id")
     private Member receiver;
 
+    @Column
+    private String title;
+
     @Builder
     public Notification(AlarmType alarmType, String message, Boolean readState, String url, Member receiver) {
         this.alarmType = alarmType;
