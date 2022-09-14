@@ -53,6 +53,7 @@ public enum ErrorCode {
 
 
     //댓글
+    TOO_MUCH_COMMENTS(HttpStatus.BAD_REQUEST, "400", "댓글은 10개 이상 작성이 불가능합니다."),
 
 
 

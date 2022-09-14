@@ -39,7 +39,9 @@ public class MarvinS3Uploader {
             String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
             String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
 
-            MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 768);
+            String result = amazonS3Client.getUrl(bucket, fileName).toString();
+
+        MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 768);
 
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(resizedFile.getSize());
@@ -52,7 +54,7 @@ public class MarvinS3Uploader {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
             }
 
-        return fileName;
+        return result;
 
     }
 

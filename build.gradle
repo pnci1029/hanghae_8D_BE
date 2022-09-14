@@ -91,7 +91,8 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-aws', version: '2.2.6.RELEASE', ext: 'pom'
 	//jasypt
-	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+//	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.4'
+	implementation group: 'com.github.ulisesbocchio', name: 'jasypt-spring-boot-starter', version: '3.0.4'
 
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'

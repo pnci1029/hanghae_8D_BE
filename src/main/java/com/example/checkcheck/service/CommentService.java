@@ -65,7 +65,7 @@ public class CommentService {
 //        댓글 개수 제한
         List<Comment> memberIdCount = commentRepository.findByMember_MemberIdAndArticleArticleId(memberId, requestDto.getArticlesId());
         if (memberIdCount.size()>=10) {
-            throw new IllegalArgumentException("댓글은 10개 이상 작성이 불가능합니다.");
+            throw new CustomException(ErrorCode.TOO_MUCH_COMMENTS);
         }
 
 //        댓글 숫자 입력 시 글자 수 제한
@@ -94,7 +94,7 @@ public class CommentService {
         commentRepository.save(comment);
 
         //해당 댓글로 이동하는 url
-        String Url = "http://localhost:8080/api/auth/detail/comments/"+article.getArticleId();
+        String Url = "http://localhost:8080/api/auth/detail/"+article.getArticleId();
 
         //댓글 생성 시 게시글 작성 유저에게 실시간 알림 전송 ,
         String message = article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!";
@@ -279,7 +279,7 @@ public class CommentService {
         articleRepository.save(targetArticle);
 
         //해당 댓글로 이동하는 url
-        String Url = "http://localhost:8080/api/auth/detail/comments/"+targetComment.getMember().getMemberId();
+        String Url = "http://localhost:8080/api/auth/detail/"+articlesId;
 
         //댓글 채택 시 채택된 댓글 유저에게 실시간 알림 전송
         String message = targetComment.getNickName()+"님! 게시글에 작성된 댓글이 채택되었어요, +50 포인트를 획득하셨습니다, 축하드립니다!";
