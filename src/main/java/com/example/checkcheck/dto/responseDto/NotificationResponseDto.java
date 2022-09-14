@@ -3,13 +3,12 @@ package com.example.checkcheck.dto.responseDto;
 import com.example.checkcheck.model.AlarmType;
 import com.example.checkcheck.model.Notification;
 import com.example.checkcheck.util.ComfortUtils;
+import com.example.checkcheck.util.Time;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @NoArgsConstructor
 @Getter
@@ -43,6 +42,10 @@ public class NotificationResponseDto {
     }
 
     public static NotificationResponseDto create(Notification notification) {
+        long now = ChronoUnit.MINUTES.between(notification.getCreatedAt() , LocalDateTime.now());
+        Time time = new Time();
+        String createdAt = time.times(now);
+
         return NotificationResponseDto.builder()
                 .id(notification.getId())
                 .message(notification.getMessage())
