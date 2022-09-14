@@ -143,7 +143,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
         List<Article> result = jpaQueryFactory
                 .selectFrom(article)
-                .where(article.process.eq(article.process))
+                .where(article.process.eq(Process.process))
                 .fetch();
         for (Article article : result) {
             String images = "";
@@ -154,6 +154,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             }
             ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                     .article(article)
+                    .price(NumberFormat.getInstance().format(article.getPrice()))
                     .userRank(comfortUtils.getUserRank(article.getMember().getPoint()))
                     .image(images)
                     .build();

@@ -48,7 +48,8 @@ public class MyPageService {
         return ResponseDto.success(
                 MyPageMemberResponseDto.builder()
                         .nickName(userDetails.getMember().getNickName())
-                        .userEmail(userEmail)
+//                      유저 실제 이메일 조회
+                        .userEmail(memberBox.get().getUserRealEmail())
                         .userRank(userRank)
                         .userPoint(userPoint)
                         .articleCount(articleCount)
