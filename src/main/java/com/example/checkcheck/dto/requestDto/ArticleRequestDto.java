@@ -4,6 +4,8 @@ import com.example.checkcheck.model.articleModel.Category;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class ArticleRequestDto {
@@ -12,4 +14,6 @@ public class ArticleRequestDto {
     private String content;
     private int price;
     private Category category;
+    private List<String> imageList;
+
 }

@@ -56,12 +56,12 @@ public class ArticleController {
         return articleService.getArticleDetail(articlesId, userDetails);
     }
 
-    @PutMapping("/auth/detail/{articlesId}")
-    public ResponseDto<?> putArticle(@RequestPart(required = false) ArticleRequestDto articlesDto,
+    @PatchMapping("/auth/detail/{articlesId}")
+    public ResponseDto<?> patchArticle(@RequestPart(required = false) ArticleRequestDto articlesDto,
                                      @RequestPart(required = false) List<MultipartFile> multipartFile,
                                      @PathVariable Long articlesId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return articleService.putArticle(multipartFile, articlesDto, articlesId, userDetails);
+        return articleService.patchArticle(multipartFile, articlesDto, articlesId, userDetails);
     }
 
 
