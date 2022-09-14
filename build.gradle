@@ -70,8 +70,8 @@ dependencies {
 	//메일 발송
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
-	//Redis
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	//Redis TODO: redis(health check) warn나면 gradle 주석처리해주세요
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
@@ -96,7 +96,10 @@ dependencies {
 	// validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-
+	//prometheus
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator:2.7.2'
+	implementation 'io.micrometer:micrometer-core'
 
 	// Marvin
 	implementation 'com.github.downgoon:marvin:1.5.5'
