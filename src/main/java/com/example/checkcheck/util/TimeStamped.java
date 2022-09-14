@@ -1,6 +1,7 @@
 package com.example.checkcheck.util;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,7 +16,9 @@ import java.time.ZoneId;
 @EntityListeners(AuditingEntityListener.class)
 public class TimeStamped {
 
+
     @CreatedDate // 생성시간
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm")
     private LocalDateTime createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));;
+
 }
