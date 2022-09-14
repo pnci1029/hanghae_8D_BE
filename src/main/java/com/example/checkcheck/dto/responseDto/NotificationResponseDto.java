@@ -50,7 +50,7 @@ public class NotificationResponseDto {
                 .id(notification.getId())
                 .message(notification.getMessage())
                 .alarmType(notification.getAlarmType())
-                .articlesId(notification.getArticlesId())
+                .articlesId(notification.getUrl())
                 .title(notification.getTitle())
                 .readStatus(notification.getReadState())
                 .createdAt(createdAt)

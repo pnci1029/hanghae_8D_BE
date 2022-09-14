@@ -1,22 +1,21 @@
 package com.example.checkcheck.model;
 
-import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.util.TimeStamped;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 /**
  * 알림 Entity
  */
 
 @Entity
-@Getter@Setter
+@Getter @Setter
 @NoArgsConstructor
 public class Notification extends TimeStamped {
 
@@ -43,7 +42,7 @@ public class Notification extends TimeStamped {
      */
 
     @Column(nullable = false)
-    private Long articlesId;
+    private Long url;
 
     /**
      * 멤버 변수이름 변경
@@ -53,6 +52,7 @@ public class Notification extends TimeStamped {
     @JoinColumn(name = "receiver_member_id")
     private Member receiver;
 
+    @Column
     private String title;
 
 //    private LocalDateTime createdAt;
@@ -63,7 +63,7 @@ public class Notification extends TimeStamped {
         this.alarmType = alarmType;
         this.message = message;
         this.readState = readState;
-        this.articlesId = articlesId;
+        this.url = articlesId;
         this.receiver = receiver;
         this.title = title;
 //        this.createdAt = createdAt;
