@@ -11,7 +11,6 @@ import com.example.checkcheck.exception.CustomException;
 import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.AlarmType;
 import com.example.checkcheck.model.Member;
-import com.example.checkcheck.model.Notification;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.model.commentModel.Comment;
@@ -66,7 +65,7 @@ public class CommentService {
 //        댓글 개수 제한
         List<Comment> memberIdCount = commentRepository.findByMember_MemberIdAndArticleArticleId(memberId, requestDto.getArticlesId());
         if (memberIdCount.size()>=10) {
-            throw new IllegalArgumentException("댓글은 10개 이상 작성이 불가능합니다.");
+            throw new CustomException(ErrorCode.TOO_MUCH_COMMENTS);
         }
 
 //        댓글 숫자 입력 시 글자 수 제한
