@@ -5,10 +5,11 @@ import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.GoogleUserInfoDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
-import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.repository.MemberRepository;
+import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
+//import com.example.checkcheck.service.RedisService;
 import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,6 +30,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -47,6 +49,8 @@ public class SocialGoogleService {
     private final MemberService memberService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ComfortUtils comfortUtils;
+
+//    private final RedisService redisService;
 
     //header 에 Content-type 지정
     //1번
@@ -70,6 +74,8 @@ public class SocialGoogleService {
         //  5. response Header에 JWT 토큰 추가
         TokenFactory tokenFactory1 = memberService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
         RefreshToken refreshToken = new RefreshToken(member.getUserEmail(), tokenFactory1.getRefreshToken());
+
+//        redisService.setValues(member.getUserEmail(), tokenFactory1.getRefreshToken());
 
 //        리프레시토큰저장 & 있을경우 셋토큰
         Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(member.getUserEmail());
@@ -105,8 +111,8 @@ public class SocialGoogleService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", client_id);
         body.add("client_secret", clientSecret);
-//        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
-        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
+        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
+//        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
         body.add("code", code);
 //        System.out.println(code);
 

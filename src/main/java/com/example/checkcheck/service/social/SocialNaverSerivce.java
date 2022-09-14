@@ -9,11 +9,13 @@ import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
+//import com.example.checkcheck.service.RedisService;
 import com.example.checkcheck.util.ComfortUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,6 +44,8 @@ public class SocialNaverSerivce {
     private final MemberService memberService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ComfortUtils comfortUtils;
+
+//    private final RedisService redisService;
 
     @Transactional
     public SocialResponseDto naverLogin(String code, String state, HttpServletResponse response) {
@@ -91,10 +95,13 @@ public class SocialNaverSerivce {
 
             String refreshToken =  tokenFactory.getRefreshToken();
 
+//            redisService.setValues(member.getUserEmail(), refreshToken);
+
             String accessToken = naverUser.getAccessToken();
 
 
 //        리프레시토큰저장 & 있을경우 셋토큰
+//            TODO: Redis 실습
             Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(member.getUserEmail());
             RefreshToken token = new RefreshToken(member.getUserEmail(), refreshToken);
             if (existToken.isEmpty()) {
@@ -103,7 +110,6 @@ public class SocialNaverSerivce {
                 existToken.get().setTokenKey(token.getTokenKey());
                 existToken.get().setTokenValue(token.getTokenValue());
             }
-
 
             SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                     .nickName(member.getNickName()) // 1
