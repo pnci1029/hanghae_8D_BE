@@ -1,10 +1,10 @@
 package com.example.checkcheck.model;
 
-import com.example.checkcheck.util.RedirectUrl;
 import com.example.checkcheck.util.TimeStamped;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -15,7 +15,7 @@ import javax.persistence.*;
  */
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor
 public class Notification extends TimeStamped {
 
@@ -42,7 +42,7 @@ public class Notification extends TimeStamped {
      */
 
     @Column(nullable = false)
-    private String url;
+    private Long url;
 
     /**
      * 멤버 변수이름 변경
@@ -52,18 +52,28 @@ public class Notification extends TimeStamped {
     @JoinColumn(name = "receiver_member_id")
     private Member receiver;
 
+    @Column
+    private String title;
+
+//    private LocalDateTime createdAt;
+
     @Builder
-    public Notification(AlarmType alarmType, String message, Boolean readState, String url, Member receiver) {
+    public Notification(AlarmType alarmType, String message, Boolean readState,
+                        Long articlesId, Member receiver, String title) {
         this.alarmType = alarmType;
         this.message = message;
         this.readState = readState;
-        this.url = url;
+        this.url = articlesId;
         this.receiver = receiver;
+        this.title = title;
+//        this.createdAt = createdAt;
     }
 
     public void changeState() {
         readState = true;
     }
+
+
 
 
 }

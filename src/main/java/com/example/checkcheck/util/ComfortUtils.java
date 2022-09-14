@@ -23,6 +23,7 @@ public class ComfortUtils {
         this.time = time;
     }
 
+    //TODO: 수정필요
     public String getTime(LocalDateTime cratedAt) {
         long now = ChronoUnit.MINUTES.between(cratedAt , LocalDateTime.now());
 

@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Member implements Serializable {
+public class Member {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
