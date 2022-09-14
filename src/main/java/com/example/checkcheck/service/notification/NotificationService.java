@@ -11,6 +11,7 @@ import com.example.checkcheck.repository.EmitterRepository;
 import com.example.checkcheck.repository.EmitterRepositoryImpl;
 import com.example.checkcheck.repository.NotificationRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
+import com.example.checkcheck.util.ComfortUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +38,8 @@ import java.util.stream.Collectors;
 public class NotificationService {
     private final EmitterRepository emitterRepository = new EmitterRepositoryImpl();
     private final NotificationRepository notificationRepository;
+
+    private final ComfortUtils comfortUtils;
 
     public SseEmitter subscribe(Long userId, String lastEventId) {
         //emitter 하나하나 에 고유의 값을 주기 위해
@@ -102,8 +106,10 @@ public class NotificationService {
      */
 
     @Transactional
-    public void send(Member receiver, AlarmType alarmType, String message, String url) {
-        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, url));
+    public void send(Member receiver, AlarmType alarmType, String message, Long articlesId, String title, LocalDateTime createdAt) {
+        System.out.println("createdAt = " + createdAt);
+//        여기 createdAt은 댓글 생성될때 찍히는시간,
+        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, articlesId, title));
         log.info("DB 메시지 저장 확인 : {}", message);
         String receiverId = String.valueOf(receiver.getMemberId());
         String eventId = receiverId + "_" + System.currentTimeMillis();
@@ -115,25 +121,51 @@ public class NotificationService {
                 }
         );
     }
+    //알림 리스폰스에 키값 articlesId : articlesId
+    //리스폰스쪽에
+    //알람시간 : ~분전 createdAt : 3분전
+    //해당게시물제목 title : "아이폰"
+    //알람타입 comment / selected alarmType : comment
+    //notificationId : 31
 
 
-    private Notification createNotification(Member receiver, AlarmType alarmType, String message, String url) {
+    private Notification createNotification(Member receiver, AlarmType alarmType, String message,
+                                            Long articlesId, String title) {
+
         return Notification.builder()
                 .receiver(receiver)
                 .alarmType(alarmType)
                 .message(message)
-                .url(url)
+                .articlesId(articlesId)
+                .title(title)
+//                .createdAt(createdAt)
+//                .alarmNewest()
                 .readState(false) // 현재 읽음상태
                 .build();
     }
 
     @Transactional
+//    public List<NotificationResponseDto> findAllNotifications(Long userId) {
     public List<NotificationResponseDto> findAllNotifications(Long userId) {
         List<Notification> notifications = notificationRepository.findAllByReceiver_MemberId(userId);
+//        for (Notification notification : notifications) {
+//            notification.getC
+//        }
+
+//        List<TestDto> result = new ArrayList<>();
+//        for (Notification notification : notifications) {
+//            TestDto testDto = TestDto.builder()
+//                    .notificationResponseDtoList(notification)
+//                    .createdAt(comfortUtils.getTime(notification.getCreatedAt()))
+//                    .build();
+//            result.add(testDto);
+//        }
+
         return notifications.stream()
                 .map(NotificationResponseDto::create)
                 .collect(Collectors.toList());
     }
+
 
     @Transactional
     public NotificationCountDto countUnReadNotifications(Long userId) {
