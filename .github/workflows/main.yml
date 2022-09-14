@@ -1,4 +1,4 @@
-name: final_check
+name: logging-system
 
 on:
   workflow_dispatch:
