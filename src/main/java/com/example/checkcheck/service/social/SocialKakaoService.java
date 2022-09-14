@@ -104,8 +104,8 @@ public class SocialKakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
-        body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
-//        body.add("redirect_uri", "http://localhost:3000/user/signin/kakao");
+//        body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
+        body.add("redirect_uri", "http://localhost:3000/user/signin/kakao");
         body.add("code", code);
         body.add("client_secret", clientSecret);
 

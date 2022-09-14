@@ -228,11 +228,15 @@ public class ArticleService {
     }
 
     @Transactional
-    public ResponseDto<?> putArticle(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto, Long articlesId, UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<?> patchArticle(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto, Long articlesId, UserDetailsImpl userDetails) throws IOException {
         Article targetArticle = articleRepository.findById(articlesId).orElse(null);
 
+        List<String> imageList = articleRequestDto.getImageList();
+        for (String s : imageList) {
+            imageRepository.deleteByImage(s);
+        }
         //        이미지 초기화
-        imageRepository.deleteByArticle_ArticleId(articlesId);
+//        imageRepository.deleteByArticle_ArticleId(articlesId);
 
         String userEmail = userDetails.getUsername();
 
