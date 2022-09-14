@@ -5,7 +5,7 @@ on:
   
 env: 
   S3_BUCKET_NAME: logging-system-deploy-buckets
-  PROJECT_NAME: final_check
+  PROJECT_NAME: final_checks
 
 jobs:
   build:
