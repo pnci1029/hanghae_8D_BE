@@ -257,6 +257,7 @@ public class ArticleService {
             List<Image> imgbox = new ArrayList<>();
             //          이미지 업로드
             for (MultipartFile uploadedFile : multipartFile) {
+                System.out.println("uploadedFile.getName = " + uploadedFile.getName());
 
                 Image imagePostEntity = Image.builder()
                         .image(marvinS3Uploader.uploadImage(uploadedFile))
@@ -264,6 +265,7 @@ public class ArticleService {
                         .article(targetArticle)
                         .build();
                 imgbox.add(imagePostEntity);
+                System.out.println("imagePostEntity = " + imagePostEntity.getImage());
 
                 imageRepository.save(imagePostEntity);
             }
