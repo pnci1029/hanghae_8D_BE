@@ -104,7 +104,7 @@ public class CommentService {
 
         //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
         if(!Objects.equals(comment.getMember().getMemberId(), article.getMember().getMemberId())) {
-            notificationService.send(article.getMember(), AlarmType.COMMENT, message, article.getArticleId(), article.getTitle(), comment.getCreatedAt());
+            notificationService.send(article.getMember(), AlarmType.comment, message, article.getArticleId(), article.getTitle(), comment.getCreatedAt());
             log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
 
         //게시글 작성자에게 이메일전송
@@ -291,7 +291,7 @@ public class CommentService {
 
         //로그인 사용자와 채택댓글 작성자가 다를 경우에는 알림을 보낼 필요가 없다.
         if(!Objects.equals(userDetails.getMember().getMemberId(), targetComment.getMember().getMemberId())) {
-            notificationService.send(targetComment.getMember(), AlarmType.SELECTED, message, targetArticle.getArticleId(), targetArticle.getTitle(), targetComment.getCreatedAt());
+            notificationService.send(targetComment.getMember(), AlarmType.selected, message, targetArticle.getArticleId(), targetArticle.getTitle(), targetComment.getCreatedAt());
             log.info("Alarm 대상 : {}, Alram 메시지 = {}", targetComment.getNickName(), message);
 
         // 채택댓글 작성자에게 이메일 전송
