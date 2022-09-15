@@ -4,7 +4,6 @@ import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
 import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
-import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
@@ -71,7 +70,6 @@ public class ArticleService {
     @Transactional
     public ResponseDto<?> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
                                        UserDetailsImpl userDetails) throws IOException {
-//        try {
             String nickName = userDetails.getMember().getNickName();
             String userEmail = userDetails.getUsername();
 
@@ -114,14 +112,12 @@ public class ArticleService {
                         .article(articles)
                         .build();
                 imgbox.add(imagePostEntity);
+                    System.out.println("imagePostEntity = " + imagePostEntity.getImage());
 
                     imageRepository.save(imagePostEntity);
                 }
 
             }
-//        } catch (NullPointerException n) {
-//            throw new CustomException(ErrorCode.NullPoint_Token);
-//        }
 
         return ResponseDto.success("작성 성공");
 
