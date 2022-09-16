@@ -14,6 +14,7 @@ import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.util.ComfortUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -105,7 +106,7 @@ public class NotificationService {
         받을 회원의 emitter들을 모두 찾아 해당 emitter를 Send
      */
 
-    @Transactional
+    @Async
     public void send(Member receiver, AlarmType alarmType, String message, Long articlesId, String title, LocalDateTime createdAt) {
         System.out.println("createdAt = " + createdAt);
 //        여기 createdAt은 댓글 생성될때 찍히는시간,
