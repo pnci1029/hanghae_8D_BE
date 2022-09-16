@@ -33,9 +33,6 @@ public class Comment extends TimeStamped {
     @Column(nullable = false)
     private String userRank;
 
-//    @Column(nullable = false)
-////    @JsonProperty("isSelected")
-//    private boolean isSelected;
 
     @Column(nullable = false)
     private boolean isMyComment;

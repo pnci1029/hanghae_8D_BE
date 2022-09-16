@@ -22,14 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
 public class MyPageService {
+    private MemberRepository memberRepository;
 
-    private final MemberRepository memberRepository;
-    private final ArticleRepository articleRepository;
-    private final ComfortUtils comfortUtils;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private ArticleRepository articleRepository;
+    private ComfortUtils comfortUtils;
+    private RefreshTokenRepository refreshTokenRepository;
+    public MyPageService(MemberRepository memberRepository, ArticleRepository articleRepository, ComfortUtils comfortUtils, RefreshTokenRepository refreshTokenRepository) {
+        this.memberRepository = memberRepository;
+        this.articleRepository = articleRepository;
+        this.comfortUtils = comfortUtils;
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
 
     // 마이페이지 회원 정보 조회
     @Transactional

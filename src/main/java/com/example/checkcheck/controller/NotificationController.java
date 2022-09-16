@@ -5,7 +5,6 @@ import com.example.checkcheck.dto.responseDto.NotificationResponseDto;
 import com.example.checkcheck.dto.responseDto.StatusResponseDto;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
-import com.example.checkcheck.util.TestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

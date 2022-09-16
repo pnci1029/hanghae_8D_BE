@@ -23,11 +23,6 @@ public class CommentController {
         CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userDetails);
         return (userDetails.getMember().getUserEmail()!=null) ?new ResponseEntity<>(new StatusResponseDto("댓글 등록 성공", commentResponseDto), HttpStatus.OK):
                                            new ResponseEntity<>(new StatusResponseDto("댓글 등록 실패", null), HttpStatus.BAD_REQUEST);
-
-        //        return ResponseEntity.status(HttpStatus.OK)
-//                .contentType(new MediaType("applicaton", "text", StandardCharsets.UTF_8))
-//                .body(message);
-//        rsp.setContentType(String.valueOf(new MediaType("applicaton", "text", StandardCharsets.UTF_8)));
     }
 
     // 댓글 조회
