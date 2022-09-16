@@ -40,15 +40,20 @@
 //    @DisplayName("view가 없으니 test로 SSE 연결을 확인한다")
 //    public void subscribe() throws Exception {
 //        //given
-//        Long memberId = 5L;
-//        Member member = memberRepository.findById(memberId).orElseThrow(
-//                ()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-//        String accessToken = String.valueOf(jwtTokenProvider.createToken(String.valueOf(member)));
+//        try {
+//            Long memberId = 5L;
+//            Member member = memberRepository.findById(memberId).orElseThrow(
+//                    () -> new CustomException(ErrorCode.USER_NOT_FOUND));
+//            String accessToken = String.valueOf(jwtTokenProvider.createToken(String.valueOf(member)));
 //
-//        //when - > then
-//        mockMvc.perform(MockMvcRequestBuilders.get("/api/subscribe")
-//                        .header("Authorizaiton",accessToken)
-//                        .accept(MediaType.TEXT_EVENT_STREAM));
+//            //when - > then
+//            mockMvc.perform(MockMvcRequestBuilders.get("/api/subscribe")
+//                    .header("Authorizaiton", accessToken)
+////                    .accept(MediaType.TEXT_EVENT_STREAM));
+//                    .accept(MediaType.ALL_VALUE));
+//        } catch (NullPointerException e) {
+//            throw new IllegalArgumentException("어떤 오류가 발생함");
+//        }
 //        // TODO : 0910 수정필요!!!
 //    }
 //}

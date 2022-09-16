@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
@@ -31,10 +32,11 @@ public class NotificationController {
 
 
     @GetMapping(value ="/subscribe" , produces = "text/event-stream")
-    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
+    public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response,
                                 @RequestHeader(value="Last-Event-ID",required = false,defaultValue = "")
                                 String lastEventId){
-
+        System.out.println("lastEventId = " + lastEventId);
+            response.setCharacterEncoding("UTF-8");
         return notificationService.subscribe(userDetails.getMember().getMemberId(),lastEventId);
     }
 

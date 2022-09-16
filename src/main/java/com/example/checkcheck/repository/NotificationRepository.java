@@ -15,10 +15,8 @@ public interface NotificationRepository extends JpaRepository <Notification, Lon
     @Query(value = "select count(n) from Notification n where n.receiver.memberId =:memberId and n.readState = false")
     Long countUnReadStateNotifications(@Param("memberId") Long userId);
 
-//    Optional<Notification> findById(Long NotificationsId);
 
     void deleteAllByReceiver_MemberId(Long receiverId);
-//    void deleteById(Long notificationId);
 
 
 }

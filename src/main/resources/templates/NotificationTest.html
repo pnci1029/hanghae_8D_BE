@@ -15,7 +15,7 @@
 
         const eventSource = new EventSource(`/api/subscribe/`);
 
-        eventSource.addEventListener("sse", function (event) {
+        eventSource.addEventListener("LAST-EVENT-ID", function (event) {
             console.log(event.data);
 
             const data = JSON.parse(event.data);

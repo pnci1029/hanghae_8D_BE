@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 
 @RequiredArgsConstructor
 @Configuration
@@ -26,7 +27,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-//    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public BCryptPasswordEncoder encodePassword() {
@@ -52,6 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.cors().configurationSource(corsConfigurationSource());
         // 토큰 인증이므로 세션 사용x
         http.csrf().disable()
+                .cors()
+                .and()
                 .exceptionHandling()
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -70,6 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/main/**").permitAll()
                 .antMatchers("/auth/user/token").permitAll()
 
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
@@ -79,29 +82,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .apply(new JwtSecurityConfig(jwtTokenProvider));
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+
+
     }
 
-//                    .antMatchers("/**").permitAll()
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-////        configuration.addAllowedOriginPattern("http://localhost:3000");
-//        configuration.addAllowedOriginPattern("https://localhost:3000");
-//        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app/");
-//        configuration.addAllowedOriginPattern("https://auth-6eb37.web.app");
-//        configuration.addAllowedOriginPattern("https://test-react-basic.web.app");
-//        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app");
-//        configuration.addAllowedOriginPattern("https://bungle.life");
-//        configuration.addAllowedMethod("*");
-//        configuration.addAllowedHeader("*");
-//        configuration.addExposedHeader("Authorization");
-//        configuration.addExposedHeader("RefreshToken");
-//        configuration.setAllowCredentials(true);
-////        configuration.validateAllowCredentials();
-//        configuration.setMaxAge(3600L);
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
 }

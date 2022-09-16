@@ -4,10 +4,9 @@ import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
 import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
-import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.model.Image;
-import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.Member;
+import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
@@ -15,10 +14,8 @@ import com.example.checkcheck.repository.ImageRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
-//import com.example.checkcheck.service.s3.S3Uploader;
 import com.example.checkcheck.service.s3.MarvinS3Uploader;
 import com.example.checkcheck.util.ComfortUtils;
-import com.example.checkcheck.util.LoadUser;
 import com.example.checkcheck.util.Time;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -38,20 +35,17 @@ public class ArticleService {
     private ArticleRepository articleRepository;
     private ImageRepository imageRepository;
     private MemberRepository memberRepository;
-//    private S3Uploader s3Uploader;
     private MarvinS3Uploader marvinS3Uploader;
     private ComfortUtils comfortUtils;
     private Time time;
 
 
     private NotificationService notificationService;
-    private LoadUser loadUser;
 
     public ArticleService(
             ArticleRepository articleRepository,
             ImageRepository imageRepository,
             MemberRepository memberRepository,
-//            S3Uploader s3Uploader,
             MarvinS3Uploader marvinS3Uploader,
             ComfortUtils comfortUtils,
             Time time,
@@ -61,7 +55,6 @@ public class ArticleService {
         this.articleRepository = articleRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;
-//        this.s3Uploader = s3Uploader;
         this.marvinS3Uploader = marvinS3Uploader;
         this.comfortUtils = comfortUtils;
         this.time = time;
@@ -71,7 +64,6 @@ public class ArticleService {
     @Transactional
     public ResponseDto<?> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
                                        UserDetailsImpl userDetails) throws IOException {
-//        try {
             String nickName = userDetails.getMember().getNickName();
             String userEmail = userDetails.getUsername();
 
@@ -97,8 +89,6 @@ public class ArticleService {
                     .build();
             articleRepository.save(articles);
 
-//        작성시간
-            String time1 = comfortUtils.getTime(articles.getCreatedAt());
 
 ////        이미지업로드
             if (multipartFile != null) {
@@ -119,9 +109,6 @@ public class ArticleService {
                 }
 
             }
-//        } catch (NullPointerException n) {
-//            throw new CustomException(ErrorCode.NullPoint_Token);
-//        }
 
         return ResponseDto.success("작성 성공");
 
@@ -175,8 +162,6 @@ public class ArticleService {
     @Transactional
     public ResponseDto<?> deleteArticle(Long articlesId, UserDetailsImpl userDetails) {
         Optional<Article> target = articleRepository.findById(articlesId);
-        System.out.println("userDetails = " + userDetails.getUsername());
-        System.out.println("target.get().getMember().getUserEmail() = " + target.get().getMember().getUserEmail());
 
         if (!userDetails.getUsername().equals(target.get().getMember().getUserEmail())) {
             return ResponseDto.fail("400", "게시글 작성자만 삭제가 가능합니다.");
@@ -184,40 +169,6 @@ public class ArticleService {
         articleRepository.deleteById(target.get().getArticleId());
         return ResponseDto.success("삭제 성공");
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // 게시글 번호 확인
@@ -235,8 +186,6 @@ public class ArticleService {
         for (String s : imageList) {
             imageRepository.deleteByImage(s);
         }
-        //        이미지 초기화
-//        imageRepository.deleteByArticle_ArticleId(articlesId);
 
         String userEmail = userDetails.getUsername();
 
@@ -248,8 +197,6 @@ public class ArticleService {
 
         articleRepository.save(targetArticle);
 
-//        작성시간
-//        String time1 = comfortUtils.getTime(articles.getCreatedAt());
 //
 //        이미지업로드
         if (multipartFile != null) {
@@ -275,22 +222,6 @@ public class ArticleService {
     }
 
     public Slice<ArticleResponseDto> getAllArticles(Pageable pageable, Category category, Process process) {
-
-//        CategoryEntity target = categoryRepository.findByUserEmail(userDetails.getMember().getUserEmail());
-//        if (target == null) {
-//            target = new CategoryEntity(category, process, userDetails.getUsername());
-//            System.out.println("target111 = " + target);
-//        } else {
-//            if (category == null) {
-//                target.updateProcess(process);
-//            } else if (process == null) {
-//                target.updateCategory(category);
-//            } else {
-//                target.updateProcess(process);
-//                target.updateCategory(category);
-//            }
-//        }
-//        CategoryEntity save = categoryRepository.save(target);
         return articleRepository.articleScroll(pageable, category,process);
     }
 }

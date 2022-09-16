@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Member implements Serializable {
+public class Member {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -32,17 +32,11 @@ public class Member implements Serializable {
     @Column
     private String userRealEmail;
 
-//    @Column
-//    private String userRank;
-
     @Column
     private int point= 0;
 
     @Column
     private String provider;
-
-//    @Column
-//    private Double socialId;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonManagedReference

@@ -40,17 +40,11 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
                     throw new JwtException("액세스 토큰이 존재하지 않습니다.");
                 }
             }
-//            } catch (NullPointerException nullPointerException) {
-//                throw new NullPointerException("aaaaaaaaaaa");
-//            }
         } catch (ExpiredJwtException e) {
-            System.out.println("1 = " + 1);
             request.setAttribute("exception", ErrorCode.EXPIRED_TOKEN.getErrorCode());
         } catch (JwtException e) {
-            System.out.println("2 = " + 2);
             request.setAttribute("exception", ErrorCode.UnSupported_Token);
         } catch (NullPointerException e) {
-            System.out.println("3 = " + 3);
             request.setAttribute("exception", ErrorCode.NullPoint_Token);
         }
 

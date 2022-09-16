@@ -34,17 +34,30 @@ import java.util.Optional;
 
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class CommentService {
 
-    private final CommentRepository commentRepository;
-    private final ArticleRepository articleRepository;
-    private final MemberRepository memberRepository;
-    private final ArticleService articleService;
-    private final ComfortUtils comfortUtils;
-    private final NotificationService notificationService;
-    private final MailService mailService;
+    private CommentRepository commentRepository;
+    private ArticleRepository articleRepository;
+    private MemberRepository memberRepository;
+    private ArticleService articleService;
+
+    private ComfortUtils comfortUtils;
+    private NotificationService notificationService;
+    private MailService mailService;
+
+    public CommentService(CommentRepository commentRepository, ArticleRepository articleRepository,
+                          MemberRepository memberRepository, ArticleService articleService,
+                          ComfortUtils comfortUtils, NotificationService notificationService,
+                          MailService mailService) {
+        this.commentRepository = commentRepository;
+        this.articleRepository = articleRepository;
+        this.memberRepository = memberRepository;
+        this.articleService = articleService;
+        this.comfortUtils = comfortUtils;
+        this.notificationService = notificationService;
+        this.mailService = mailService;
+    }
 
     //TODO: 에러메시지 모두 CUSTOM 형식의 에러코드로 수정하는게 어떨까요?
     // 댓글 작성
@@ -93,16 +106,12 @@ public class CommentService {
 
         commentRepository.save(comment);
 
-        //해당 댓글로 이동하는 url
-        String Url = "http://localhost:8080/api/auth/detail/"+article.getArticleId();
-
         //댓글 생성 시 게시글 작성 유저에게 실시간 알림 전송 ,
         String message = article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!";
-        System.out.println("message = " + message);
 
         //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
         if(!Objects.equals(comment.getMember().getMemberId(), article.getMember().getMemberId())) {
-            notificationService.send(article.getMember(), AlarmType.COMMENT, message, Url);
+            notificationService.send(article.getMember(), AlarmType.comment, message, article.getArticleId(), article.getTitle(), comment.getCreatedAt());
             log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
 
         //게시글 작성자에게 이메일전송
@@ -142,7 +151,6 @@ public class CommentService {
         }
 
         List<Comment> commentList = commentRepository.getCommentList(articlesId);
-//        List<Comment> commentList = commentRepository.findByArticle_ArticleId(articlesId);
         List<CommentResponseDto> commentResponseDtoList = new ArrayList<>();
 
 //        isMyArticles 초기화
@@ -230,6 +238,10 @@ public class CommentService {
     public CommentChoiseResponseDto commentChoose(Long articlesId, CommentChoiseRequestDto commentChoiseRequestDto, UserDetailsImpl userDetails) {
         Long commentsId = commentChoiseRequestDto.getCommentsId();
 
+        /**
+         * 글로벌 예외처리 해야함
+         */
+
         Article targetArticle = articleRepository.findById(articlesId).orElseThrow(
                 () -> new NullPointerException("게시글이 존재하지않습니다.")
         );
@@ -264,7 +276,6 @@ public class CommentService {
         targetArticleMember.get().updatePoint(articlePoint + 10);
 
 
-        System.out.println("point = " + commentPoint);
 //        게시글 상태 변경
         targetArticle.updateProcess(Process.done);
 //        댓글 상태 변경
@@ -279,14 +290,15 @@ public class CommentService {
         articleRepository.save(targetArticle);
 
         //해당 댓글로 이동하는 url
-        String Url = "http://localhost:8080/api/auth/detail/"+articlesId;
+        String Url = "http://localhost:8080/api/auth/detail/"+ articlesId;
 
         //댓글 채택 시 채택된 댓글 유저에게 실시간 알림 전송
         String message = targetComment.getNickName()+"님! 게시글에 작성된 댓글이 채택되었어요, +50 포인트를 획득하셨습니다, 축하드립니다!";
 
+
         //로그인 사용자와 채택댓글 작성자가 다를 경우에는 알림을 보낼 필요가 없다.
         if(!Objects.equals(userDetails.getMember().getMemberId(), targetComment.getMember().getMemberId())) {
-            notificationService.send(targetComment.getMember(), AlarmType.CHOICE, message, Url);
+            notificationService.send(targetComment.getMember(), AlarmType.selected, message, targetArticle.getArticleId(), targetArticle.getTitle(), targetComment.getCreatedAt());
             log.info("Alarm 대상 : {}, Alram 메시지 = {}", targetComment.getNickName(), message);
 
         // 채택댓글 작성자에게 이메일 전송
@@ -315,8 +327,5 @@ public class CommentService {
                 .commentsUserRank(userRank)
                 .build();
     }
-//    Optional<Member> targetMember = memberRepository.findById(comment.getMember().getMemberId());
-//    int point = comment.getMember().getPoint();
-//        targetMember.get().updatePoint(point+1);
 
 }
