@@ -55,7 +55,6 @@ public class Notification extends TimeStamped {
     @Column
     private String title;
 
-//    private LocalDateTime createdAt;
 
     @Builder
     public Notification(AlarmType alarmType, String message, Boolean readState,
@@ -66,7 +65,6 @@ public class Notification extends TimeStamped {
         this.url = articlesId;
         this.receiver = receiver;
         this.title = title;
-//        this.createdAt = createdAt;
     }
 
     public void changeState() {

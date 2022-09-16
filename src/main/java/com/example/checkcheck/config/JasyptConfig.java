@@ -23,7 +23,6 @@ public class JasyptConfig {
         config.setPoolSize("1"); // 인스턴스 pool
         config.setProviderName("SunJCE");
         config.setSaltGeneratorClassName("org.jasypt.salt.RandomSaltGenerator"); // salt 생성 클래스
-//        config.setIvGeneratorClassName("org.jasypt.iv.RandomIvGenerator");
         config.setStringOutputType("base64"); //인코딩 방식
 
 

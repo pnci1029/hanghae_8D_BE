@@ -32,8 +32,8 @@ public class JwtTokenProvider {
 
     // 토큰 유효시간
     // 프론트엔드와 약속해야 함
-//    private final Long tokenValidTime = 30*60*1000L;  // 30분
-    private final Long tokenValidTime = 10 * 60 * 1000L;  // 10분
+    private final Long tokenValidTime = 30*60*1000L;  // 30분
+//    private final Long tokenValidTime = 10 * 60 * 1000L;  // 10분
     private final Long refreshTokenValidTime = 7 * 24 * 60 * 60 * 1000L;  // 1주일
 
     private final UserDetailsService userDetailsService;
@@ -69,7 +69,6 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
         response.addHeader("RefreshToken",refreshToken);
-//        response.addHeader("RefreshToken","Bearer " + refreshToken);
         return refreshToken;
     }
 
@@ -111,16 +110,6 @@ public class JwtTokenProvider {
 
             return !claims.getBody().getExpiration().before(new Date());
 
-//        } catch (UnsupportedJwtException e) {
-//            throw new UnsupportedJwtException("지원하지 않는 JWT토큰입니다");
-////        } catch (ExpiredJwtException e) {
-////            throw new ExpiredJwtException(Jwts.header(), Jwts.claims(), "만료된 토큰입니다");
-//        } catch (IllegalArgumentException e) {
-//            throw new IllegalArgumentException("잘못된 JWT 토큰입니다");
-//        } catch (SignatureException e) {
-//            throw new CustomException(ErrorCode.Signature_Exception);
-//        } catch (MalformedJwtException e) {
-//            throw new CustomException(ErrorCode.Malformed_JwtException);
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }

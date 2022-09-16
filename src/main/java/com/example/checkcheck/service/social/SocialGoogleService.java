@@ -115,7 +115,6 @@ public class SocialGoogleService {
 //        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
         body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/google");
         body.add("code", code);
-//        System.out.println(code);
 
 
         //HTTP 요청 보내기
@@ -174,7 +173,6 @@ public class SocialGoogleService {
     private Member signupGoogleUser(GoogleUserInfoDto googleUserInfoDto) {
         // 재가입 방지
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        Double googleId = Double.valueOf(googleUserInfoDto.getGoogleId());
         Member findGoogle = memberRepository.findByUserRealEmail(googleUserInfoDto.getUserEmail()).orElse(null);
 
 
@@ -186,7 +184,6 @@ public class SocialGoogleService {
             String password = UUID.randomUUID().toString();
             String encodedPassword = password;
             String provider = "google";
-            LocalDateTime createdAt = LocalDateTime.now();
 
             Member kakaoMember = Member.builder()
 
