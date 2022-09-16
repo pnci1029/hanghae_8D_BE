@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,8 +51,7 @@ public class ArticleService {
             ComfortUtils comfortUtils,
             Time time,
             NotificationService notificationService
-            )
-    {
+    ) {
         this.articleRepository = articleRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;
@@ -64,38 +64,38 @@ public class ArticleService {
     @Transactional
     public ResponseDto<?> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
                                        UserDetailsImpl userDetails) throws IOException {
-            String nickName = userDetails.getMember().getNickName();
-            String userEmail = userDetails.getUsername();
+        String nickName = userDetails.getMember().getNickName();
+        String userEmail = userDetails.getUsername();
 
-            //        유저 포인트
-            Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
-            int userPoint = userDetails.getMember().getPoint() + 2;
-            memberBox.get().updatePoint(userPoint);
+        //        유저 포인트
+        Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
+        int userPoint = userDetails.getMember().getPoint() + 2;
+        memberBox.get().updatePoint(userPoint);
 
-            String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
+        String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
 
-            //        게시글
-            Article articles = Article.builder()
-                    .nickName(nickName)
-                    .title(articleRequestDto.getTitle())
-                    .content(articleRequestDto.getContent())
-                    .price(articleRequestDto.getPrice())
-                    .category(articleRequestDto.getCategory())
-                    .process(Process.process)
-                    .userRank(userRank)
-                    .member(userDetails.getMember())
-                    .userEmail(userEmail)
-                    .selectedPrice(0)
-                    .build();
-            articleRepository.save(articles);
+        //        게시글
+        Article articles = Article.builder()
+                .nickName(nickName)
+                .title(articleRequestDto.getTitle())
+                .content(articleRequestDto.getContent())
+                .price(articleRequestDto.getPrice())
+                .category(articleRequestDto.getCategory())
+                .process(Process.process)
+                .userRank(userRank)
+                .member(userDetails.getMember())
+                .userEmail(userEmail)
+                .selectedPrice(0)
+                .build();
+        articleRepository.save(articles);
 
 
 ////        이미지업로드
-            if (multipartFile != null) {
+        if (multipartFile != null) {
 
-                List<Image> imgbox = new ArrayList<>();
-                //          이미지 업로드
-                for (MultipartFile uploadedFile : multipartFile) {
+            List<Image> imgbox = new ArrayList<>();
+            //          이미지 업로드
+            for (MultipartFile uploadedFile : multipartFile) {
 
 
                 Image imagePostEntity = Image.builder()
@@ -105,10 +105,10 @@ public class ArticleService {
                         .build();
                 imgbox.add(imagePostEntity);
 
-                    imageRepository.save(imagePostEntity);
-                }
-
+                imageRepository.save(imagePostEntity);
             }
+
+        }
 
         return ResponseDto.success("작성 성공");
 
@@ -128,7 +128,7 @@ public class ArticleService {
         return ResponseDto.success(resultBox);
     }
 
-//  게시글 상세페이지
+    //  게시글 상세페이지
     public ArticleDetailResponseDto getArticleDetail(Long id, UserDetailsImpl userDetails) {
         Article article = articleRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("게시글이 존재하지않습니다")
@@ -146,10 +146,26 @@ public class ArticleService {
             imageBox.add(realImage);
         }
 
+//      게시글 채택상태일때
+        if (article.getProcess().equals(Process.done)) {
+            ArticleDetailResponseDto articleResponseDto = ArticleDetailResponseDto.builder()
+                    .article(article)
+                    .price(null)
+                    .selectedPrice(NumberFormat.getInstance().format(article.getSelectedPrice()))
+                    .isMyArticles(isMyArticles)
+                    .image(imageBox)
+                    .category(comfortUtils.getCategoryKorean(article.getCategory()))
+                    .process(comfortUtils.getProcessKorean(article.getProcess()))
+                    .build();
+            return articleResponseDto;
+        }
 
+//          게시글 진행상태일때
         ArticleDetailResponseDto articleResponseDto = ArticleDetailResponseDto.builder()
                 .article(article)
                 .isMyArticles(isMyArticles)
+                .price(NumberFormat.getInstance().format(article.getPrice()))
+                .selectedPrice(null)
                 .image(imageBox)
                 .category(comfortUtils.getCategoryKorean(article.getCategory()))
                 .process(comfortUtils.getProcessKorean(article.getProcess()))
@@ -222,6 +238,6 @@ public class ArticleService {
     }
 
     public Slice<ArticleResponseDto> getAllArticles(Pageable pageable, Category category, Process process) {
-        return articleRepository.articleScroll(pageable, category,process);
+        return articleRepository.articleScroll(pageable, category, process);
     }
 }
