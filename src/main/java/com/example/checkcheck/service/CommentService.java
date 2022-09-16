@@ -259,7 +259,7 @@ public class CommentService {
         }
 
         if (targetArticle.getProcess().equals(Process.done)) {
-            throw new IllegalArgumentException("채택된 댓글이 있어서 채택할수없습니다.");
+            throw new CustomException(ErrorCode.IS_ALREADY_CHOSEN);
         }
         if (targetComment.getType().equals(Type.text)) {
             throw new IllegalArgumentException("숫자로 입력된 댓글을 채택해주세요");

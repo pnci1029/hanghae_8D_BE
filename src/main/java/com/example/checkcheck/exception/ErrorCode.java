@@ -54,6 +54,7 @@ public enum ErrorCode {
 
     //댓글
     TOO_MUCH_COMMENTS(HttpStatus.BAD_REQUEST, "500", "댓글은 10개까지 작성할 수 있습니다."),
+    IS_ALREADY_CHOSEN(HttpStatus.BAD_REQUEST, "500", "채택된 댓글이 있어서 채택할수없습니다."),
 
 
 
