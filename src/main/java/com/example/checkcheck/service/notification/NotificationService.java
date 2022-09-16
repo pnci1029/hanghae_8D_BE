@@ -146,22 +146,8 @@ public class NotificationService {
     }
 
     @Transactional
-//    public List<NotificationResponseDto> findAllNotifications(Long userId) {
     public List<NotificationResponseDto> findAllNotifications(Long userId) {
         List<Notification> notifications = notificationRepository.findAllByReceiver_MemberId(userId);
-//        for (Notification notification : notifications) {
-//            notification.getC
-//        }
-
-//        List<TestDto> result = new ArrayList<>();
-//        for (Notification notification : notifications) {
-//            TestDto testDto = TestDto.builder()
-//                    .notificationResponseDtoList(notification)
-//                    .createdAt(comfortUtils.getTime(notification.getCreatedAt()))
-//                    .build();
-//            result.add(testDto);
-//        }
-
         return notifications.stream()
                 .map(NotificationResponseDto::create)
                 .collect(Collectors.toList());
