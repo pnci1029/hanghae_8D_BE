@@ -26,7 +26,9 @@ public class StompApplication {
 	}
 
 //	public static void main(String[] args) {
-//		SpringApplication.run(StompApplication.class, args);
+//		new SpringApplicationBuilder(StompApplication.class)
+//				.properties(APPLICATION_LOCATIONS)
+//				.run(args);
 //
 //	}
 	@Bean
