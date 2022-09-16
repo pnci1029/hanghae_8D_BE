@@ -11,13 +11,16 @@ import com.example.checkcheck.repository.EmitterRepository;
 import com.example.checkcheck.repository.EmitterRepositoryImpl;
 import com.example.checkcheck.repository.NotificationRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
+import com.example.checkcheck.util.ComfortUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -37,6 +40,8 @@ public class NotificationService {
     private final EmitterRepository emitterRepository = new EmitterRepositoryImpl();
     private final NotificationRepository notificationRepository;
 
+    private final ComfortUtils comfortUtils;
+
     public SseEmitter subscribe(Long userId, String lastEventId) {
         //emitter 하나하나 에 고유의 값을 주기 위해
         String emitterId = makeTimeIncludeId(userId);
@@ -44,6 +49,7 @@ public class NotificationService {
         Long timeout = 60L * 1000L * 60L; // 1시간
         // 생성된 emiiterId를 기반으로 emitter를 저장
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(timeout));
+        System.out.println("emitter = " + emitter.toString());
 
         //emitter의 시간이 만료된 후 레포에서 삭제
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
@@ -51,6 +57,7 @@ public class NotificationService {
 
         // 503 에러를 방지하기 위해 처음 연결 진행 시 더미 데이터를 전달
         String eventId = makeTimeIncludeId(userId);
+        System.out.println("eventId = " + eventId);
         // 수 많은 이벤트 들을 구분하기 위해 이벤트 ID에 시간을 통해 구분을 해줌
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + userId + "]");
 
@@ -101,9 +108,11 @@ public class NotificationService {
         받을 회원의 emitter들을 모두 찾아 해당 emitter를 Send
      */
 
-    @Transactional
-    public void send(Member receiver, AlarmType alarmType, String message, String url) {
-        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, url));
+    @Async
+    public void send(Member receiver, AlarmType alarmType, String message, Long articlesId, String title, LocalDateTime createdAt) {
+        System.out.println("createdAt = " + createdAt);
+//        여기 createdAt은 댓글 생성될때 찍히는시간,
+        Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, articlesId, title));
         log.info("DB 메시지 저장 확인 : {}", message);
         String receiverId = String.valueOf(receiver.getMemberId());
         String eventId = receiverId + "_" + System.currentTimeMillis();
@@ -117,12 +126,16 @@ public class NotificationService {
     }
 
 
-    private Notification createNotification(Member receiver, AlarmType alarmType, String message, String url) {
+
+    private Notification createNotification(Member receiver, AlarmType alarmType, String message,
+                                            Long articlesId, String title) {
+
         return Notification.builder()
                 .receiver(receiver)
                 .alarmType(alarmType)
                 .message(message)
-                .url(url)
+                .articlesId(articlesId)
+                .title(title)
                 .readState(false) // 현재 읽음상태
                 .build();
     }
@@ -134,6 +147,7 @@ public class NotificationService {
                 .map(NotificationResponseDto::create)
                 .collect(Collectors.toList());
     }
+
 
     @Transactional
     public NotificationCountDto countUnReadNotifications(Long userId) {

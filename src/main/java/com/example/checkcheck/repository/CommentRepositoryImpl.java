@@ -1,7 +1,6 @@
 package com.example.checkcheck.repository;
 
 import com.example.checkcheck.model.commentModel.Comment;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import java.util.List;

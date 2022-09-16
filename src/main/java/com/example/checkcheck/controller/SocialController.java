@@ -50,7 +50,6 @@ public class SocialController {
 
     @GetMapping(value = "/auth/user/token")
     public RefreshTokenResponseDto refreshAccessToken(HttpServletRequest request
-//                                           @ModelAttribute (value = "refreshToken")RefreshTokenRequestDto refreshToken
     ) throws AuthenticationException {
         String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
         return memberService.refreshAccessToken(refreshToken);

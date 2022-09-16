@@ -29,7 +29,6 @@ public class MyPageController {
                                                      @RequestParam(value = "process")Process process) {
 
         return articleRepository.myPageInfo(userDetails, process);
-//        return myPageService.readMyPageArticle(userDetails, process);
     }
 
 

@@ -5,8 +5,8 @@ import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.KakaoUserInfoDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
-import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.repository.MemberRepository;
+import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
 import com.example.checkcheck.util.ComfortUtils;
@@ -15,7 +15,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -44,6 +47,7 @@ public class SocialKakaoService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final ComfortUtils comfortUtils;
 
+//    private final RedisService redisService;
 
 
     //header 에 Content-type 지정
@@ -65,6 +69,9 @@ public class SocialKakaoService {
 
         // User 권한 확인
         TokenFactory tokenFactory = memberService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
+
+//        redisService.setValues(kakaoMember.getUserEmail(), tokenFactory.getRefreshToken());
+
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(kakaoMember.getUserEmail())
@@ -105,7 +112,8 @@ public class SocialKakaoService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
 //        body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
-        body.add("redirect_uri", "http://localhost:3000/user/signin/kakao");
+//        body.add("redirect_uri", "http://localhost:3000/user/signin/kakao");
+        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/kakao");
         body.add("code", code);
         body.add("client_secret", clientSecret);
 
