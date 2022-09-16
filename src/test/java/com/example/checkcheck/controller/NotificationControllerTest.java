@@ -49,7 +49,8 @@
 //            //when - > then
 //            mockMvc.perform(MockMvcRequestBuilders.get("/api/subscribe")
 //                    .header("Authorizaiton", accessToken)
-//                    .accept(MediaType.TEXT_EVENT_STREAM));
+////                    .accept(MediaType.TEXT_EVENT_STREAM));
+//                    .accept(MediaType.ALL_VALUE));
 //        } catch (NullPointerException e) {
 //            throw new IllegalArgumentException("어떤 오류가 발생함");
 //        }
