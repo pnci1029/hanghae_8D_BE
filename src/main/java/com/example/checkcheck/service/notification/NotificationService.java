@@ -49,6 +49,7 @@ public class NotificationService {
         Long timeout = 60L * 1000L * 60L; // 1시간
         // 생성된 emiiterId를 기반으로 emitter를 저장
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(timeout));
+        System.out.println("emitter = " + emitter.toString());
 
         //emitter의 시간이 만료된 후 레포에서 삭제
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
@@ -56,6 +57,7 @@ public class NotificationService {
 
         // 503 에러를 방지하기 위해 처음 연결 진행 시 더미 데이터를 전달
         String eventId = makeTimeIncludeId(userId);
+        System.out.println("eventId = " + eventId);
         // 수 많은 이벤트 들을 구분하기 위해 이벤트 ID에 시간을 통해 구분을 해줌
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + userId + "]");
 
@@ -122,12 +124,7 @@ public class NotificationService {
                 }
         );
     }
-    //알림 리스폰스에 키값 articlesId : articlesId
-    //리스폰스쪽에
-    //알람시간 : ~분전 createdAt : 3분전
-    //해당게시물제목 title : "아이폰"
-    //알람타입 comment / selected alarmType : comment
-    //notificationId : 31
+
 
 
     private Notification createNotification(Member receiver, AlarmType alarmType, String message,
@@ -139,8 +136,6 @@ public class NotificationService {
                 .message(message)
                 .articlesId(articlesId)
                 .title(title)
-//                .createdAt(createdAt)
-//                .alarmNewest()
                 .readState(false) // 현재 읽음상태
                 .build();
     }

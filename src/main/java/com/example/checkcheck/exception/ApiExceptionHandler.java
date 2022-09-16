@@ -19,8 +19,6 @@ public class ApiExceptionHandler {
         errorResponse.setErrorCode(errCode);
         errorResponse.setErrorMessage(errMSG);
 
-        System.out.println("ERR :" + status + " , " + errCode + " , " + errMSG);
-
         return new ResponseEntity(
                 errorResponse,
                 ex.getErrorCode().getHttpStatus()
@@ -32,9 +30,7 @@ public class ApiExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.builder()
-//                        .msg(e.getMessage())
                         .errorCode(ErrorCode.NullPoint_Token)
-//                        .httpStatus(HttpStatus.BAD_REQUEST)
                         .build()
                 );
     }
