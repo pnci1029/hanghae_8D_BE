@@ -7,6 +7,7 @@ import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class NotificationController {
      */
 
 
-    @GetMapping(value ="/subscribe" , produces = "text/event-stream")
+    @GetMapping(value ="/subscribe" , produces = MediaType.ALL_VALUE)
     public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails, HttpServletResponse response,
                                 @RequestHeader(value="Last-Event-ID",required = false,defaultValue = "")
                                 String lastEventId){
