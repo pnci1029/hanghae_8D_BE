@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class MailService {
     private JavaMailSender javaMailSender;
-    private static final String FROM_ADDRESS = "checkcheckhanghae99@gmail.com";
+    private static final String FROM_ADDRESS = "chackcheck99@gmail.com";
 
     @Async
     public void mailSend(MailRequestDto mailRequestDto){

@@ -48,8 +48,8 @@ spring:
   mail:
     host: ENC(yvoj4aKpueJpQhyYxva+zxM41rW7fhhO)
     port: 587
-    username: ENC(8V3pmRN/wVLj/TFQE3E7kXEorwVIyj9PmP6QgYGh0EevgcWAUmrWZA==)
-    password: ENC(LU2e9KqqD6DIW8TFbsnBfbUTuWvorhtBeWVkurBXcps=)
+    username: ENC(cAq9J/Bcu0/JSjAlS4NBYeV5mVpIWxjE3i6PEVXZ6Wo=)
+    password: ENC(aNLVmTPJI2LcRHqJ8fkX1/y/U+j7YK9rVm48krZdHB4=)
     properties:
       mail:
         smtp:

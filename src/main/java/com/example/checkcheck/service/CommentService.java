@@ -107,7 +107,8 @@ public class CommentService {
         commentRepository.save(comment);
 
         //댓글 생성 시 게시글 작성 유저에게 실시간 알림 전송 ,
-        String message = article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!";
+        String message = article.getNickName() + "님! 게시물에 작성된 댓글 알림이 도착했어요!\n\n" +
+                "확인하러가기 https://www.chackcheck99.com/detail/" + requestDto.getArticlesId();
 
         //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
         if(!Objects.equals(comment.getMember().getMemberId(), article.getMember().getMemberId())) {
@@ -115,7 +116,7 @@ public class CommentService {
             log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
 
         //게시글 작성자에게 이메일전송
-            String maiTitle = "안녕하세요, 고객님 Checkcheck입니다";
+            String maiTitle = "안녕하세요, 고객님 ChackCheck입니다";
             mailService.mailSend(new MailRequestDto(article.getMember().getUserRealEmail(), maiTitle, message));
         }
 
@@ -293,7 +294,8 @@ public class CommentService {
         String Url = "http://localhost:8080/api/auth/detail/"+ articlesId;
 
         //댓글 채택 시 채택된 댓글 유저에게 실시간 알림 전송
-        String message = targetComment.getNickName()+"님! 게시글에 작성된 댓글이 채택되었어요, +50 포인트를 획득하셨습니다, 축하드립니다!";
+        String message = targetComment.getNickName()+"님! 게시글에 작성된 댓글이 채택되었어요, +50 포인트를 획득하셨습니다, 축하드립니다!\n\n"+
+                "확인하러가기 https://www.chackcheck99.com/detail/" + articlesId;
 
 
         //로그인 사용자와 채택댓글 작성자가 다를 경우에는 알림을 보낼 필요가 없다.
@@ -302,7 +304,7 @@ public class CommentService {
             log.info("Alarm 대상 : {}, Alram 메시지 = {}", targetComment.getNickName(), message);
 
         // 채택댓글 작성자에게 이메일 전송
-            String maiTitle = "안녕하세요, 고객님 Checkcheck입니다";
+            String maiTitle = "안녕하세요, 고객님 ChackCheck입니다";
             mailService.mailSend(new MailRequestDto(targetComment.getMember().getUserRealEmail(), maiTitle, message));
             log.info("메일 전송 Success : {}", maiTitle);
         }

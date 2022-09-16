@@ -108,7 +108,6 @@ public class NotificationService {
 
     @Async
     public void send(Member receiver, AlarmType alarmType, String message, Long articlesId, String title, LocalDateTime createdAt) {
-        System.out.println("createdAt = " + createdAt);
 //        여기 createdAt은 댓글 생성될때 찍히는시간,
         Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, articlesId, title));
         log.info("DB 메시지 저장 확인 : {}", message);
