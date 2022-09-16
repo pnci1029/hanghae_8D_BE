@@ -44,7 +44,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         }
 //                전체 불러오기
         if (process.equals(Process.all) && category.equals(Category.all)) {
-//        if (process.equals("all") && category.equals("all")) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
                     .offset(pageable.getOffset())
@@ -57,7 +56,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
                     .where(article.category.eq(category))
-//                    .where(article.category.eq(category))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
@@ -68,7 +66,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
                     .where(article.process.eq(process))
-//                    .where(article.process.eq(process))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
@@ -78,7 +75,6 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         else {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-//                    .where(processEq(String.valueOf(process)),categoryEq(String.valueOf(category)))
                     .where(article.process.eq(process).and(article.category.eq(category)))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
@@ -115,10 +111,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                         .userRank(comfortUtils.getUserRank(article.getMember().getPoint()))
                         .image(images)
                         .process(comfortUtils.getProcessKorean(article.getProcess()))
-//                            게시자가 올린 금액 Null 선택 금액 OK
                         .price(null)
-//                            db날리고 이걸로 수정해서 테스트 -> 지금 0 들어있는 애들때문에  점찍는거안됨
-//                        .selectedPrice(article.getSelectedPrice())
                         .selectedPrice(NumberFormat.getInstance().format(article.getSelectedPrice()))
                         .build();
                 content.add(articleResponseDto);
@@ -235,25 +228,5 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
         return resultList;
     }
-
-
-//    private BooleanExpression processEq(String process) {
-//        if (process == null) {
-//            return null;
-//        } else if (process.equals("")) {
-//            return null;
-//        }
-//        return article.process.eq(process);
-//    }
-//
-//    private BooleanExpression categoryEq(String category) {
-//        if (category == null) {
-//            return null;
-//        } else if (category.equals("")) {
-//            return null;
-//        }
-//        return article.category.eq(category);
-//    }
-
 
 }

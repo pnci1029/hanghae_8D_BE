@@ -15,11 +15,16 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
-@RequiredArgsConstructor
 public class MemberService {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final RefreshTokenRepository refreshTokenRepository;
+    private JwtTokenProvider jwtTokenProvider;
+    private RefreshTokenRepository refreshTokenRepository;
+
+    public MemberService(JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
+
     public TokenFactory accessAndRefreshTokenProcess(String username, HttpServletResponse response) {
         String refreshToken = jwtTokenProvider.createRefreshToken(username);
         String token = jwtTokenProvider.createToken(username);
@@ -44,6 +49,10 @@ public class MemberService {
             RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
             String compareToken = refresh.getTokenValue();
 
+            /**
+             * 글로벌 예외처리 하기
+             */
+
             if (!compareToken.equals(refreshToken)) {
                 throw new AuthenticationException("refresh token이 유효하지 않습니다.222");
             }
@@ -54,7 +63,6 @@ public class MemberService {
 
             String newAccessToken = jwtTokenProvider.createToken(id);
 
-//            return new TokenFactory(newAccessToken);
             return new RefreshTokenResponseDto(newAccessToken);
         } catch (NullPointerException np) {
             throw new AuthenticationException("올바른 RefreshToken을 헤더에 넣어주세요");

@@ -23,16 +23,4 @@ public class MailService {
         message.setText(mailRequestDto.getMessage());
         javaMailSender.send(message);    }
 }
-// try {
-//     MailHandler mailHandler = new MailHandler(javaMailSender);
-//     mailHandler.setTo(mailDto.getAddress());
-//     mailHandler.setSubject("인증메일입니다.");
-//     String htmlContent = "<p>" + mailDto.getMessage() +"<p> <img src='cid:sample-img'>";
-//     mailHandler.setText(htmlContent, true);
-//     mailHandler.setAttach(mailDto.getFile().getOriginalFilename(), mailDto.getFile());
-//     mailHandler.setInline("sample-img", mailDto.getFile());
-//     mailHandler.send();
-// }    catch (Exception e){
-//     e.printStackTrace();
-// }
-//}
+

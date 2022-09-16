@@ -32,17 +32,11 @@ public class Member {
     @Column
     private String userRealEmail;
 
-//    @Column
-//    private String userRank;
-
     @Column
     private int point= 0;
 
     @Column
     private String provider;
-
-//    @Column
-//    private Double socialId;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonManagedReference

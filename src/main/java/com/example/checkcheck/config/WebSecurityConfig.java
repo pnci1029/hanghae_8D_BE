@@ -27,7 +27,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-//    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public BCryptPasswordEncoder encodePassword() {
@@ -87,27 +86,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
-//                    .antMatchers("/**").permitAll()
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-////        configuration.addAllowedOriginPattern("http://localhost:3000");
-//        configuration.addAllowedOriginPattern("https://localhost:3000");
-//        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app/");
-//        configuration.addAllowedOriginPattern("https://auth-6eb37.web.app");
-//        configuration.addAllowedOriginPattern("https://test-react-basic.web.app");
-//        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app");
-//        configuration.addAllowedOriginPattern("https://bungle.life");
-//        configuration.addAllowedMethod("*");
-//        configuration.addAllowedHeader("*");
-//        configuration.addExposedHeader("Authorization");
-//        configuration.addExposedHeader("RefreshToken");
-//        configuration.setAllowCredentials(true);
-////        configuration.validateAllowCredentials();
-//        configuration.setMaxAge(3600L);
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
 }

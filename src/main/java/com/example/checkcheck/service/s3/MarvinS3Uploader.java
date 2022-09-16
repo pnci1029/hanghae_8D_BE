@@ -33,17 +33,12 @@ public class MarvinS3Uploader {
 
     public String uploadImage(MultipartFile multipartFile) {
 
-        // content-type 이 image/*가 아닐 경우 해당 루프 진행하지 않음
-//        if (Objects.requireNonNull(multipartFile.getContentType()).contains("image")) {
-
         String fileName = UUID.randomUUID() + multipartFile.getOriginalFilename();
         String fileFormatName = multipartFile.getContentType().substring(multipartFile.getContentType().lastIndexOf("/") + 1);
 
         String result = amazonS3Client.getUrl(bucket, fileName).toString();
-        System.out.println("result = " + result);
 
         MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 5000);
-        System.out.println("resizedFile = " + resizedFile);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(resizedFile.getSize());
@@ -69,8 +64,6 @@ public class MarvinS3Uploader {
             // newWidth : newHeight = originWidth : originHeight
             int originWidth = image.getWidth();
             int originHeight = image.getHeight();
-            System.out.println("originHeight = " + originHeight);
-            System.out.println("originWidth = " + originWidth);
 
             // origin 이미지가 resizing될 사이즈보다 작을 경우 resizing 작업 안 함
             if (originWidth < targetWidth) {
@@ -81,7 +74,6 @@ public class MarvinS3Uploader {
 
                 MarvinImage imageMarvin = new MarvinImage(image);
 
-                System.out.println("imageMarvin = " + imageMarvin.toString());
 
                 Scale scale = new Scale();
                 scale.load();
@@ -90,10 +82,8 @@ public class MarvinS3Uploader {
                 scale.process(imageMarvin.clone(), imageMarvin, null, null, false);
 
                 BufferedImage imageNoAlpha = imageMarvin.getBufferedImageNoAlpha();
-                System.out.println("imageNoAlpha = " + imageNoAlpha.toString());
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                System.out.println("baos = " + baos.toString());
                 ImageIO.write(imageNoAlpha, fileFormatName, baos);
                 baos.flush();
 
