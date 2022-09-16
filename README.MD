@@ -73,8 +73,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 <br />
 
 ## 🎈 ERD
-
-
+<img src="https://user-images.githubusercontent.com/107388110/190672010-6f68de07-6d17-428c-b5f3-f790249d43e2.jpg">  
 <br />
 
 ## 📜 아키텍쳐
