@@ -2,6 +2,7 @@ package com.example.checkcheck.service.mail;
 
 import com.example.checkcheck.dto.requestDto.MailRequestDto;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
