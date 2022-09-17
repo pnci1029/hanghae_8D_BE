@@ -50,6 +50,7 @@ public enum ErrorCode {
 
     // 게시글
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "해당 게시글이 존재하지 않습니다"),
+    NO_IMAGE_EXCEPTION(HttpStatus.BAD_REQUEST, "406", "이미지를 추가해주세요"),
 
 
     //댓글

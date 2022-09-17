@@ -4,6 +4,8 @@ import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
 import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
@@ -90,28 +92,27 @@ public class ArticleService {
                 .build();
         articleRepository.save(articles);
 
-
+        if (multipartFile == null) {
+            throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
+        } else {
 ////        이미지업로드
-        if (multipartFile != null) {
-
             List<Image> imgbox = new ArrayList<>();
-            //          이미지 업로드
-            for (MultipartFile uploadedFile : multipartFile) {
+                //          이미지 업로드
+                for (MultipartFile uploadedFile : multipartFile) {
 
 
-                Image imagePostEntity = Image.builder()
-                        .image(marvinS3Uploader.uploadImage(uploadedFile))
-                        .userEmail(userEmail)
-                        .article(articles)
-                        .build();
-                imgbox.add(imagePostEntity);
+                    Image imagePostEntity = Image.builder()
+                            .image(marvinS3Uploader.uploadImage(uploadedFile))
+                            .userEmail(userEmail)
+                            .article(articles)
+                            .build();
+                    imgbox.add(imagePostEntity);
 
-                imageRepository.save(imagePostEntity);
-            }
-
-        }
+                    imageRepository.save(imagePostEntity);
+                }
 
         return ResponseDto.success("작성 성공");
+        }
 
     }
 
