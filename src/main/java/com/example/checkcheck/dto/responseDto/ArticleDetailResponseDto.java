@@ -7,6 +7,7 @@ import com.example.checkcheck.util.TimeStamped;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import net.bytebuddy.asm.Advice;
 
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ArticleDetailResponseDto extends TimeStamped {
+public class ArticleDetailResponseDto {
 
     private Long articlesId;
     private String price;
@@ -28,10 +29,11 @@ public class ArticleDetailResponseDto extends TimeStamped {
     private List<String> images;
     private Boolean isMyArticles;
     private String category;
+    private String createdAt;
 
     @Builder
     public ArticleDetailResponseDto(Article article, List<String> image, Boolean isMyArticles,
-                                    String category, String process, String price, String selectedPrice) {
+                                    String category, String process, String price, String selectedPrice, String createdAt) {
         this.articlesId = article.getArticleId();
 //        천단위 컴마찍기위해서 넣음
         this.price = price;
@@ -44,5 +46,6 @@ public class ArticleDetailResponseDto extends TimeStamped {
         this.images = image;
         this.isMyArticles = isMyArticles;
         this.category = category;
+        this.createdAt = createdAt;
     }
 }

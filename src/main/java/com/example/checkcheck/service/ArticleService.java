@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -146,6 +147,8 @@ public class ArticleService {
             imageBox.add(realImage);
         }
 
+//        작성시간
+        String createdAt = article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
 //      게시글 채택상태일때
         if (article.getProcess().equals(Process.done)) {
             ArticleDetailResponseDto articleResponseDto = ArticleDetailResponseDto.builder()
@@ -156,6 +159,7 @@ public class ArticleService {
                     .image(imageBox)
                     .category(comfortUtils.getCategoryKorean(article.getCategory()))
                     .process(comfortUtils.getProcessKorean(article.getProcess()))
+                    .createdAt(createdAt)
                     .build();
             return articleResponseDto;
         }
@@ -169,6 +173,7 @@ public class ArticleService {
                 .image(imageBox)
                 .category(comfortUtils.getCategoryKorean(article.getCategory()))
                 .process(comfortUtils.getProcessKorean(article.getProcess()))
+                .createdAt(createdAt)
                 .build();
 
 
