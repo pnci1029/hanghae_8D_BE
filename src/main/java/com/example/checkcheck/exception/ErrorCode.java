@@ -67,7 +67,8 @@ public enum ErrorCode {
     INVALID_FILTER_OPTION(HttpStatus.BAD_REQUEST, "400", "잘못된 filter 옵션입니다"),
     SUBSCRIBE_ERROR(HttpStatus.BAD_REQUEST, "400", "잘못된 Subscribe 요청입니다"),
 
-    EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "400","이미 존재하는 닉네임입니다.");
+    EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "400","이미 존재하는 닉네임입니다."),
+    NICKNAME_EXCEPTION(HttpStatus.BAD_REQUEST,"400" ,"닉네임은 1글자 이상 6글자 이하로 작성해주세요" );
 
     // 추후 추가 코드
     private boolean success;
