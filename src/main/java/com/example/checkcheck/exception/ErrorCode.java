@@ -57,6 +57,9 @@ public enum ErrorCode {
     TOO_MUCH_COMMENTS(HttpStatus.BAD_REQUEST, "500", "댓글은 10개까지 작성할 수 있습니다."),
     IS_ALREADY_CHOSEN(HttpStatus.BAD_REQUEST, "500", "채택된 댓글이 있어서 채택할수없습니다."),
 
+    //마이페이지
+
+
 
 
     // 정렬 옵션,
@@ -64,7 +67,7 @@ public enum ErrorCode {
     INVALID_FILTER_OPTION(HttpStatus.BAD_REQUEST, "400", "잘못된 filter 옵션입니다"),
     SUBSCRIBE_ERROR(HttpStatus.BAD_REQUEST, "400", "잘못된 Subscribe 요청입니다"),
 
-    ;
+    EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "400","이미 존재하는 닉네임입니다.");
 
     // 추후 추가 코드
     private boolean success;

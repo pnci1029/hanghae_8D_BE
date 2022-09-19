@@ -70,6 +70,7 @@ public class SocialNaverSerivce {
             if (member == null) {
                 member = Member.builder()
                         .nickName(naverUser.getNickname().substring(1, naverUser.getNickname().length() - 1))
+                        .userName(naverUser.getNickname().substring(1, naverUser.getNickname().length() - 1))
                         .password(encodedPassword)
                         .userEmail("n_"+naverUserEmail)
                         .userRealEmail(naverUser.getUserEmail().substring(1, naverUser.getUserEmail().length() - 1))

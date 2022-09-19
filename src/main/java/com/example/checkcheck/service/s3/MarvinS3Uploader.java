@@ -38,7 +38,7 @@ public class MarvinS3Uploader {
 
         String result = amazonS3Client.getUrl(bucket, fileName).toString();
 
-        MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 10000);
+        MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 15000);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(resizedFile.getSize());
