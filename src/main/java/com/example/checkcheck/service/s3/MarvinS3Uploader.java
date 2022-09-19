@@ -38,7 +38,7 @@ public class MarvinS3Uploader {
 
         String result = amazonS3Client.getUrl(bucket, fileName).toString();
 
-        MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 15000);
+        MultipartFile resizedFile = resizeImage(fileName, fileFormatName, multipartFile, 50000);
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(resizedFile.getSize());
@@ -64,9 +64,10 @@ public class MarvinS3Uploader {
             // newWidth : newHeight = originWidth : originHeight
             int originWidth = image.getWidth();
             int originHeight = image.getHeight();
+            int result = originWidth * originHeight;
 
             // origin 이미지가 resizing될 사이즈보다 작을 경우 resizing 작업 안 함
-            if (originWidth < targetWidth) {
+            if (result < targetWidth) {
 
                 return originalImage;
             } else {
