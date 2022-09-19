@@ -64,6 +64,7 @@ public class MarvinS3Uploader {
             // newWidth : newHeight = originWidth : originHeight
             int originWidth = image.getWidth();
             int originHeight = image.getHeight();
+//            int result = originWidth * originHeight;
 
             // origin 이미지가 resizing될 사이즈보다 작을 경우 resizing 작업 안 함
             if (originWidth < targetWidth) {

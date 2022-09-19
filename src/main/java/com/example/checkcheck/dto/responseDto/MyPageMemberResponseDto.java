@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class MyPageMemberResponseDto {
     private String nickName;
+    private String userName;
     private String userEmail;
     private String userRank;
     private int userPoint;
