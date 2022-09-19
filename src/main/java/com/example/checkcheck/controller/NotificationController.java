@@ -33,7 +33,7 @@ public class NotificationController {
 
     @GetMapping(value ="/subscribe" , produces = "*/*")
     public SseEmitter subscribe(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                @RequestHeader(value="Last-Event-ID",required = false,defaultValue = "")
+                                @RequestHeader(value="text/event-stream",required = false,defaultValue = "")
                                 String lastEventId){
         return notificationService.subscribe(userDetails.getMember().getMemberId(),lastEventId);
     }
