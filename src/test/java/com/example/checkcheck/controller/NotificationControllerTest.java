@@ -5,6 +5,7 @@
 //import com.example.checkcheck.model.Member;
 //import com.example.checkcheck.repository.MemberRepository;
 //import com.example.checkcheck.security.JwtTokenProvider;
+//import org.checkerframework.checker.units.qual.A;
 //import org.junit.jupiter.api.DisplayName;
 //import org.junit.jupiter.api.Test;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -56,4 +57,6 @@
 //        }
 //        // TODO : 0910 수정필요!!!
 //    }
+//
+//
 //}

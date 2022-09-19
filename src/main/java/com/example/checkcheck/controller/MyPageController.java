@@ -1,5 +1,6 @@
 package com.example.checkcheck.controller;
 
+import com.example.checkcheck.dto.requestDto.NickNameRequestDto;
 import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.articleModel.Process;
@@ -26,7 +27,7 @@ public class MyPageController {
 
     @GetMapping("/api/auth/profile/list")
     public List<MyPageResponseDto> readMyPageArticle(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                     @RequestParam(value = "process")Process process) {
+                                                     @RequestParam(value = "process") Process process) {
 
         return articleRepository.myPageInfo(userDetails, process);
     }
@@ -35,5 +36,11 @@ public class MyPageController {
     @DeleteMapping("/api/auth/profile")
     public ResponseDto<?> deleteMember(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return myPageService.deleteMember(userDetails);
+    }
+//      닉네임 변경 api
+    @PatchMapping("/api/auth/profile")
+    public ResponseDto<?> changeNickName(@RequestBody NickNameRequestDto nickName,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return myPageService.changeNickName(nickName, userDetails);
     }
 }
