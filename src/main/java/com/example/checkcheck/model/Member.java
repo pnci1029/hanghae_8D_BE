@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +20,10 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long memberId;
+
+    @Column
+    @Size(max = 6)
+    private String userName;
 
     @Column
     private String nickName;
@@ -43,9 +48,10 @@ public class Member {
     private List<Article> article=new ArrayList<>();
 
     @Builder
-    public Member(String nickName, String password, String userEmail,
+    public Member(String nickName, String password, String userEmail, String userName,
                   LocalDateTime createdAt, String provider, String userRealEmail) {
         this.nickName = nickName;
+        this.userName = userName;
         this.password = password;
         this.userEmail = userEmail;
         this.provider = provider;
@@ -55,6 +61,10 @@ public class Member {
 
     public void updatePoint(int newPoint) {
         point = newPoint;
+    }
+
+    public void updateNickName(String newNickName) {
+        nickName = newNickName;
     }
 
 }
