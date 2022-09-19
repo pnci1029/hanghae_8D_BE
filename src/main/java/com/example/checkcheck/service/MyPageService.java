@@ -3,6 +3,8 @@ package com.example.checkcheck.service;
 import com.example.checkcheck.dto.responseDto.MyPageMemberResponseDto;
 import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.model.articleModel.Article;
@@ -53,6 +55,7 @@ public class MyPageService {
         return ResponseDto.success(
                 MyPageMemberResponseDto.builder()
                         .nickName(userDetails.getMember().getNickName())
+                        .userName(userDetails.getMember().getUserName())
 //                      유저 실제 이메일 조회
                         .userEmail(memberBox.get().getUserRealEmail())
                         .userRank(userRank)
@@ -82,4 +85,19 @@ public class MyPageService {
         return ResponseDto.success("탈퇴 완료");
     }
 
+    public ResponseDto<?> changeNickName(String nickName, UserDetailsImpl userDetails) {
+        System.out.println("nickName = " + nickName);
+
+        Optional<Member> targetNickName = memberRepository.findByNickName(nickName);
+        System.out.println("targetNickName = " + targetNickName);
+        if (targetNickName.isPresent()) {
+            throw new CustomException(ErrorCode.EXIST_NICKNAME);
+        }
+        System.out.println("targetNickName from db= " + userDetails.getMember().getNickName());
+        Member targetMember = memberRepository.findByUserEmail(userDetails.getUsername()).orElse(null);
+        targetMember.updateNickName(nickName);
+        memberRepository.save(targetMember);
+
+        return ResponseDto.success("닉네임 변경 완료");
+    }
 }

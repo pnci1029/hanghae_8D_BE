@@ -191,13 +191,13 @@ public class SocialKakaoService {
 
             Member kakaoMember = Member.builder()
 
-                    .nickName(userName)
                     .userEmail("k_"+email)
                     .password(encodedPassword)
                     .userRealEmail(email)
-//                    .userRank("Bronze")
-//                    .createdAt(createdAt)
-//                    .socialId(kakaoId)
+//                    유저 실제 이름
+                    .userName(userName)
+//                    수정될수있는 닉네임
+                    .nickName(userName)
                     .provider(provider)
                     .build();
             memberRepository.save(kakaoMember);

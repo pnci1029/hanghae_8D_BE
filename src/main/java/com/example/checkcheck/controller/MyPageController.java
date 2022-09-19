@@ -26,7 +26,7 @@ public class MyPageController {
 
     @GetMapping("/api/auth/profile/list")
     public List<MyPageResponseDto> readMyPageArticle(@AuthenticationPrincipal UserDetailsImpl userDetails,
-                                                     @RequestParam(value = "process")Process process) {
+                                                     @RequestParam(value = "process") Process process) {
 
         return articleRepository.myPageInfo(userDetails, process);
     }
@@ -35,5 +35,11 @@ public class MyPageController {
     @DeleteMapping("/api/auth/profile")
     public ResponseDto<?> deleteMember(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         return myPageService.deleteMember(userDetails);
+    }
+
+    @PatchMapping("/api/auth/profile/change")
+    public ResponseDto<?> changeNickName(@RequestParam(value = "nickname") String nickName,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return myPageService.changeNickName(nickName, userDetails);
     }
 }
