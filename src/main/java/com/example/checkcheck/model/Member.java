@@ -22,7 +22,6 @@ public class Member {
     private Long memberId;
 
     @Column
-    @Size(max = 6)
     private String userName;
 
     @Column
