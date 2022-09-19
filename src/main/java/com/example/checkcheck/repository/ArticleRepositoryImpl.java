@@ -10,6 +10,7 @@ import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.util.ComfortUtils;
 import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import static com.example.checkcheck.model.articleModel.QArticle.article;
 
+@Slf4j
 public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
@@ -42,6 +44,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         if (process == null) {
             process = Process.all;
         }
+        log.info("category {}",category);
 //                전체 불러오기
         if (process.equals(Process.all) && category.equals(Category.all)) {
             articleQueryResults = jpaQueryFactory

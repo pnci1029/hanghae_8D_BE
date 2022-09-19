@@ -72,6 +72,9 @@ public class ComfortUtils {
             return String.valueOf(process);
     }
 
+    public String getUserNickName() {
+        return String.valueOf((int)(Math.random()*Math.pow(10,6)));
+    }
 
 
 
