@@ -23,7 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
                         HttpMethod.OPTIONS.name(),
                         HttpMethod.HEAD.name(),
                         HttpMethod.PUT.name())
-//                .allowCredentials(true)
+                .allowCredentials(true)
                 .maxAge(3600)
 //                .allowedOrigins("https://devtools-gewfe9kn1-green9930.vercel.app,https://devtools-si83a57cz-green9930.vercel.app, http://localhost:3000");
                 .allowedOrigins("*");
