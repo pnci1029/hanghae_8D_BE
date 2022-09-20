@@ -138,6 +138,7 @@ public class NotificationService {
     }
 
 
+    @Transactional
     public List<NotificationResponseDto> findAllNotifications(Long userId) {
         List<Notification> notifications = notificationRepository.findAllByReceiver_MemberId(userId);
         return notifications.stream()
@@ -146,7 +147,7 @@ public class NotificationService {
     }
 
 
-
+    @Transactional
     public NotificationCountDto countUnReadNotifications(Long userId) {
         //유저의 알람리스트에서 ->readState(false)인 갯수를 측정 ,
         Long count = notificationRepository.countUnReadStateNotifications(userId);
