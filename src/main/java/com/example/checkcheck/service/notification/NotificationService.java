@@ -173,6 +173,9 @@ public class NotificationService {
     }
     @Transactional
     public void deleteByNotifications(Long notificationId) {
+        if (notificationId == null) {
+            throw new CustomException(ErrorCode.NOT_EXIST_NOTIFICATION);
+        }
         notificationRepository.deleteById(notificationId);
     }
 }

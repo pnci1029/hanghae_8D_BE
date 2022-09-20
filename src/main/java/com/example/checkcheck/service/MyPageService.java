@@ -2,27 +2,19 @@ package com.example.checkcheck.service;
 
 import com.example.checkcheck.dto.requestDto.NickNameRequestDto;
 import com.example.checkcheck.dto.responseDto.MyPageMemberResponseDto;
-import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.exception.CustomException;
 import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
-import com.example.checkcheck.model.RefreshToken;
-import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.util.ComfortUtils;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -78,7 +70,7 @@ public class MyPageService {
     public ResponseDto<?> deleteMember(UserDetailsImpl userDetails) {
         Member member = userDetails.getMember();
         if (null == member) {
-            return ResponseDto.fail("400", "회원 정보가 존재하지 않습니다.");
+            throw new CustomException(ErrorCode.NOT_EXIST_CLIENT);
         }
         memberRepository.deleteById(member.getMemberId());
         refreshTokenRepository.deleteByTokenKey(member.getUserEmail());
