@@ -80,7 +80,7 @@ public class MarvinS3Uploader {
                 scale.load();
                 scale.setAttribute("newWidth", targetWidth);
                 scale.setAttribute("newHeight", targetWidth * originHeight / originWidth);
-                scale.process(imageMarvin.clone(), imageMarvin, null, null, false);
+//                scale.process(imageMarvin.clone(), imageMarvin, null, null, false);
 
                 BufferedImage imageNoAlpha = imageMarvin.getBufferedImageNoAlpha();
 
