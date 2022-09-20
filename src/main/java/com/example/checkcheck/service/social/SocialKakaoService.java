@@ -3,18 +3,24 @@ package com.example.checkcheck.service.social;
 import com.example.checkcheck.dto.responseDto.SocialResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.KakaoUserInfoDto;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
+import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
-import com.example.checkcheck.repository.UserRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
-import com.example.checkcheck.service.UserService;
+import com.example.checkcheck.service.MemberService;
+import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +32,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -37,10 +44,12 @@ public class SocialKakaoService {
     @Value("${cloud.security.oauth2.client.registration.kakao.client-secret}")
     private String clientSecret;
 
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ComfortUtils comfortUtils;
 
+//    private final RedisService redisService;
 
 
     //header 에 Content-type 지정
@@ -48,47 +57,56 @@ public class SocialKakaoService {
     @Transactional
     public SocialResponseDto kakaoLogin(String code, HttpServletResponse response)
             throws JsonProcessingException {
-        // 1. "인가코드" 로 "액세스 토큰" 요청
-        TokenFactory tokenFactory = getAccessToken(code);
-        String accessToken = tokenFactory.getAccessToken();
-        String refreshToken = tokenFactory.getRefreshToken();
+            // 1. "인가코드" 로 "액세스 토큰" 요청
+            String getAccessToken = getAccessToken(code);
 
-        // 2. 토큰으로 카카오 API 호출
-        KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
+            // 2. 토큰으로 카카오 API 호출
+            KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(getAccessToken);
 
-        // 3. 카카오ID로 회원가입 처리
-        Member kakaoMember = signupKakaoUser(kakaoUserInfo);
+            // 3. 카카오ID로 회원가입 처리
+            Member kakaoMember = signupKakaoUser(kakaoUserInfo);
 
-        //4. 강제 로그인 처리
-        forceLoginKakaoUser(kakaoMember, response);
+            //4. 강제 로그인 처리
+            forceLoginKakaoUser(kakaoMember, response);
 
-        // User 권한 확인
-        String jwtToken = userService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
+            // User 권한 확인
+            TokenFactory tokenFactory = memberService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
 
-        SocialResponseDto socialResponseDto = SocialResponseDto.builder()
-                .userEmail(kakaoUserInfo.getUserEmail())
-                .nickName(kakaoUserInfo.getNickname())
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .jwtToken("Bearer "+jwtToken)
-                .userRank(kakaoMember.getUserRank())
-                .build();
+//        redisService.setValues(kakaoMember.getUserEmail(), tokenFactory.getRefreshToken());
 
-//        리프레시 토큰
-        RefreshToken token = RefreshToken.builder()
-                .key("k_"+socialResponseDto.getUserEmail())
-                .value(refreshToken)
-                .build();
-        refreshTokenRepository.save(token);
+
+            SocialResponseDto socialResponseDto = SocialResponseDto.builder()
+                    .userEmail(kakaoMember.getUserEmail())
+                    .nickName(kakaoUserInfo.getNickname())
+                    .accessToken(tokenFactory.getAccessToken())
+                    .refreshToken(tokenFactory.getRefreshToken())
+//                .jwtToken("Bearer "+jwtToken)
+
+                    .userRank(comfortUtils.getUserRank(kakaoMember.getPoint()))
+                    .build();
+
+//        리프레시토큰저장 & 있을경우 셋토큰
+            Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(kakaoMember.getUserEmail());
+            if (existToken.isEmpty()) {
+                RefreshToken token = RefreshToken.builder()
+                        .key(socialResponseDto.getUserEmail())
+                        .value(tokenFactory.getRefreshToken())
+                        .build();
+                refreshTokenRepository.save(token);
+            } else {
+                existToken.get().setTokenKey(socialResponseDto.getUserEmail());
+                existToken.get().setTokenValue(tokenFactory.getRefreshToken());
+            }
 
 //        return new ResponseEntity<>(new FinalResponseDto<>
 //                (true, "로그인 성공",kakaoUser), HttpStatus.OK);
-        return socialResponseDto;
+            return socialResponseDto;
+
     }
 
     //header 에 Content-type 지정
     //1번
-    public TokenFactory getAccessToken(String code) throws JsonProcessingException {
+    public String getAccessToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -96,7 +114,9 @@ public class SocialKakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
-        body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
+//        body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
+//        body.add("redirect_uri", "http://localhost:3000/user/signin/kakao");
+        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/kakao");
         body.add("code", code);
         body.add("client_secret", clientSecret);
 
@@ -117,9 +137,8 @@ public class SocialKakaoService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         String accessToken=jsonNode.get("access_token").asText();
-        String refreshToken=jsonNode.get("refresh_token").asText();
 
-        return new TokenFactory(accessToken, refreshToken);
+        return accessToken;
     }
 
     //2번
@@ -161,7 +180,7 @@ public class SocialKakaoService {
         // 재가입 방지
         // DB 에 중복된 Kakao Id 가 있는지 확인
         Double kakaoId = Double.valueOf(kakaoUserInfoDto.getKakaoId());
-        Member findKakao = userRepository.findByUserEmail("k_"+kakaoUserInfoDto.getUserEmail())
+        Member findKakao = memberRepository.findByUserEmail("k_"+kakaoUserInfoDto.getUserEmail())
                 .orElse(null);
 
         //DB에 중복된 계정이 없으면 회원가입 처리
@@ -175,16 +194,16 @@ public class SocialKakaoService {
 
             Member kakaoMember = Member.builder()
 
-                    .nickName(userName)
                     .userEmail("k_"+email)
                     .password(encodedPassword)
                     .userRealEmail(email)
-                    .userRank("Bronze")
-//                    .createdAt(createdAt)
-//                    .socialId(kakaoId)
+//                    유저 실제 이름
+                    .userName(userName)
+//                    수정될수있는 닉네임
+                    .nickName(userName)
                     .provider(provider)
                     .build();
-            userRepository.save(kakaoMember);
+            memberRepository.save(kakaoMember);
 
 
             return kakaoMember;

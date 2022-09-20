@@ -4,9 +4,13 @@ import com.example.checkcheck.dto.responseDto.SocialResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.GoogleUserInfoDto;
 import com.example.checkcheck.model.Member;
-import com.example.checkcheck.repository.UserRepository;
+import com.example.checkcheck.model.RefreshToken;
+import com.example.checkcheck.repository.MemberRepository;
+import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
-import com.example.checkcheck.service.UserService;
+import com.example.checkcheck.service.MemberService;
+//import com.example.checkcheck.service.RedisService;
+import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,8 +30,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -39,21 +45,23 @@ public class SocialGoogleService {
     @Value("${cloud.security.oauth2.client.registration.google.client-secret}")
     String clientSecret;
 
-    private final UserRepository userRepository;
-    private final UserService userService;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final ComfortUtils comfortUtils;
+
+//    private final RedisService redisService;
 
     //header 에 Content-type 지정
     //1번
     @Transactional
     public SocialResponseDto googleLogin(String code, HttpServletResponse response)
             throws JsonProcessingException {
-        TokenFactory tokenFactory = getAccessToken(code);
+        String getAccessToken = getAccessToken(code);
         // 1. "인가코드" 로 "액세스 토큰" 요청
-        String accessToken = tokenFactory.getAccessToken();
-        String refreshToken = tokenFactory.getRefreshToken();
 
         // 2. 토큰으로 카카오 API 호출
-        GoogleUserInfoDto googleUserInfo = getGoogleUserInfo(accessToken);
+        GoogleUserInfoDto googleUserInfo = getGoogleUserInfo(getAccessToken);
 
         // 3. 카카오ID로 회원가입 처리
         Member member = signupGoogleUser(googleUserInfo);
@@ -64,15 +72,27 @@ public class SocialGoogleService {
         // User 권한 확인
 
         //  5. response Header에 JWT 토큰 추가
-        String jwtToken = userService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
+        TokenFactory tokenFactory1 = memberService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
+        RefreshToken refreshToken = new RefreshToken(member.getUserEmail(), tokenFactory1.getRefreshToken());
+
+//        redisService.setValues(member.getUserEmail(), tokenFactory1.getRefreshToken());
+
+//        리프레시토큰저장 & 있을경우 셋토큰
+        Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(member.getUserEmail());
+        if (existToken.isEmpty()) {
+            refreshTokenRepository.save(refreshToken);
+        }  else {
+            existToken.get().setTokenKey(refreshToken.getTokenKey());
+            existToken.get().setTokenValue(refreshToken.getTokenValue());
+        }
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(member.getUserEmail())
                 .nickName(member.getNickName())
-                .accessToken(accessToken)
-                .userRank(member.getUserRank())
-                .refreshToken(refreshToken)
-                .jwtToken("Bearer "+jwtToken)
+                .accessToken(tokenFactory1.getAccessToken())
+                .userRank(comfortUtils.getUserRank(member.getPoint()))
+                .refreshToken(tokenFactory1.getRefreshToken())
+//                .jwtToken("Bearer "+jwtToken)
                 .build();
 
 //        return new ResponseEntity<>(new FinalResponseDto<>
@@ -82,7 +102,7 @@ public class SocialGoogleService {
 
     //header 에 Content-type 지정
     //1번
-    public TokenFactory getAccessToken(String code) throws JsonProcessingException {
+    public String getAccessToken(String code) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
@@ -91,9 +111,10 @@ public class SocialGoogleService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", client_id);
         body.add("client_secret", clientSecret);
-        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
+//        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
+//        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
+        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/google");
         body.add("code", code);
-//        System.out.println(code);
 
 
         //HTTP 요청 보내기
@@ -113,11 +134,11 @@ public class SocialGoogleService {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
 
-        System.out.println("jsonNode = " + jsonNode.toString());
         String accessToken = jsonNode.get("access_token").asText();
 //        String refreshToken = jsonNode.get("refresh_token").asText();
         String refreshToken = null;
-        return new TokenFactory(accessToken, refreshToken);
+//        return new TokenFactory(accessToken, refreshToken);
+        return accessToken;
     }
 
     //2번
@@ -143,12 +164,8 @@ public class SocialGoogleService {
         String id = jsonNode.get("sub").asText();
 
         String userEmail = jsonNode.get("email").asText();
-        System.out.println("userEmail = " + userEmail);
 
         String userName = jsonNode.get("name").asText();
-        System.out.println("userName = " + userName);
-//        String profileUrl = jsonNode.get("properties")
-//                .get("profile_image").asText();
         return new GoogleUserInfoDto(id, userName, userEmail);
     }
 
@@ -156,12 +173,9 @@ public class SocialGoogleService {
     private Member signupGoogleUser(GoogleUserInfoDto googleUserInfoDto) {
         // 재가입 방지
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        Double googleId = Double.valueOf(googleUserInfoDto.getGoogleId());
-        Member findGoogle = userRepository.findByUserRealEmail(googleUserInfoDto.getUserEmail()).orElse(null);
+        Member findGoogle = memberRepository.findByUserRealEmail(googleUserInfoDto.getUserEmail()).orElse(null);
 
 
-        System.out.println("findGoogle = " + findGoogle);
-        //        아이디 여러개생김
 
         //DB에 중복된 계정이 없으면 회원가입 처리
         if (findGoogle == null) {
@@ -170,21 +184,16 @@ public class SocialGoogleService {
             String password = UUID.randomUUID().toString();
             String encodedPassword = password;
             String provider = "google";
-            LocalDateTime createdAt = LocalDateTime.now();
 
             Member kakaoMember = Member.builder()
-
-                    .nickName(userName)
+                    .userName(userName)
+                    .nickName(comfortUtils.getUserNickName())
                     .userEmail("g_" + email)
                     .userRealEmail(email)
                     .password(encodedPassword)
-//                    .socialId(googleId)
-//                    .createdAt(createdAt)
-//                    .socialId(String.valueOf(kakaoId))
                     .provider(provider)
-                    .userRank("Bronze")
                     .build();
-            userRepository.save(kakaoMember);
+            memberRepository.save(kakaoMember);
 
 
             return kakaoMember;

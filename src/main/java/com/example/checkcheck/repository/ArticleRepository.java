@@ -1,8 +1,14 @@
 package com.example.checkcheck.repository;
 
-import com.example.checkcheck.model.Article;
+import com.example.checkcheck.model.Member;
+import com.example.checkcheck.model.articleModel.Article;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ArticleRepository extends JpaRepository<Article, Long> {
+import java.util.List;
+
+public interface ArticleRepository extends JpaRepository<Article, Long>, ArticleRepositoryCustom {
+
+    List<Article> findAllByMember(Member member);
+
 
 }
