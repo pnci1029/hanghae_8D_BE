@@ -17,7 +17,7 @@ public enum ErrorCode {
 
     OK(HttpStatus.OK,  "200", "true"),
 
-
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500", "서버가 다운되었습니다, 잠시후 다시 접속해주세요"),
     // 회원가입 + 로그인 + 이메일 체크
     DUPLE_EMAIL(HttpStatus.BAD_REQUEST, "400", "중복된 이메일 입니다."),
     EMAIL_CONTENT_END(HttpStatus.BAD_REQUEST, "400", ""),

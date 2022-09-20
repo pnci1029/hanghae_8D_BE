@@ -3,6 +3,7 @@ package com.example.checkcheck.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -23,10 +24,12 @@ public class WebConfig implements WebMvcConfigurer {
                         HttpMethod.OPTIONS.name(),
                         HttpMethod.HEAD.name(),
                         HttpMethod.PUT.name())
-//                .allowCredentials(true)
+                .allowCredentials(true)
                 .maxAge(3600)
 //                .allowedOrigins("https://devtools-gewfe9kn1-green9930.vercel.app,https://devtools-si83a57cz-green9930.vercel.app, http://localhost:3000");
                 .allowedOrigins("*");
+//        WebMvcConfigurer.super.addCorsMappings(registry); //commit 시 삭제필요
 
     }
+
 }
