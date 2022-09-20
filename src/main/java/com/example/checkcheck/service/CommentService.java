@@ -62,7 +62,7 @@ public class CommentService {
     //TODO: 에러메시지 모두 CUSTOM 형식의 에러코드로 수정하는게 어떨까요?
     // 댓글 작성
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) throws CustomException {
 
         String userEmail = userDetails.getUsername();
         String nickName = userDetails.getMember().getNickName();
@@ -81,10 +81,16 @@ public class CommentService {
             throw new CustomException(ErrorCode.TOO_MUCH_COMMENTS);
         }
 
+        if (requestDto.getType().equals(Type.text)) {
+            if (requestDto.getComment().length() > 80) {
+                throw new CustomException(ErrorCode.TOO_LONG_COMMENT);
+            }
+        }
+
 //        댓글 숫자 입력 시 글자 수 제한
         if (requestDto.getType().equals(Type.price)) {
             if (requestDto.getComment().length() > 8) {
-                throw new IllegalArgumentException("숫자가 너무 큽니다");
+                throw new CustomException(ErrorCode.TOO_HIGH_NUMBER);
             }
         }
 
@@ -107,7 +113,8 @@ public class CommentService {
         commentRepository.save(comment);
 
         //댓글 생성 시 게시글 작성 유저에게 실시간 알림 전송 ,
-        String message = article.getNickName()+"님! 게시물에 작성된 댓글 알림이 도착했어요!";
+        String message = article.getNickName() + "님! 게시물에 작성된 댓글 알림이 도착했어요!\n\n" +
+                "확인하러가기 https://www.chackcheck99.com/detail/" + requestDto.getArticlesId();
 
         //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
         if(!Objects.equals(comment.getMember().getMemberId(), article.getMember().getMemberId())) {
@@ -115,7 +122,7 @@ public class CommentService {
             log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
 
         //게시글 작성자에게 이메일전송
-            String maiTitle = "안녕하세요, 고객님 Checkcheck입니다";
+            String maiTitle = "안녕하세요, 고객님 ChackCheck입니다";
             mailService.mailSend(new MailRequestDto(article.getMember().getUserRealEmail(), maiTitle, message));
         }
 
@@ -216,7 +223,7 @@ public class CommentService {
 
         Comment comment = isPresentComment(commentsId);
         if (null == comment) {
-            return ResponseDto.fail("NOT_FOUND", "댓글이 존재하지 않습니다.");
+            throw  new CustomException(ErrorCode.NOT_EXIST_COMMENT);
         }
 
         if (comment.getMember().equals(member)) {
@@ -247,7 +254,7 @@ public class CommentService {
         );
 
         Comment targetComment = commentRepository.findById(commentsId).orElseThrow(
-                () -> new NullPointerException("채택할 댓글이 없습니다.")
+                () -> new CustomException(ErrorCode.NOT_EXIST_COMMENT)
         );
 
         if (!targetArticle.getMember().getUserEmail().equals(userDetails.getUsername())) {
@@ -259,7 +266,7 @@ public class CommentService {
         }
 
         if (targetArticle.getProcess().equals(Process.done)) {
-            throw new IllegalArgumentException("채택된 댓글이 있어서 채택할수없습니다.");
+            throw new CustomException(ErrorCode.IS_ALREADY_CHOSEN);
         }
         if (targetComment.getType().equals(Type.text)) {
             throw new IllegalArgumentException("숫자로 입력된 댓글을 채택해주세요");
@@ -293,7 +300,8 @@ public class CommentService {
         String Url = "http://localhost:8080/api/auth/detail/"+ articlesId;
 
         //댓글 채택 시 채택된 댓글 유저에게 실시간 알림 전송
-        String message = targetComment.getNickName()+"님! 게시글에 작성된 댓글이 채택되었어요, +50 포인트를 획득하셨습니다, 축하드립니다!";
+        String message = targetComment.getNickName()+"님! 게시글에 작성된 댓글이 채택되었어요, +50 포인트를 획득하셨습니다, 축하드립니다!\n\n"+
+                "확인하러가기 https://www.chackcheck99.com/detail/" + articlesId;
 
 
         //로그인 사용자와 채택댓글 작성자가 다를 경우에는 알림을 보낼 필요가 없다.
@@ -302,7 +310,7 @@ public class CommentService {
             log.info("Alarm 대상 : {}, Alram 메시지 = {}", targetComment.getNickName(), message);
 
         // 채택댓글 작성자에게 이메일 전송
-            String maiTitle = "안녕하세요, 고객님 Checkcheck입니다";
+            String maiTitle = "안녕하세요, 고객님 ChackCheck입니다";
             mailService.mailSend(new MailRequestDto(targetComment.getMember().getUserRealEmail(), maiTitle, message));
             log.info("메일 전송 Success : {}", maiTitle);
         }

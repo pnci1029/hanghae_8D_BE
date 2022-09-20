@@ -40,6 +40,8 @@ public class NotificationService {
     private final EmitterRepository emitterRepository = new EmitterRepositoryImpl();
     private final NotificationRepository notificationRepository;
 
+    private final ComfortUtils comfortUtils;
+
     public SseEmitter subscribe(Long userId, String lastEventId) {
         //emitter 하나하나 에 고유의 값을 주기 위해
         String emitterId = makeTimeIncludeId(userId);
@@ -54,7 +56,6 @@ public class NotificationService {
 
         // 503 에러를 방지하기 위해 처음 연결 진행 시 더미 데이터를 전달
         String eventId = makeTimeIncludeId(userId);
-
         // 수 많은 이벤트 들을 구분하기 위해 이벤트 ID에 시간을 통해 구분을 해줌
         sendNotification(emitter, eventId, emitterId, "EventStream Created. [userId=" + userId + "]");
 
@@ -107,7 +108,6 @@ public class NotificationService {
 
     @Async
     public void send(Member receiver, AlarmType alarmType, String message, Long articlesId, String title, LocalDateTime createdAt) {
-        System.out.println("createdAt = " + createdAt);
 //        여기 createdAt은 댓글 생성될때 찍히는시간,
         Notification notification = notificationRepository.save(createNotification(receiver, alarmType, message, articlesId, title));
         log.info("DB 메시지 저장 확인 : {}", message);
@@ -137,17 +137,19 @@ public class NotificationService {
                 .build();
     }
 
-    public List<NotificationResponseDto> findAllNotifications(Long memberId) {
-        List<Notification> notifications = notificationRepository.findAllByReceiver_MemberId(memberId);
+    @Transactional
+    public List<NotificationResponseDto> findAllNotifications(Long userId) {
+        List<Notification> notifications = notificationRepository.findAllByReceiver_MemberId(userId);
         return notifications.stream()
                 .map(NotificationResponseDto::create)
                 .collect(Collectors.toList());
     }
 
 
-    public NotificationCountDto countUnReadNotifications(Long memberId) {
+    @Transactional
+    public NotificationCountDto countUnReadNotifications(Long userId) {
         //유저의 알람리스트에서 ->readState(false)인 갯수를 측정 ,
-        Long count = notificationRepository.countUnReadStateNotifications(memberId);
+        Long count = notificationRepository.countUnReadStateNotifications(userId);
         return NotificationCountDto.builder()
                 .count(count)
                 .build();
@@ -171,6 +173,9 @@ public class NotificationService {
     }
     @Transactional
     public void deleteByNotifications(Long notificationId) {
+        if (notificationId == null) {
+            throw new CustomException(ErrorCode.NOT_EXIST_NOTIFICATION);
+        }
         notificationRepository.deleteById(notificationId);
     }
 }

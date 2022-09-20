@@ -4,6 +4,8 @@ import com.example.checkcheck.dto.requestDto.ArticleRequestDto;
 import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
@@ -25,6 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -89,32 +94,32 @@ public class ArticleService {
                 .build();
         articleRepository.save(articles);
 
-
+        if (multipartFile == null) {
+            throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
+        } else {
 ////        이미지업로드
-        if (multipartFile != null) {
-
             List<Image> imgbox = new ArrayList<>();
-            //          이미지 업로드
-            for (MultipartFile uploadedFile : multipartFile) {
+                //          이미지 업로드
+                for (MultipartFile uploadedFile : multipartFile) {
 
 
-                Image imagePostEntity = Image.builder()
-                        .image(marvinS3Uploader.uploadImage(uploadedFile))
-                        .userEmail(userEmail)
-                        .article(articles)
-                        .build();
-                imgbox.add(imagePostEntity);
+                    Image imagePostEntity = Image.builder()
+                            .image(marvinS3Uploader.uploadImage(uploadedFile))
+                            .userEmail(userEmail)
+                            .article(articles)
+                            .build();
+                    imgbox.add(imagePostEntity);
 
-                imageRepository.save(imagePostEntity);
-            }
+                    imageRepository.save(imagePostEntity);
+                }
 
+            return ResponseDto.success("작성 성공");
         }
-
-        return ResponseDto.success("작성 성공");
 
     }
 
-    public List<ArticleResponseDto> getArticleCarousel() {
+//    public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
+    public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
         List<ArticleResponseDto> articleResult = articleRepository.articleCarousel();
         Collections.shuffle(articleResult);
 
@@ -125,13 +130,13 @@ public class ArticleService {
             for (int i = 0; i < 5; i++) {
                 resultBox.add(articleResult.get(i));
             }
-        return resultBox;
+        return ResponseDto.success(resultBox);
     }
 
     //  게시글 상세페이지
     public ArticleDetailResponseDto getArticleDetail(Long id, UserDetailsImpl userDetails) {
         Article article = articleRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("게시글이 존재하지않습니다")
+                () -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND)
         );
         Boolean isMyArticles = false;
         if (article.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
@@ -146,6 +151,8 @@ public class ArticleService {
             imageBox.add(realImage);
         }
 
+//        작성시간
+        String createdAt = article.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
 //      게시글 채택상태일때
         if (article.getProcess().equals(Process.done)) {
             ArticleDetailResponseDto articleResponseDto = ArticleDetailResponseDto.builder()
@@ -156,6 +163,7 @@ public class ArticleService {
                     .image(imageBox)
                     .category(comfortUtils.getCategoryKorean(article.getCategory()))
                     .process(comfortUtils.getProcessKorean(article.getProcess()))
+                    .createdAt(createdAt)
                     .build();
             return articleResponseDto;
         }
@@ -169,6 +177,7 @@ public class ArticleService {
                 .image(imageBox)
                 .category(comfortUtils.getCategoryKorean(article.getCategory()))
                 .process(comfortUtils.getProcessKorean(article.getProcess()))
+                .createdAt(createdAt)
                 .build();
 
 

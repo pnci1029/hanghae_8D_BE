@@ -186,8 +186,8 @@ public class SocialGoogleService {
             String provider = "google";
 
             Member kakaoMember = Member.builder()
-
-                    .nickName(userName)
+                    .userName(userName)
+                    .nickName(comfortUtils.getUserNickName())
                     .userEmail("g_" + email)
                     .userRealEmail(email)
                     .password(encodedPassword)
