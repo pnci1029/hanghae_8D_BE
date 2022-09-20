@@ -76,6 +76,10 @@ public class ComfortUtils {
         return String.valueOf((int)(Math.random()*Math.pow(10,6)));
     }
 
+    public String makeUserNickName() {
+        return null;
+    }
+
 
 
 }
