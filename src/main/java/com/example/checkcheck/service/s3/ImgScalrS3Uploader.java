@@ -1,5 +1,5 @@
-package com.example.checkcheck.service.s3;//
-import com.amazonaws.services.s3.AmazonS3;
+package com.example.checkcheck.service.s3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +21,10 @@ import java.util.UUID;
 public class ImgScalrS3Uploader {
 
 
-    private final AmazonS3 amazonS3; // AmazonS3 or AmazonS3Client?
+    private final AmazonS3Client amazonS3Client; // AmazonS3 or AmazonS3Client?
 
-    public ImgScalrS3Uploader(AmazonS3 amazonS3) {
-        this.amazonS3 = amazonS3;
+    public ImgScalrS3Uploader(AmazonS3Client amazonS3Client) {
+        this.amazonS3Client = amazonS3Client;
     }
 
     @Value("${cloud.aws.s3.bucket}")
@@ -44,8 +44,8 @@ public class ImgScalrS3Uploader {
 
     // S3로 업로드
     private String putS3(File uploadFile, String fileName) {
-        amazonS3.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
-        return amazonS3.getUrl(bucket, fileName).toString();
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile).withCannedAcl(CannedAccessControlList.PublicRead));
+        return amazonS3Client.getUrl(bucket, fileName).toString();
     }
 
     // 로컬에 저장된 이미지 지우기
