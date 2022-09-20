@@ -107,6 +107,9 @@ dependencies {
 	implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
 	compileOnly(group: 'org.springframework', name: 'spring-test')
 
+	// Scalr
+	implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+
 }
 
 tasks.named('test') {
