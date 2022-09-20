@@ -11,4 +11,5 @@ public interface ImageRepository extends JpaRepository<Image, Long> {
     List<Image> findByUserEmail(String userEmail);
     List<Image> findByArticle_ArticleId(Long articleId);
 
+    void deleteByImage(String image);
 }

@@ -3,8 +3,8 @@ package com.example.checkcheck.config;
 
 import com.example.checkcheck.security.JwtAuthenticationFilter;
 import com.example.checkcheck.security.JwtExceptionFilter;
-//import com.example.stomp.security.JwtSecurityConfig;
 import com.example.checkcheck.security.JwtTokenProvider;
+import com.example.checkcheck.security.test.JwtAccessDeniedHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtExceptionFilter jwtExceptionFilter;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
     public BCryptPasswordEncoder encodePassword() {
@@ -50,28 +52,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().configurationSource(corsConfigurationSource());
+//        http.cors().configurationSource(corsConfigurationSource());
         // 토큰 인증이므로 세션 사용x
-        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.headers().frameOptions().sameOrigin();
+        http.csrf().disable()
+                .cors()
+                .and()
+                .exceptionHandling()
+//                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
 
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.headers().frameOptions().sameOrigin();
 
         http.authorizeRequests()
                 // 회원 관리 처리 API 전부를 login 없이 허용
-//                .antMatchers("/user/duplicate/username").permitAll()
-//                .antMatchers("/user/signup").permitAll()
-//                .antMatchers("/user/login").permitAll()
-//                .antMatchers("/user/refresh").permitAll()
-//                .antMatchers("/user/confirmEmail").permitAll()
-//                .antMatchers("/user/signin/**").permitAll()
-//                .antMatchers("/health/**").permitAll()
-//                .antMatchers("/health").permitAll()
-//                .antMatchers("/user/confirmEmail").permitAll()
-//                .antMatchers("/wss/chat/**").permitAll()
-                .antMatchers("/api/**").permitAll()
-                .antMatchers("/user/**").permitAll()
 
-//                .antMatchers("/**").permitAll()
+//                .antMatchers("/api/**").permitAll()
+                .antMatchers("/user/**").permitAll()
+                .antMatchers("/api/main/**").permitAll()
+                .antMatchers("/auth/user/token").permitAll()
+
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+
+                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 
                 // 그 외 어떤 요청이든 '인증'
@@ -79,29 +85,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .apply(new JwtSecurityConfig(jwtTokenProvider));
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
-    }
 
-//                    .antMatchers("/**").permitAll()
+
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//        configuration.addAllowedOriginPattern("http://localhost:3000");
-        configuration.addAllowedOriginPattern("https://localhost:3000");
-        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app/");
-        configuration.addAllowedOriginPattern("https://auth-6eb37.web.app");
-        configuration.addAllowedOriginPattern("https://test-react-basic.web.app");
-        configuration.addAllowedOriginPattern("https://authex-d42a5.web.app");
-        configuration.addAllowedOriginPattern("https://bungle.life");
+        configuration.setAllowCredentials(true) ;
+        configuration.addAllowedOriginPattern("*");
+//        configuration.addAllowedOrigin("*"); // 배포 시
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
-        configuration.addExposedHeader("Authorization");
-        configuration.addExposedHeader("RefreshToken");
-        configuration.setAllowCredentials(true);
-//        configuration.validateAllowCredentials();
-        configuration.setMaxAge(3600L);
+        configuration.addExposedHeader("*");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }

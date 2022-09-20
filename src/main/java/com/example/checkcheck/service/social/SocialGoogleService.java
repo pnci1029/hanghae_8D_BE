@@ -5,10 +5,11 @@ import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.GoogleUserInfoDto;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
-import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.repository.MemberRepository;
+import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
+//import com.example.checkcheck.service.RedisService;
 import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,8 +30,10 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -46,6 +49,8 @@ public class SocialGoogleService {
     private final MemberService memberService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final ComfortUtils comfortUtils;
+
+//    private final RedisService redisService;
 
     //header 에 Content-type 지정
     //1번
@@ -69,13 +74,22 @@ public class SocialGoogleService {
         //  5. response Header에 JWT 토큰 추가
         TokenFactory tokenFactory1 = memberService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
         RefreshToken refreshToken = new RefreshToken(member.getUserEmail(), tokenFactory1.getRefreshToken());
-        refreshTokenRepository.save(refreshToken);
 
+//        redisService.setValues(member.getUserEmail(), tokenFactory1.getRefreshToken());
+
+//        리프레시토큰저장 & 있을경우 셋토큰
+        Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(member.getUserEmail());
+        if (existToken.isEmpty()) {
+            refreshTokenRepository.save(refreshToken);
+        }  else {
+            existToken.get().setTokenKey(refreshToken.getTokenKey());
+            existToken.get().setTokenValue(refreshToken.getTokenValue());
+        }
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(member.getUserEmail())
                 .nickName(member.getNickName())
-                .accessToken("Bearer "+tokenFactory1.getAccessToken())
+                .accessToken(tokenFactory1.getAccessToken())
                 .userRank(comfortUtils.getUserRank(member.getPoint()))
                 .refreshToken(tokenFactory1.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
@@ -97,9 +111,10 @@ public class SocialGoogleService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", client_id);
         body.add("client_secret", clientSecret);
-        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
+//        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
+//        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
+        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/google");
         body.add("code", code);
-//        System.out.println(code);
 
 
         //HTTP 요청 보내기
@@ -158,7 +173,6 @@ public class SocialGoogleService {
     private Member signupGoogleUser(GoogleUserInfoDto googleUserInfoDto) {
         // 재가입 방지
         // DB 에 중복된 Kakao Id 가 있는지 확인
-        Double googleId = Double.valueOf(googleUserInfoDto.getGoogleId());
         Member findGoogle = memberRepository.findByUserRealEmail(googleUserInfoDto.getUserEmail()).orElse(null);
 
 
@@ -170,11 +184,10 @@ public class SocialGoogleService {
             String password = UUID.randomUUID().toString();
             String encodedPassword = password;
             String provider = "google";
-            LocalDateTime createdAt = LocalDateTime.now();
 
             Member kakaoMember = Member.builder()
-
-                    .nickName(userName)
+                    .userName(userName)
+                    .nickName(comfortUtils.getUserNickName())
                     .userEmail("g_" + email)
                     .userRealEmail(email)
                     .password(encodedPassword)

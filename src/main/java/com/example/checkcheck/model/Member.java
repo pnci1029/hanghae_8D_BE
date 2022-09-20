@@ -2,22 +2,27 @@ package com.example.checkcheck.model;
 
 import com.example.checkcheck.model.articleModel.Article;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data @NoArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
 public class Member {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long memberId;
+
+    @Column
+    private String userName;
 
     @Column
     private String nickName;
@@ -29,10 +34,7 @@ public class Member {
     private String userEmail;
 
     @Column
-    String userRealEmail;
-
-//    @Column
-//    private String userRank;
+    private String userRealEmail;
 
     @Column
     private int point= 0;
@@ -40,27 +42,28 @@ public class Member {
     @Column
     private String provider;
 
-    @Column
-    private Double socialId;
-
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Article> article=new ArrayList<>();
 
     @Builder
-    public Member(String nickName, String password, String userEmail,
-                  LocalDateTime createdAt, String provider, Double socialId, String userRealEmail) {
+    public Member(String nickName, String password, String userEmail, String userName,
+                  LocalDateTime createdAt, String provider, String userRealEmail) {
         this.nickName = nickName;
+        this.userName = userName;
         this.password = password;
         this.userEmail = userEmail;
         this.provider = provider;
-        this.socialId = socialId;
         this.userRealEmail = userRealEmail;
 
     }
 
     public void updatePoint(int newPoint) {
         point = newPoint;
+    }
+
+    public void updateNickName(String newNickName) {
+        nickName = newNickName;
     }
 
 }

@@ -9,11 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SimpleController {
 
-    @GetMapping("/lalalalala")
-    public String simpleCon(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @GetMapping("/")
+    public String simpleCon() {
 
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userDetails.getUsername();
+        return "수정111";
 
     }
+    @GetMapping("/health")
+    public String checkHealth() {
+        return "healthy";
+    }
+
 }
