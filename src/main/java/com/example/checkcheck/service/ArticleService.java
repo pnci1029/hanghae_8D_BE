@@ -119,7 +119,7 @@ public class ArticleService {
     }
 
 //    public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
-    public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
+    public List<ArticleResponseDto> getArticleCarousel() {
         List<ArticleResponseDto> articleResult = articleRepository.articleCarousel();
         Collections.shuffle(articleResult);
 
@@ -130,7 +130,7 @@ public class ArticleService {
             for (int i = 0; i < 5; i++) {
                 resultBox.add(articleResult.get(i));
             }
-        return ResponseDto.success(resultBox);
+        return resultBox;
     }
 
     //  게시글 상세페이지
