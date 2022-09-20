@@ -145,6 +145,8 @@ public class SocialNaverSerivce {
                     "&client_id="+client_id +
                     "&client_secret="+clientSecret +
                     "&redirect_uri=http://localhost:8080/user/signin/naver" +
+//                    "&redirect_uri=http://localhost:3000/user/signin/naver" +
+//                    "&redirect_uri=https://www.chackcheck99.com/signin/naver" +
                     "&code=" + code +
                     "&state=" + state;
             bw.write(sb);

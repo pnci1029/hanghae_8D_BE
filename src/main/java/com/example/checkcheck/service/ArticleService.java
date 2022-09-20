@@ -113,11 +113,12 @@ public class ArticleService {
                     imageRepository.save(imagePostEntity);
                 }
 
-        return ResponseDto.success("작성 성공");
+            return ResponseDto.success("작성 성공");
         }
 
     }
 
+//    public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
     public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
         List<ArticleResponseDto> articleResult = articleRepository.articleCarousel();
         Collections.shuffle(articleResult);
@@ -135,7 +136,7 @@ public class ArticleService {
     //  게시글 상세페이지
     public ArticleDetailResponseDto getArticleDetail(Long id, UserDetailsImpl userDetails) {
         Article article = articleRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("게시글이 존재하지않습니다")
+                () -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND)
         );
         Boolean isMyArticles = false;
         if (article.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
