@@ -25,14 +25,14 @@ public class ApiExceptionHandler {
         );
     }
 
-//    @ExceptionHandler(NullPointerException.class)
-//    public ResponseEntity<ErrorResponse> nullPointException(NullPointerException e) {
-//        return ResponseEntity
-//                .status(HttpStatus.BAD_REQUEST)
-//                .body(ErrorResponse.builder()
-//                        .errorCode(ErrorCode.NullPoint_Token)
-//                        .build()
-//                );
-//    }
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ErrorResponse> nullPointException(NullPointerException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.builder()
+                        .errorCode(ErrorCode.NullPoint_Token)
+                        .build()
+                );
+    }
 
 }

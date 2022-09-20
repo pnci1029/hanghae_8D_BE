@@ -2,6 +2,8 @@ package com.example.checkcheck.service;
 
 import com.example.checkcheck.dto.responseDto.RefreshTokenResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.JwtTokenProvider;
@@ -54,18 +56,19 @@ public class MemberService {
              */
 
             if (!compareToken.equals(refreshToken)) {
-                throw new AuthenticationException("refresh token이 유효하지 않습니다.222");
+                throw new CustomException(ErrorCode.EXPIRE_REFRESH_TOKEN);
             }
 
             if (!jwtTokenProvider.validateRefreshToken(refreshToken)) {
-                throw new AuthenticationException("refresh token이 유효하지 않습니다.111");
+                throw new CustomException(ErrorCode.EXPIRE_REFRESH_TOKEN);
+//                throw new AuthenticationException("refresh token이 유효하지 않습니다.111");
             }
 
             String newAccessToken = jwtTokenProvider.createToken(id);
 
             return new RefreshTokenResponseDto(newAccessToken);
         } catch (NullPointerException np) {
-            throw new AuthenticationException("올바른 RefreshToken을 헤더에 넣어주세요");
+            throw new CustomException(ErrorCode.NOT_EXIST_REFRESHTOKEN);
         }
     }
 }

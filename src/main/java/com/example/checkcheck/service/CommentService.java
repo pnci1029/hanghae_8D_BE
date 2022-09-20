@@ -62,7 +62,7 @@ public class CommentService {
     //TODO: 에러메시지 모두 CUSTOM 형식의 에러코드로 수정하는게 어떨까요?
     // 댓글 작성
     @Transactional
-    public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+    public CommentResponseDto createComment(CommentRequestDto requestDto, UserDetailsImpl userDetails) throws CustomException {
 
         String userEmail = userDetails.getUsername();
         String nickName = userDetails.getMember().getNickName();
@@ -81,10 +81,16 @@ public class CommentService {
             throw new CustomException(ErrorCode.TOO_MUCH_COMMENTS);
         }
 
+        if (requestDto.getType().equals(Type.text)) {
+            if (requestDto.getComment().length() > 80) {
+                throw new CustomException(ErrorCode.TOO_LONG_COMMENT);
+            }
+        }
+
 //        댓글 숫자 입력 시 글자 수 제한
         if (requestDto.getType().equals(Type.price)) {
             if (requestDto.getComment().length() > 8) {
-                throw new IllegalArgumentException("숫자가 너무 큽니다");
+                throw new CustomException(ErrorCode.TOO_HIGH_NUMBER);
             }
         }
 
@@ -217,7 +223,7 @@ public class CommentService {
 
         Comment comment = isPresentComment(commentsId);
         if (null == comment) {
-            return ResponseDto.fail("NOT_FOUND", "댓글이 존재하지 않습니다.");
+            throw  new CustomException(ErrorCode.NOT_EXIST_COMMENT);
         }
 
         if (comment.getMember().equals(member)) {
@@ -248,7 +254,7 @@ public class CommentService {
         );
 
         Comment targetComment = commentRepository.findById(commentsId).orElseThrow(
-                () -> new NullPointerException("채택할 댓글이 없습니다.")
+                () -> new CustomException(ErrorCode.NOT_EXIST_COMMENT)
         );
 
         if (!targetArticle.getMember().getUserEmail().equals(userDetails.getUsername())) {
