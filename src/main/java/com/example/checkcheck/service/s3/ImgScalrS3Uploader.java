@@ -21,7 +21,7 @@ import java.util.UUID;
 public class ImgScalrS3Uploader {
 
 
-    private final AmazonS3Client amazonS3Client; // AmazonS3 or AmazonS3Client?
+    private final AmazonS3Client amazonS3Client;
 
     public ImgScalrS3Uploader(AmazonS3Client amazonS3Client) {
         this.amazonS3Client = amazonS3Client;
@@ -67,26 +67,26 @@ public class ImgScalrS3Uploader {
         // 썸네일의 너비와 높이 입니다.
         int demandWidth = 550, demandHeight = 550;
 
-        // 원본 이미지의 너비와 높이 입니다.
-        int originWidth = srcImg.getWidth();
-        int originHeight = srcImg.getHeight();
+//        // 원본 이미지의 너비와 높이 입니다.
+//        int originWidth = srcImg.getWidth();
+//        int originHeight = srcImg.getHeight();
+//
+//        // 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산합니다.
+//        int newWidth = originWidth;
+//        int newHeight = (originWidth * demandHeight) / demandWidth;
 
-        // 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산합니다.
-        int newWidth = originWidth;
-        int newHeight = (originWidth * demandHeight) / demandWidth;
+//        // 계산된 높이가 원본보다 높다면 crop 이 안되므로
+//        // 원본 높이를 기준으로 썸네일의 비율로 너비를 계산합니다.
+//        if (newHeight > originHeight) {
+//            newWidth = (originHeight * demandWidth) / demandHeight;
+//            newHeight = originHeight;
+//        }
 
-        // 계산된 높이가 원본보다 높다면 crop 이 안되므로
-        // 원본 높이를 기준으로 썸네일의 비율로 너비를 계산합니다.
-        if (newHeight > originHeight) {
-            newWidth = (originHeight * demandWidth) / demandHeight;
-            newHeight = originHeight;
-        }
-
-        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
-        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
+//        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
+//        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
 
         // crop 된 이미지로 썸네일을 생성합니다.
-        BufferedImage destImg = Scalr.resize(cropImg, demandWidth, demandHeight);
+        BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
 
         // 썸네일을 저장합니다.
         File resizedImage = new File(fileName);
