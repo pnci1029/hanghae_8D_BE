@@ -2,6 +2,10 @@ package com.example.checkcheck.service.s3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +25,7 @@ import java.util.UUID;
 public class ImgScalrS3Uploader {
 
 
-    private final AmazonS3Client amazonS3Client; // AmazonS3 or AmazonS3Client?
+    private final AmazonS3Client amazonS3Client;
 
     public ImgScalrS3Uploader(AmazonS3Client amazonS3Client) {
         this.amazonS3Client = amazonS3Client;
@@ -57,38 +61,54 @@ public class ImgScalrS3Uploader {
         log.info("File delete fail");
     }
 
-//    Scalr 라이브러리로 Cropping 및 Resizing
+//    Scalr 라이브러리로 Resizing
 
     private File resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
-        // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
+        // 이미지의 너비와 높이
+        int demandWidth = 1000, demandHeight = 1000;
+        // 요청 받은 파일로 부터 BufferedImage 객체 생성
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
-        // 썸네일의 너비와 높이 입니다.
-        int demandWidth = 550, demandHeight = 550;
+        Metadata metadata; // 이미지 메타 데이터 객체
+        Directory directory; // 이미지의 Exif 데이터를 읽기 위한 객체
 
-        // 원본 이미지의 너비와 높이 입니다.
-        int originWidth = srcImg.getWidth();
-        int originHeight = srcImg.getHeight();
+        int orientation = 1;
 
-        // 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산합니다.
-        int newWidth = originWidth;
-        int newHeight = (originWidth * demandHeight) / demandWidth;
+        try {
+            metadata = ImageMetadataReader.readMetadata(originalImage.getInputStream());
+            directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
 
-        // 계산된 높이가 원본보다 높다면 crop 이 안되므로
-        // 원본 높이를 기준으로 썸네일의 비율로 너비를 계산합니다.
-        if (newHeight > originHeight) {
-            newWidth = (originHeight * demandWidth) / demandHeight;
-            newHeight = originHeight;
+            if(directory != null){
+                orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION); // 회전정보
+            }
+
+        }catch (Exception e) {
+            orientation = 1;
+        }
+        // 회전 시킨다.
+        switch (orientation) {
+            case 1:
+                break;
+            case 6:
+                srcImg = Scalr.rotate(srcImg, Scalr.Rotation.CW_90, null);
+                break;
+            case 3:
+                srcImg = Scalr.rotate(srcImg, Scalr.Rotation.CW_180, null);
+                break;
+            case 8:
+                srcImg = Scalr.rotate(srcImg, Scalr.Rotation.CW_270, null);
+                break;
+
+            default:
+                orientation = 1;
+                break;
         }
 
-        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
-        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
+        // resize 된 이미지 생성
+        BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
 
-        // crop 된 이미지로 썸네일을 생성합니다.
-        BufferedImage destImg = Scalr.resize(cropImg, demandWidth, demandHeight);
-
-        // 썸네일을 저장합니다.
+        // 이미지를 저장
         File resizedImage = new File(fileName);
 
         ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
@@ -97,3 +117,22 @@ public class ImgScalrS3Uploader {
 
 
 }
+
+// 이미지 crop시 사용
+//        // 원본 이미지의 너비와 높이 입니다.
+//        int originWidth = srcImg.getWidth();
+//        int originHeight = srcImg.getHeight();
+//
+//        // 원본 너비를 기준으로 하여 썸네일의 비율로 높이를 계산합니다.
+//        int newWidth = originWidth;
+//        int newHeight = (originWidth * demandHeight) / demandWidth;
+
+//        // 계산된 높이가 원본보다 높다면 crop 이 안되므로
+//        // 원본 높이를 기준으로 썸네일의 비율로 너비를 계산합니다.
+//        if (newHeight > originHeight) {
+//            newWidth = (originHeight * demandWidth) / demandHeight;
+//            newHeight = originHeight;
+//        }
+
+//        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
+//        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
