@@ -187,7 +187,7 @@ public class SocialGoogleService {
 
             Member kakaoMember = Member.builder()
                     .userName(userName)
-                    .nickName(comfortUtils.getUserNickName())
+                    .nickName(comfortUtils.makeUserNickName())
                     .userEmail("g_" + email)
                     .userRealEmail(email)
                     .password(encodedPassword)

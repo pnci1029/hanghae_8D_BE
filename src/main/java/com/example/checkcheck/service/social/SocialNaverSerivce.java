@@ -69,7 +69,7 @@ public class SocialNaverSerivce {
             // 없으면 회원가입
             if (member == null) {
                 member = Member.builder()
-                        .nickName(naverUser.getNickname().substring(1, naverUser.getNickname().length() - 1))
+                        .nickName(comfortUtils.makeUserNickName())
                         .userName(naverUser.getNickname().substring(1, naverUser.getNickname().length() - 1))
                         .password(encodedPassword)
                         .userEmail("n_"+naverUserEmail)
