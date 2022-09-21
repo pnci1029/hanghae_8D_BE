@@ -1,12 +1,14 @@
 package com.example.checkcheck.security;
 
 import com.example.checkcheck.model.Member;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
 
+@EqualsAndHashCode(of = {"member"})
 public class UserDetailsImpl implements UserDetails {
 
     private final Member member;
