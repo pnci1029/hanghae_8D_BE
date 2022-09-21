@@ -2,11 +2,6 @@ package com.example.checkcheck.service.s3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.drew.imaging.ImageMetadataReader;
-import com.drew.metadata.Directory;
-import com.drew.metadata.Metadata;
-import com.drew.metadata.exif.ExifIFD0Directory;
-import com.drew.metadata.jpeg.JpegDirectory;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,29 +57,16 @@ public class ImgScalrS3Uploader {
         log.info("File delete fail");
     }
 
-//    Scalr 라이브러리로 Resizing
+//    Scalr 라이브러리로 Cropping 및 Resizing
 
     private File resizeImage(MultipartFile originalImage, String fileName, String fileFormatName) throws IOException {
 
-        // 이미지의 너비와 높이
-        int demandWidth = 1000, demandHeight = 1000;
-        // 요청 받은 파일로 부터 BufferedImage 객체 생성
+        // 요청 받은 파일로 부터 BufferedImage 객체를 생성합니다.
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
-        // resize 된 이미지 생성
-        BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
+        // 썸네일의 너비와 높이 입니다.
+        int demandWidth = 550, demandHeight = 550;
 
-        // 이미지를 저장
-        File resizedImage = new File(fileName);
-
-        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
-        return resizedImage;
-    }
-
-
-}
-
-// 이미지 crop시 사용
 //        // 원본 이미지의 너비와 높이 입니다.
 //        int originWidth = srcImg.getWidth();
 //        int originHeight = srcImg.getHeight();
@@ -102,3 +84,16 @@ public class ImgScalrS3Uploader {
 
 //        // 계산된 크기로 원본이미지를 가운데에서 crop 합니다.
 //        BufferedImage cropImg = Scalr.crop(srcImg, (originWidth - newWidth) / 2, (originHeight - newHeight) / 2, newWidth, newHeight);
+
+        // crop 된 이미지로 썸네일을 생성합니다.
+        BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
+
+        // 썸네일을 저장합니다.
+        File resizedImage = new File(fileName);
+
+        ImageIO.write(destImg, fileFormatName.toUpperCase(), resizedImage);
+        return resizedImage;
+    }
+
+
+}
