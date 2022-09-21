@@ -200,7 +200,7 @@ public class SocialKakaoService {
 //                    유저 실제 이름
                     .userName(userName)
 //                    수정될수있는 닉네임
-                    .nickName(userName)
+                    .nickName(comfortUtils.makeUserNickName())
                     .provider(provider)
                     .build();
             memberRepository.save(kakaoMember);
