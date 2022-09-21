@@ -6,6 +6,7 @@ import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.exception.CustomException;
 import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
+import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.repository.MemberRepository;
@@ -15,7 +16,9 @@ import com.example.checkcheck.util.ComfortUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class MyPageService {
@@ -80,17 +83,30 @@ public class MyPageService {
 
     public ResponseDto<?> changeNickName(NickNameRequestDto nickName, UserDetailsImpl userDetails) {
 
+//        Boolean word = Pattern.matches("^[0-9a-zA-Zㄱ-ㅎ가-힣]*$",nickName);
+        if (!Pattern.matches("^[0-9a-zA-Zㄱ-ㅎ가-힣]*$", nickName.getNickName())) {
+            throw new CustomException(ErrorCode.NICKNAME_TYPE_EXCEPTION);
+        }
+
         Optional<Member> targetNickName = memberRepository.findByNickName(nickName.getNickName());
         if (targetNickName.isPresent()) {
             throw new CustomException(ErrorCode.EXIST_NICKNAME);
         }
 //        글자수 1~6자
-        if (nickName.getNickName().length() < 1 || nickName.getNickName().length() > 6) {
+        if (nickName.getNickName().length() < 1 || nickName.getNickName().length() > 7) {
             throw new CustomException(ErrorCode.NICKNAME_EXCEPTION);
         }
         Member targetMember = memberRepository.findByUserEmail(userDetails.getUsername()).orElse(null);
         targetMember.updateNickName(nickName.getNickName());
         memberRepository.save(targetMember);
+
+//        게시글에 있는 유저닉네임도 수정
+        List<Article> targetArticles = articleRepository.findByUserEmail(targetMember.getUserEmail());
+        for (Article targetArticle : targetArticles) {
+            targetArticle.setNickName(nickName.getNickName());
+        }
+        articleRepository.saveAll(targetArticles);
+
 
         return ResponseDto.success("닉네임이 변경 되었습니다.");
     }
