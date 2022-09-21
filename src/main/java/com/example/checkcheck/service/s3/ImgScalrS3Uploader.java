@@ -6,6 +6,7 @@ import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.jpeg.JpegDirectory;
 import lombok.extern.slf4j.Slf4j;
 import org.imgscalr.Scalr;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,12 +73,16 @@ public class ImgScalrS3Uploader {
 
         Metadata metadata; // 이미지 메타 데이터 객체
         Directory directory; // 이미지의 Exif 데이터를 읽기 위한 객체
+        JpegDirectory jpegDirectory; // JPG 이미지 정보를 읽기 위한 객체
 
         int orientation = 1;
+        int width = 0;
+        int height = 0;
 
         try {
             metadata = ImageMetadataReader.readMetadata(originalImage.getInputStream());
             directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+            jpegDirectory = metadata.getFirstDirectoryOfType(JpegDirectory.class);
 
             if(directory != null){
                 orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION); // 회전정보
