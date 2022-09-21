@@ -110,8 +110,11 @@ dependencies {
 	// Scalr
 	implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
 
+//	// ImageMetadataReader
+//	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
+
 	// ImageMetadataReader
-	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
+	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.18.0'
 
 }
 
