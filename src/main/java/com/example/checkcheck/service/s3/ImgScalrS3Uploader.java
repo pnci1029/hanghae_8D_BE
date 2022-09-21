@@ -71,45 +71,6 @@ public class ImgScalrS3Uploader {
         // 요청 받은 파일로 부터 BufferedImage 객체 생성
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
-        Metadata metadata; // 이미지 메타 데이터 객체
-        Directory directory; // 이미지의 Exif 데이터를 읽기 위한 객체
-        JpegDirectory jpegDirectory; // JPG 이미지 정보를 읽기 위한 객체
-
-        int orientation = 1;
-        int width = 0;
-        int height = 0;
-
-        try {
-            metadata = ImageMetadataReader.readMetadata(originalImage.getInputStream());
-            directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
-            jpegDirectory = metadata.getFirstDirectoryOfType(JpegDirectory.class);
-
-            if(directory != null){
-                orientation = directory.getInt(ExifIFD0Directory.TAG_ORIENTATION); // 회전정보
-            }
-
-        }catch (Exception e) {
-            orientation = 1;
-        }
-        // 회전 시킨다.
-        switch (orientation) {
-            case 1:
-                break;
-            case 6:
-                srcImg = Scalr.rotate(srcImg, Scalr.Rotation.CW_90, null);
-                break;
-            case 3:
-                srcImg = Scalr.rotate(srcImg, Scalr.Rotation.CW_180, null);
-                break;
-            case 8:
-                srcImg = Scalr.rotate(srcImg, Scalr.Rotation.CW_270, null);
-                break;
-
-            default:
-                orientation = 1;
-                break;
-        }
-
         // resize 된 이미지 생성
         BufferedImage destImg = Scalr.resize(srcImg, demandWidth, demandHeight);
 

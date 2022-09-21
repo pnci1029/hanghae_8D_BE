@@ -113,8 +113,8 @@ dependencies {
 //	// ImageMetadataReader
 //	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
 
-	// ImageMetadataReader
-	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.18.0'
+//	// ImageMetadataReader
+//	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.18.0'
 
 }
 
