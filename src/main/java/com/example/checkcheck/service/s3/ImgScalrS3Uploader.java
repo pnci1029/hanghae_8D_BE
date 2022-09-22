@@ -65,7 +65,7 @@ public class ImgScalrS3Uploader {
         BufferedImage srcImg = ImageIO.read(originalImage.getInputStream());
 
         // 썸네일의 너비와 높이 입니다.
-        int demandWidth = 1000, demandHeight = 1000;
+        int demandWidth = 3000, demandHeight = 3000;
 
 //        // 원본 이미지의 너비와 높이 입니다.
 //        int originWidth = srcImg.getWidth();
