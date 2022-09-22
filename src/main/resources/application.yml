@@ -19,9 +19,10 @@ spring:
   #    password:
 
   datasource:
-    url: jdbc:mysql://final.cslqgjznyxib.ap-northeast-2.rds.amazonaws.com:3306/final
+    #    url: jdbc:mysql://final.cslqgjznyxib.ap-northeast-2.rds.amazonaws.com:3306/final
+    url: jdbc:mysql://chackcheckrds.cjtjmj91mtpj.ap-northeast-2.rds.amazonaws.com:3306/chackcheckrds
     username: ENC(BpH9uHTb5+HCzpv+wgVxKA==)
-    password: ENC(yCt/7Y2Vr3DVD4KGd1vED0MlsMYmA+fD)
+    password: ENC(PlTyIJmBXJdj6LVv3fV13PDsju8Qr8hS)
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL5Dialect
@@ -72,14 +73,14 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: ENC(U/+bV9IQj8KlVFgaqtNSDA==)
+      bucket: ENC(ATyEyG0/DJX3UfmF9SVKeaXRikA9qflE)
     region:
       static: ap-northeast-2
     credentials:
       #            accessKey: 1234
       #            secretKey: 1234
-      accessKey: ENC(6Lxrl68p9hw6PqxX90HT3m9Tt+ZlPBD2JWhZZcukzCo=)
-      secretKey: ENC(/3EEMCUKJrV820eoHei7IbCPnClF0ZPtB7k9sXrF/4107ySWBYiEC2MAdX27fKbM7JXO8bYwnOs=)
+      accessKey: ENC(V6/PKDfEekzGrP+QBx6E3VgdXv2jenbIAswrAmF/Lzs=)
+      secretKey: ENC(sYOlqJUzkEID8eisKXXs5HPmYedm/W8M2igKtqPDKZyx/YIeij2hIz6vneoLTdhRZ6v/7xTYuSs=)
 
     stack:
       auto: false

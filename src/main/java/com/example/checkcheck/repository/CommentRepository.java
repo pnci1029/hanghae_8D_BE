@@ -10,4 +10,6 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> , CommentRepositoryCustom{
 
     List<Comment> findByMember_MemberIdAndArticleArticleId(Long memberId, Long articleId);
+
+    List<Comment> findByMember_UserEmail(String userEmail);
 }
