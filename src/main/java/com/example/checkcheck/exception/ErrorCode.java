@@ -49,7 +49,7 @@ public enum ErrorCode {
 
     // 게시글
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 게시글입니다. 다시 시도해주세요"),
-    NO_IMAGE_EXCEPTION(HttpStatus.BAD_REQUEST, "406", "이미지를 추가해주세요"),
+    NO_IMAGE_EXCEPTION(HttpStatus.BAD_REQUEST, "400", "사진을 등록해 주세요."),
 
 
     //댓글
@@ -80,7 +80,11 @@ public enum ErrorCode {
     TOO_HIGH_NUMBER(HttpStatus.BAD_REQUEST,"400" ,"금액은 8자리까지 입력할 수있습니다."),
     TOO_LONG_COMMENT(HttpStatus.BAD_REQUEST,"400" ,"댓글은 80자까지 입력할 수있습니다."),
     NOT_EXIST_COMMENT(HttpStatus.BAD_REQUEST,"400" , "존재하지 않는 댓글입니다. 새로고침 해주세요."),
-    NOT_EXIST_CLIENT(HttpStatus.BAD_REQUEST,"400", "탈퇴처리가 완료되었습니다. 새로고침 해주세요.");
+    NOT_EXIST_CLIENT(HttpStatus.BAD_REQUEST,"400", "탈퇴처리가 완료되었습니다. 새로고침 해주세요."),
+    NULL_ARTICLE_TILE(HttpStatus.BAD_REQUEST,"400" ,"제목을 입력해 주세요."),
+    NULL_ARTICLE_CONTENT(HttpStatus.BAD_REQUEST,"400" ,"품목에 대한 설명을 작성해 주세요."),
+    NULL_ARTICLE_PRICE(HttpStatus.BAD_REQUEST,"400" ,"가격을 입력해 주세요."),
+    NULL_ARTICLE_CATEGORY(HttpStatus.BAD_REQUEST,"400" ,"카테고리를 선택해 주세요.");
 
     // 추후 추가 코드
     private boolean success;
