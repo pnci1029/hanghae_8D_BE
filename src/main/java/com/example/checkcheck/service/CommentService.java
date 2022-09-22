@@ -118,13 +118,19 @@ public class CommentService {
 
         //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
         if(!Objects.equals(comment.getMember().getMemberId(), article.getMember().getMemberId())) {
-            notificationService.send(article.getMember(), AlarmType.comment, message, article.getArticleId(), article.getTitle(), comment.getCreatedAt());
-            log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
 
-        //게시글 작성자에게 이메일전송
-            String maiTitle = "안녕하세요, 고객님 ChackCheck입니다";
-            mailService.mailSend(new MailRequestDto(article.getMember().getUserRealEmail(), maiTitle, message));
         }
+        notificationService.send(article.getMember(), AlarmType.comment, message, article.getArticleId(), article.getTitle(), comment.getCreatedAt());
+        log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
+
+
+        if(article.getMember().getIsApprovedEmail().equals(true)){
+            //게시글 작성자에게 이메일전송
+            String maiTitle = "안녕하세요, 고객님 ChackCheck입니다";
+            String detailMessage = message + "\n\n 이메일 알람 수신 거절하기  \n\n -> https://www.chackcheck99.com/mypage";
+            mailService.mailSend(new MailRequestDto(article.getMember().getUserRealEmail(), maiTitle, detailMessage));
+        }
+
 
 
         boolean isMyComment = false;
@@ -308,10 +314,13 @@ public class CommentService {
         if(!Objects.equals(userDetails.getMember().getMemberId(), targetComment.getMember().getMemberId())) {
             notificationService.send(targetComment.getMember(), AlarmType.selected, message, targetArticle.getArticleId(), targetArticle.getTitle(), targetComment.getCreatedAt());
             log.info("Alarm 대상 : {}, Alram 메시지 = {}", targetComment.getNickName(), message);
+        }
 
         // 채택댓글 작성자에게 이메일 전송
+            if(targetComment.getMember().getIsApprovedEmail().equals(true)){
             String maiTitle = "안녕하세요, 고객님 ChackCheck입니다";
-            mailService.mailSend(new MailRequestDto(targetComment.getMember().getUserRealEmail(), maiTitle, message));
+            String detailMessage = message + "\n\n 이메일 알람 수신 거절하기  \n\n -> https://www.chackcheck99.com/mypage";
+            mailService.mailSend(new MailRequestDto(targetComment.getMember().getUserRealEmail(), maiTitle, detailMessage));
             log.info("메일 전송 Success : {}", maiTitle);
         }
 
