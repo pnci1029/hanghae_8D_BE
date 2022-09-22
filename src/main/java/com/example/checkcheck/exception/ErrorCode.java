@@ -47,6 +47,9 @@ public enum ErrorCode {
     NOT_VALIDMESSAGE(HttpStatus.BAD_REQUEST,"400","유효하지 않는 내용입니다."),
     NOT_EXIST_NOTIFICATION(HttpStatus.BAD_REQUEST,"400","존재하지 않는 알림입니다. 새로고침 해주세요."),
 
+    // 이메일 전송
+    USER_ALREADY_REJECTED_EMAIL(HttpStatus.BAD_REQUEST, "400", "유저가 이메일 수신을 이미 거절했습니다"),
+
     // 게시글
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 게시글입니다. 다시 시도해주세요"),
     NO_IMAGE_EXCEPTION(HttpStatus.BAD_REQUEST, "406", "이미지를 추가해주세요"),

@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +44,8 @@ public class Member {
     @JsonManagedReference
     private List<Article> article=new ArrayList<>();
 
+    private Boolean isApprovedEmail = false;
+
     @Builder
     public Member(String nickName, String password, String userEmail, String userName,
                   LocalDateTime createdAt, String provider, String userRealEmail) {
@@ -65,5 +65,14 @@ public class Member {
     public void updateNickName(String newNickName) {
         nickName = newNickName;
     }
+
+    public void setEmailAgreement(){
+        this.isApprovedEmail = true;
+    }
+
+    public void setEmailOpposition(){
+        this.isApprovedEmail = false;
+    }
+
 
 }
