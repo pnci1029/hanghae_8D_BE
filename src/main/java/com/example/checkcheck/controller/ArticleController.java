@@ -16,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class ArticleController {
     }
 
     @PostMapping(value = "/auth/form", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseDto<?> upload(@RequestPart(required = false) ArticleRequestDto articlesDto,
+    public ResponseDto<?> upload(@RequestPart(required = false) @Valid ArticleRequestDto articlesDto,
                                  @RequestPart(required = false) List<MultipartFile> multipartFile,
                                  @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return articleService.postArticles(multipartFile, articlesDto, userDetails);
