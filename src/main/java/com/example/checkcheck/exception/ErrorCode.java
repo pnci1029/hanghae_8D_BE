@@ -69,8 +69,9 @@ public enum ErrorCode {
     INVALID_FILTER_OPTION(HttpStatus.BAD_REQUEST, "400", "잘못된 filter 옵션입니다"),
     SUBSCRIBE_ERROR(HttpStatus.BAD_REQUEST, "400", "잘못된 Subscribe 요청입니다"),
 
-    EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "400","이미 사용 중인 닉네임입니다. 다시 입력해주세요"),
+    EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "400","이미 사용 중인 닉네임입니다.\n 다시 입력해주세요"),
     NICKNAME_EXCEPTION(HttpStatus.BAD_REQUEST,"400" ,"닉네임은 1글자 이상 6글자 이하로 작성해주세요" ),
+    NICKNAME_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST,"400" ,"닉네임은 한글, 영어, 숫자만 입력할 수 있습니다."),
 
 
 

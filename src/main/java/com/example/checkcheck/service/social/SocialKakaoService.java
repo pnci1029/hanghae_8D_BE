@@ -114,9 +114,9 @@ public class SocialKakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
-        body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
+//        body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
 //        body.add("redirect_uri", "http://localhost:3000/user/signin/kakao");
-//        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/kakao");
+        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/kakao");
         body.add("code", code);
         body.add("client_secret", clientSecret);
 
@@ -200,7 +200,7 @@ public class SocialKakaoService {
 //                    유저 실제 이름
                     .userName(userName)
 //                    수정될수있는 닉네임
-                    .nickName(userName)
+                    .nickName(comfortUtils.makeUserNickName())
                     .provider(provider)
                     .build();
             memberRepository.save(kakaoMember);
