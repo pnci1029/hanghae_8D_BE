@@ -8,7 +8,9 @@ import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Process;
+import com.example.checkcheck.model.commentModel.Comment;
 import com.example.checkcheck.repository.ArticleRepository;
+import com.example.checkcheck.repository.CommentRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
@@ -27,11 +29,17 @@ public class MyPageService {
     private ArticleRepository articleRepository;
     private ComfortUtils comfortUtils;
     private RefreshTokenRepository refreshTokenRepository;
-    public MyPageService(MemberRepository memberRepository, ArticleRepository articleRepository, ComfortUtils comfortUtils, RefreshTokenRepository refreshTokenRepository) {
+    private CommentRepository commentRepository;
+    public MyPageService(MemberRepository memberRepository,
+                         ArticleRepository articleRepository,
+                         ComfortUtils comfortUtils,
+                         RefreshTokenRepository refreshTokenRepository,
+                         CommentRepository commentRepository) {
         this.memberRepository = memberRepository;
         this.articleRepository = articleRepository;
         this.comfortUtils = comfortUtils;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.commentRepository = commentRepository;
     }
 
     // 마이페이지 회원 정보 조회
@@ -105,7 +113,14 @@ public class MyPageService {
         for (Article targetArticle : targetArticles) {
             targetArticle.setNickName(nickName.getNickName());
         }
+
+//        댓글에 있는 닉네임도 수정
+        List<Comment> targetComments = commentRepository.findByMember_UserEmail(targetMember.getUserEmail());
+        for (Comment targetComment : targetComments) {
+            targetComment.setNickName(nickName.getNickName());
+        }
         articleRepository.saveAll(targetArticles);
+        commentRepository.saveAll(targetComments);
 
 
         return ResponseDto.success("닉네임이 변경 되었습니다.");
