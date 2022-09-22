@@ -16,8 +16,9 @@ import com.example.checkcheck.repository.ImageRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
-import com.example.checkcheck.service.s3.ImgScalrS3Uploader;
+//import com.example.checkcheck.service.s3.ImgScalrS3Uploader;
 //import com.example.checkcheck.service.s3.MarvinS3Uploader;
+import com.example.checkcheck.service.s3.S3Uploader;
 import com.example.checkcheck.util.ComfortUtils;
 import com.example.checkcheck.util.Time;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,8 @@ public class ArticleService {
     private ImageRepository imageRepository;
     private MemberRepository memberRepository;
 //    private MarvinS3Uploader marvinS3Uploader;
-    private ImgScalrS3Uploader imgScalrS3Uploader;
+//    private ImgScalrS3Uploader imgScalrS3Uploader;
+    private S3Uploader s3Uploader;
     private ComfortUtils comfortUtils;
     private Time time;
 
@@ -54,8 +56,9 @@ public class ArticleService {
             ArticleRepository articleRepository,
             ImageRepository imageRepository,
             MemberRepository memberRepository,
-            ImgScalrS3Uploader imgScalrS3Uploader,
+//            ImgScalrS3Uploader imgScalrS3Uploader,
 //            MarvinS3Uploader marvinS3Uploader,
+            S3Uploader s3Uploader,
             ComfortUtils comfortUtils,
             Time time,
             NotificationService notificationService
@@ -63,8 +66,9 @@ public class ArticleService {
         this.articleRepository = articleRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;
-        this.imgScalrS3Uploader = imgScalrS3Uploader;
+//        this.imgScalrS3Uploader = imgScalrS3Uploader;
 //        this.marvinS3Uploader = marvinS3Uploader;
+        this.s3Uploader = s3Uploader;
         this.comfortUtils = comfortUtils;
         this.time = time;
         this.notificationService = notificationService;
@@ -108,7 +112,7 @@ public class ArticleService {
 
 
                     Image imagePostEntity = Image.builder()
-                            .image(imgScalrS3Uploader.uploadImage(uploadedFile))
+                            .image(s3Uploader.uploadImage(uploadedFile))
                             .userEmail(userEmail)
                             .article(articles)
                             .build();
@@ -235,7 +239,7 @@ public class ArticleService {
             for (MultipartFile uploadedFile : multipartFile) {
 
                 Image imagePostEntity = Image.builder()
-                        .image(imgScalrS3Uploader.uploadImage(uploadedFile))
+                        .image(s3Uploader.uploadImage(uploadedFile))
                         .userEmail(userEmail)
                         .article(targetArticle)
                         .build();
