@@ -2,6 +2,7 @@ package com.example.checkcheck.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -31,6 +32,18 @@ public class ApiExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.builder()
                         .errorCode(ErrorCode.NullPoint_Token)
+                        .build()
+                );
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<CustomErrorResponse> MethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(CustomErrorResponse.builder()
+                        .errorCode("400")
+                        .errorMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage())
+                        .status(HttpStatus.BAD_REQUEST)
                         .build()
                 );
     }
