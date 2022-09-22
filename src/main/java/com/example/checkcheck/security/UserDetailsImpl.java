@@ -1,6 +1,7 @@
 package com.example.checkcheck.security;
 
 import com.example.checkcheck.model.Member;
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
