@@ -71,7 +71,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 //	Redis TODO: redis(health check) warn나면 gradle 주석처리해주세요
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
@@ -109,6 +109,9 @@ dependencies {
 
 	// Scalr
 	implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
+
+//	slack logback
+//	implementation 'com.github.maricn:logback-slack-appender:1.6.1'
 
 //	// ImageMetadataReader
 //	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
