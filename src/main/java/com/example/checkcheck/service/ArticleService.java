@@ -36,7 +36,7 @@ public class ArticleService {
     private ArticleRepository articleRepository;
     private ImageRepository imageRepository;
     private MemberRepository memberRepository;
-//    private MarvinS3Uploader marvinS3Uploader;
+    //    private MarvinS3Uploader marvinS3Uploader;
     private ImgScalrS3Uploader imgScalrS3Uploader;
     private ComfortUtils comfortUtils;
     private Time time;
@@ -67,78 +67,82 @@ public class ArticleService {
     @Transactional
     public ResponseDto<?> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
                                        UserDetailsImpl userDetails) throws IOException {
-        try {
+//        try {
 
-            String nickName = userDetails.getMember().getNickName();
-            String userEmail = userDetails.getUsername();
+        String nickName = userDetails.getMember().getNickName();
+        String userEmail = userDetails.getUsername();
 
-            //        유저 포인트
-            Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
-            int userPoint = userDetails.getMember().getPoint() + 2;
-            memberBox.get().updatePoint(userPoint);
+        //        유저 포인트
+        Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
+        int userPoint = userDetails.getMember().getPoint() + 2;
+        memberBox.get().updatePoint(userPoint);
 
-            String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
+        String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
 
 //        dto 널값 예외처리
-            if (Objects.equals(articleRequestDto.getTitle(), "")) {
-                throw new CustomException(ErrorCode.NULL_ARTICLE_TILE);
-            }
-            if (Objects.equals(articleRequestDto.getContent(), "")) {
-                throw new CustomException(ErrorCode.NULL_ARTICLE_CONTENT);
-            }
-            if (articleRequestDto.getPrice() == 0) {
-                throw new CustomException(ErrorCode.NULL_ARTICLE_PRICE);
-            }
-//            if (Objects.equals(String.valueOf(articleRequestDto.getCategory()), null)) {
-            if (Objects.equals(articleRequestDto.getCategory(), "")) {
-                throw new CustomException(ErrorCode.NULL_ARTICLE_CATEGORY);
-            }
-
-            //        게시글
-            Article articles = Article.builder()
-                    .nickName(nickName)
-                    .title(articleRequestDto.getTitle())
-                    .content(articleRequestDto.getContent())
-                    .price(articleRequestDto.getPrice())
-//                    .category(articleRequestDto.getCategory())
-                    .category(Category.valueOf(articleRequestDto.getCategory()))
-                    .process(Process.process)
-                    .userRank(userRank)
-                    .member(userDetails.getMember())
-                    .userEmail(userEmail)
-                    .selectedPrice(0)
-                    .build();
-            articleRepository.save(articles);
-
-            if (multipartFile.size() == 0) {
-                throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
-            } else {
-////        이미지업로드
-                List<Image> imgbox = new ArrayList<>();
-                //          이미지 업로드
-                for (MultipartFile uploadedFile : multipartFile) {
-
-
-                    Image imagePostEntity = Image.builder()
-                            .image(imgScalrS3Uploader.uploadImage(uploadedFile))
-                            .userEmail(userEmail)
-                            .article(articles)
-                            .build();
-                    imgbox.add(imagePostEntity);
-
-                    imageRepository.save(imagePostEntity);
-                }
-
-                return ResponseDto.success("작성 성공");
-            }
-
-        } catch (NullPointerException e) {
-            throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
+        if (Objects.equals(articleRequestDto.getTitle(), "")) {
+            throw new CustomException(ErrorCode.NULL_ARTICLE_TILE);
         }
+        if (Objects.equals(articleRequestDto.getContent(), "")) {
+            throw new CustomException(ErrorCode.NULL_ARTICLE_CONTENT);
+        }
+        if (articleRequestDto.getPrice() == 0) {
+            throw new CustomException(ErrorCode.NULL_ARTICLE_PRICE);
+        }
+//            if (Objects.equals(String.valueOf(articleRequestDto.getCategory()), null)) {
+        if (Objects.equals(articleRequestDto.getCategory(), "")) {
+            throw new CustomException(ErrorCode.NULL_ARTICLE_CATEGORY);
+        }
+
+        //        게시글
+        Article articles = Article.builder()
+                .nickName(nickName)
+                .title(articleRequestDto.getTitle())
+                .content(articleRequestDto.getContent())
+                .price(articleRequestDto.getPrice())
+//                    .category(articleRequestDto.getCategory())
+                .category(Category.valueOf(articleRequestDto.getCategory()))
+                .process(Process.process)
+                .userRank(userRank)
+                .member(userDetails.getMember())
+                .userEmail(userEmail)
+                .selectedPrice(0)
+                .build();
+
+        ////        이미지업로드
+        List<Image> imgbox = new ArrayList<>();
+        //          이미지 업로드
+        for (MultipartFile uploadedFile : multipartFile) {
+            try {
+
+                Image imagePostEntity = Image.builder()
+                        .image(imgScalrS3Uploader.uploadImage(uploadedFile))
+                        .userEmail(userEmail)
+                        .article(articles)
+                        .build();
+                imgbox.add(imagePostEntity);
+
+
+                imageRepository.save(imagePostEntity);
+            } catch (NullPointerException e) {
+                throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
+            }
+        }
+//            if (multipartFile != null) {
+
+        articleRepository.save(articles);
+        return ResponseDto.success("작성 성공");
+//            } else {
+//                throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
+//            }
+
+//        } catch (NullPointerException e) {
+//            throw new CustomException(ErrorCode.DUPLE_EMAIL);
+//        }
 
     }
 
-//    public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
+    //    public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
     public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
         List<ArticleResponseDto> articleResult = articleRepository.articleCarousel();
         Collections.shuffle(articleResult);
@@ -260,8 +264,8 @@ public class ArticleService {
 
 //        이미지업로드
         if (multipartFile == null) {
-            throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);}
-        else{
+            throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
+        } else {
 
             List<Image> imgbox = new ArrayList<>();
             //          이미지 업로드
