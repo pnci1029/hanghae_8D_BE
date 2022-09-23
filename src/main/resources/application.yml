@@ -20,7 +20,7 @@ spring:
 
   datasource:
     #    url: jdbc:mysql://final.cslqgjznyxib.ap-northeast-2.rds.amazonaws.com:3306/final
-    url: jdbc:mysql://chackcheckrds.cjtjmj91mtpj.ap-northeast-2.rds.amazonaws.com:3306/chackcheckrds
+    url: jdbc:mysql://chackcheckhch.chtpk4hp5y3e.ap-northeast-2.rds.amazonaws.com:3306/chackcheckhch
     username: ENC(BpH9uHTb5+HCzpv+wgVxKA==)
     password: ENC(PlTyIJmBXJdj6LVv3fV13PDsju8Qr8hS)
 
@@ -65,7 +65,7 @@ spring:
         max-active: 10
         max-idle: 10
         min-idle: 2
-    host: localhost
+    host: 127.0.0.1
     port: 6379
     password: ENC(blYPI/+DLsIsnZWo8r/KIkvHS/z2NQMb)
 
@@ -79,8 +79,8 @@ cloud:
     credentials:
       #            accessKey: 1234
       #            secretKey: 1234
-      accessKey: ENC(V6/PKDfEekzGrP+QBx6E3VgdXv2jenbIAswrAmF/Lzs=)
-      secretKey: ENC(sYOlqJUzkEID8eisKXXs5HPmYedm/W8M2igKtqPDKZyx/YIeij2hIz6vneoLTdhRZ6v/7xTYuSs=)
+      accessKey: ENC(Qd5A5XO4TNS7keQZmDZQyuRjfMATSAVowdsEdVo5gqA=)
+      secretKey: ENC(c9qBTfcQMCer1hY5e5M/Ws7XrEvrT00cDoIp02zwypt8SqaICoWjJhf2TAP8Lt0WC5Jjrfzy0sE=)
 
     stack:
       auto: false
