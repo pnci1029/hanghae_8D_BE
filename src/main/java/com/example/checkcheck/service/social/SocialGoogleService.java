@@ -90,6 +90,7 @@ public class SocialGoogleService {
                 .userRank(comfortUtils.getUserRank(member.getPoint()))
                 .refreshToken(tokenFactory1.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
+                .isAccepted(member.getIsAccepted())
                 .build();
 
 //        return new ResponseEntity<>(new FinalResponseDto<>
@@ -173,7 +174,6 @@ public class SocialGoogleService {
         Member findGoogle = memberRepository.findByUserRealEmail(googleUserInfoDto.getUserEmail()).orElse(null);
 
 
-
         //DB에 중복된 계정이 없으면 회원가입 처리
         if (findGoogle == null) {
             String userName = googleUserInfoDto.getNickname();
@@ -189,6 +189,7 @@ public class SocialGoogleService {
                     .userRealEmail(email)
                     .password(encodedPassword)
                     .provider(provider)
+                    .isAccepted(false)
                     .build();
             memberRepository.save(kakaoMember);
 

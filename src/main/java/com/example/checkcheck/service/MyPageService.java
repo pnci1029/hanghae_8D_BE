@@ -65,6 +65,7 @@ public class MyPageService {
                         .userRank(userRank)
                         .userPoint(userPoint)
                         .articleCount(articleCount)
+                        .isAccepted(userDetails.getMember().getIsAccepted())
                         .build()
         );
     }

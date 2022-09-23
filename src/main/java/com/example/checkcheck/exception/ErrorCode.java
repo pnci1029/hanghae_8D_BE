@@ -49,6 +49,7 @@ public enum ErrorCode {
 
     // 이메일 전송
     USER_ALREADY_REJECTED_EMAIL(HttpStatus.BAD_REQUEST, "400", "유저가 이메일 수신을 이미 거절했습니다"),
+    USER_ALREADY_AGREE_EMAIL(HttpStatus.BAD_REQUEST, "400", "유저가 이메일 수신을 이미 동의했습니다"),
 
     // 게시글
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 게시글입니다. 다시 시도해주세요"),
