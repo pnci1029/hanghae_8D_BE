@@ -51,12 +51,11 @@ public class ArticleController {
     }
 
     @GetMapping("/main/randomcards")
-    public ResponseEntity<Object> getArticleCarousel() {
-        List<ArticleResponseDto> articleResponseDtos = articleService.getArticleCarousel();
-        return new ResponseEntity<>(new StatusResponseDto("Success", articleResponseDtos), HttpStatus.OK);
+    public ResponseDto<?> getArticleCarousel() {
+        return articleService.getArticleCarousel();
     }
 
-    @GetMapping("/auth/detail/{articlesId}")
+        @GetMapping("/auth/detail/{articlesId}")
     public ArticleDetailResponseDto getArticleDetail(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return articleService.getArticleDetail(articlesId, userDetails);
     }

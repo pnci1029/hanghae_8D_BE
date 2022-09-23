@@ -113,9 +113,9 @@ public class SocialGoogleService {
         body.add("grant_type", "authorization_code");
         body.add("client_id", client_id);
         body.add("client_secret", clientSecret);
-        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
+//        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
 //        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
-//        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/google");
+        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/google");
         body.add("code", code);
 
 
