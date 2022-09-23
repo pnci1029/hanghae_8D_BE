@@ -14,5 +14,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, CrudRepos
 
     Optional<Member> findByNickName(String email);
 
+    Optional<Member> findByIsAccepted(Boolean isAccepted);
     Optional<Member> findByUserName(String nickName);
 }

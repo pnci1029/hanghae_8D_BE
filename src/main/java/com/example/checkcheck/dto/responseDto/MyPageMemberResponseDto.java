@@ -15,5 +15,6 @@ public class MyPageMemberResponseDto {
     private String userRank;
     private int userPoint;
     private int articleCount;
+    private Boolean isAccepted;
 
 }

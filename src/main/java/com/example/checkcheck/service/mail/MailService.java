@@ -1,17 +1,18 @@
 package com.example.checkcheck.service.mail;
 
 import com.example.checkcheck.dto.requestDto.MailRequestDto;
+import com.example.checkcheck.dto.requestDto.MailStatusRequestDto;
+import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.exception.CustomException;
 import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.repository.MemberRepository;
-import com.example.checkcheck.service.MemberService;
+import com.example.checkcheck.security.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class MailService {
     private JavaMailSender javaMailSender;
 
     private MemberRepository memberRepository;
+
     private static final String FROM_ADDRESS = "chackcheck99@gmail.com";
 
     @Async
@@ -41,17 +43,15 @@ public class MailService {
     }
 
     @Transactional
-    public void setEmailApproved(Long memberId){
-        Optional<Member> members = memberRepository.findById(memberId);
+    public ResponseDto<?> setEmailAgreementStatus(MailStatusRequestDto mailStatusRequestDto, UserDetailsImpl userDetails){
+        Optional<Member> members = memberRepository.findById(userDetails.getMember().getMemberId());
         Member member = members.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-        member.setEmailAgreement();
-    }
 
-    @Transactional
-    public void setEmailOpposed(Long memberId){
-        Optional<Member> members = memberRepository.findById(memberId);
-        Member member = members.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
-        member.setEmailOpposition();
+        if (mailStatusRequestDto.getIsAccepted().equals(false))
+           member.setEmailAgreement();
+        else member.setEmailOpposition();
+
+        return ResponseDto.success("success");
     }
 }
 

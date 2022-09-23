@@ -48,13 +48,14 @@ public class Member {
 
     @Builder
     public Member(String nickName, String password, String userEmail, String userName,
-                  LocalDateTime createdAt, String provider, String userRealEmail) {
+                  LocalDateTime createdAt, String provider, String userRealEmail, Boolean isAccepted) {
         this.nickName = nickName;
         this.userName = userName;
         this.password = password;
         this.userEmail = userEmail;
         this.provider = provider;
         this.userRealEmail = userRealEmail;
+        this.isAccepted = isAccepted;
 
     }
 
