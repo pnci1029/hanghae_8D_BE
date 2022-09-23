@@ -11,7 +11,6 @@ import com.example.checkcheck.repository.EmitterRepository;
 import com.example.checkcheck.repository.EmitterRepositoryImpl;
 import com.example.checkcheck.repository.NotificationRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
-import com.example.checkcheck.util.ComfortUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
@@ -39,8 +38,6 @@ import java.util.stream.Collectors;
 public class NotificationService {
     private final EmitterRepository emitterRepository = new EmitterRepositoryImpl();
     private final NotificationRepository notificationRepository;
-
-    private final ComfortUtils comfortUtils;
 
     public SseEmitter subscribe(Long userId, String lastEventId) {
         //emitter 하나하나 에 고유의 값을 주기 위해
@@ -136,6 +133,7 @@ public class NotificationService {
                 .readState(false) // 현재 읽음상태
                 .build();
     }
+
 
     @Transactional
     public List<NotificationResponseDto> findAllNotifications(Long userId) {

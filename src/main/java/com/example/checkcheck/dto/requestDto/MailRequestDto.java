@@ -10,16 +10,18 @@ import org.springframework.web.multipart.MultipartFile;
 @Setter
 @NoArgsConstructor
 public class MailRequestDto {
+
     private String address;
     private String title;
-    private String message;
+    private String detailMessage;
+
     private MultipartFile file; // 클라이언트에서 img 처리할 시 필요
 
     @Builder
-    public MailRequestDto(String address, String title, String message) {
+    public MailRequestDto(String address, String title, String detailMessage) {
         this.address = address;
         this.title = title;
-        this.message = message;
+        this.detailMessage = detailMessage;
 
     }
 }
