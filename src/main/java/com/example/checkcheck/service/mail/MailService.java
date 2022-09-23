@@ -48,8 +48,8 @@ public class MailService {
         Member member = members.orElseThrow(()-> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (mailStatusRequestDto.getIsAccepted().equals(false))
-           member.setEmailAgreement();
-        else member.setEmailOpposition();
+            member.setEmailOpposition();
+        else member.setEmailAgreement();
 
         return ResponseDto.success("success");
     }

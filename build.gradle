@@ -110,6 +110,9 @@ dependencies {
 	// Scalr
 	implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
 
+//	slack logback
+//	implementation 'com.github.maricn:logback-slack-appender:1.6.1'
+
 //	// ImageMetadataReader
 //	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
 
