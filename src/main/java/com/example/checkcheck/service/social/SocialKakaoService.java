@@ -73,7 +73,7 @@ public class SocialKakaoService {
             // User 권한 확인
             TokenFactory tokenFactory = memberService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
 
-        redisService.setValues(kakaoMember.getUserEmail(), tokenFactory.getRefreshToken());
+            redisService.setValues(kakaoMember.getUserEmail(), tokenFactory.getRefreshToken());
 
 
             SocialResponseDto socialResponseDto = SocialResponseDto.builder()
@@ -82,8 +82,8 @@ public class SocialKakaoService {
                     .accessToken(tokenFactory.getAccessToken())
                     .refreshToken(tokenFactory.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
-
                     .userRank(comfortUtils.getUserRank(kakaoMember.getPoint()))
+                    .isAccepted(kakaoMember.getIsAccepted())
                     .build();
 
 //        리프레시토큰저장 & 있을경우 셋토큰
@@ -203,6 +203,7 @@ public class SocialKakaoService {
 //                    수정될수있는 닉네임
                     .nickName(comfortUtils.makeUserNickName())
                     .provider(provider)
+                    .isAccepted(false)
                     .build();
             memberRepository.save(kakaoMember);
 
