@@ -52,7 +52,7 @@ public enum ErrorCode {
 
     // 게시글
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 게시글입니다. 다시 시도해주세요"),
-    NO_IMAGE_EXCEPTION(HttpStatus.BAD_REQUEST, "406", "이미지를 추가해주세요"),
+    NO_IMAGE_EXCEPTION(HttpStatus.BAD_REQUEST, "400", "사진을 등록해 주세요."),
 
 
     //댓글
@@ -65,25 +65,29 @@ public enum ErrorCode {
 
 
     // 정렬 옵션,
-    INVALID_SORTING_OPTION(HttpStatus.BAD_REQUEST, "400", "잘못된 sort 옵션입니다"),
-    INVALID_FILTER_OPTION(HttpStatus.BAD_REQUEST, "400", "잘못된 filter 옵션입니다"),
-    SUBSCRIBE_ERROR(HttpStatus.BAD_REQUEST, "400", "잘못된 Subscribe 요청입니다"),
+    INVALID_SORTING_OPTION(HttpStatus.BAD_REQUEST, "400", "잘못된 sort 옵션입니다."),
+    INVALID_FILTER_OPTION(HttpStatus.BAD_REQUEST, "400", "잘못된 filter 옵션입니다."),
+    SUBSCRIBE_ERROR(HttpStatus.BAD_REQUEST, "400", "잘못된 Subscribe 요청입니다."),
 
-    EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "400","이미 사용 중인 닉네임입니다.\n 다시 입력해주세요"),
-    NICKNAME_EXCEPTION(HttpStatus.BAD_REQUEST,"400" ,"닉네임은 1글자 이상 6글자 이하로 작성해주세요" ),
+    EXIST_NICKNAME(HttpStatus.BAD_REQUEST, "400","이미 사용 중인 닉네임입니다.\n 다시 입력해 주세요."),
+    NICKNAME_EXCEPTION(HttpStatus.BAD_REQUEST,"400" ,"닉네임은 1글자 이상 6글자 이하로 작성해주세요." ),
     NICKNAME_TYPE_EXCEPTION(HttpStatus.BAD_REQUEST,"400" ,"닉네임은 한글, 영어, 숫자만 입력할 수 있습니다."),
 
 
 
     WRONG_CODE_EXCEPTION(HttpStatus.BAD_REQUEST, "400","인가코드가 유효하지 않습니다." ),
     EXPIRE_REFRESH_TOKEN(HttpStatus.FORBIDDEN,"403" ,"refresh token이 유효하지 않습니다." ),
-    NullPoint_Token(HttpStatus.METHOD_NOT_ALLOWED,"405", "사용자 정보가 만료되었습니다. 다시 로그인해 주세요"),
+    NullPoint_Token(HttpStatus.METHOD_NOT_ALLOWED,"405", "사용자 정보가 만료되었습니다. 다시 로그인해 주세요."),
 
-    NOT_EXIST_REFRESHTOKEN(HttpStatus.BAD_REQUEST, "400","올바른 RefreshToken을 헤더에 넣어주세요" ),
+    NOT_EXIST_REFRESHTOKEN(HttpStatus.BAD_REQUEST, "400","올바른 RefreshToken을 헤더에 넣어주세요." ),
     TOO_HIGH_NUMBER(HttpStatus.BAD_REQUEST,"400" ,"금액은 8자리까지 입력할 수있습니다."),
     TOO_LONG_COMMENT(HttpStatus.BAD_REQUEST,"400" ,"댓글은 80자까지 입력할 수있습니다."),
     NOT_EXIST_COMMENT(HttpStatus.BAD_REQUEST,"400" , "존재하지 않는 댓글입니다. 새로고침 해주세요."),
-    NOT_EXIST_CLIENT(HttpStatus.BAD_REQUEST,"400", "탈퇴처리가 완료되었습니다. 새로고침 해주세요.");
+    NOT_EXIST_CLIENT(HttpStatus.BAD_REQUEST,"400", "탈퇴처리가 완료되었습니다. 새로고침 해주세요."),
+    NULL_ARTICLE_TILE(HttpStatus.BAD_REQUEST,"400" ,"제목을 입력해 주세요."),
+    NULL_ARTICLE_CONTENT(HttpStatus.BAD_REQUEST,"400" ,"품목에 대한 설명을 작성해 주세요."),
+    NULL_ARTICLE_PRICE(HttpStatus.BAD_REQUEST,"400" ,"가격을 입력해 주세요."),
+    NULL_ARTICLE_CATEGORY(HttpStatus.BAD_REQUEST,"400" ,"카테고리를 선택해 주세요.");
 
     // 추후 추가 코드
     private boolean success;

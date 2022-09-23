@@ -69,7 +69,6 @@ spring:
     port: 6379
     password: ENC(blYPI/+DLsIsnZWo8r/KIkvHS/z2NQMb)
 
-
 #s3
 cloud:
   aws:

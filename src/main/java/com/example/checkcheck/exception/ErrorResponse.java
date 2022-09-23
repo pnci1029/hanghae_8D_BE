@@ -21,4 +21,13 @@ public class ErrorResponse {
         this.errorCode = errorCode.getErrorCode();
         this.errorMessage = errorCode.getMsg();
     }
+
+    @Builder
+    public ErrorResponse(ErrorCode errorCode, String errorMessage) {
+        this.status = errorCode.getHttpStatus();
+        this.errorCode = errorCode.getErrorCode();
+        this.errorMessage = errorMessage;
+    }
+
+
 }
