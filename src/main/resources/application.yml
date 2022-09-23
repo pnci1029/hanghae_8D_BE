@@ -9,24 +9,24 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-  h2:
-    console:
-      enabled: true
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
-
+#  h2:
+#    console:
+#      enabled: true
 #  datasource:
+#    url: jdbc:h2:mem:testdb
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
+
+  datasource:
     #    url: jdbc:mysql://final.cslqgjznyxib.ap-northeast-2.rds.amazonaws.com:3306/final
     url: jdbc:mysql://chackcheckhch.chtpk4hp5y3e.ap-northeast-2.rds.amazonaws.com:3306/chackcheckhch
     username: ENC(BpH9uHTb5+HCzpv+wgVxKA==)
     password: ENC(PlTyIJmBXJdj6LVv3fV13PDsju8Qr8hS)
 
   jpa:
-#    database-platform: org.hibernate.dialect.MySQL5Dialect
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+#    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
     properties:
@@ -139,3 +139,9 @@ cloud:
 
 jwt:
   secret: ENC(l73jWGeQsA3bpFp9No8eCJEpk1UfNRTX054jlQUG3+PY05NvMTe0VGv29JLfIu9RkMsePjHIYSFPsNG8OoNYcKOvpQPW8IhMUL6AmRt79Qh60DeqmyyXQbaVAySESEYuB1w70cg7UCc4rK/pEJc5jkHkvB2X+mWOadA3lR3QnOO0tNrcaTat0c4jIln2NWS6)
+
+# 로그백 추가
+#logging:
+#  slack:
+#    webhook-url: https://hooks.slack.com/services/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
+#  config: classpath:logback-spring.xml
