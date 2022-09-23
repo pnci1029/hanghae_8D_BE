@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
@@ -225,7 +226,6 @@ public class ArticleService {
 
 
         articleRepository.save(targetArticle);
-
 //
 //        이미지업로드
         if (multipartFile != null) {

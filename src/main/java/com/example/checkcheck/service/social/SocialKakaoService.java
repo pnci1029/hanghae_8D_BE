@@ -11,6 +11,7 @@ import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
+import com.example.checkcheck.service.RedisService;
 import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -49,7 +50,7 @@ public class SocialKakaoService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final ComfortUtils comfortUtils;
 
-//    private final RedisService redisService;
+    private final RedisService redisService;
 
 
     //header 에 Content-type 지정
@@ -72,7 +73,7 @@ public class SocialKakaoService {
             // User 권한 확인
             TokenFactory tokenFactory = memberService.accessAndRefreshTokenProcess(kakaoMember.getUserEmail(), response);
 
-//        redisService.setValues(kakaoMember.getUserEmail(), tokenFactory.getRefreshToken());
+        redisService.setValues(kakaoMember.getUserEmail(), tokenFactory.getRefreshToken());
 
 
             SocialResponseDto socialResponseDto = SocialResponseDto.builder()
@@ -86,17 +87,17 @@ public class SocialKakaoService {
                     .build();
 
 //        리프레시토큰저장 & 있을경우 셋토큰
-            Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(kakaoMember.getUserEmail());
-            if (existToken.isEmpty()) {
-                RefreshToken token = RefreshToken.builder()
-                        .key(socialResponseDto.getUserEmail())
-                        .value(tokenFactory.getRefreshToken())
-                        .build();
-                refreshTokenRepository.save(token);
-            } else {
-                existToken.get().setTokenKey(socialResponseDto.getUserEmail());
-                existToken.get().setTokenValue(tokenFactory.getRefreshToken());
-            }
+//            Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(kakaoMember.getUserEmail());
+//            if (existToken.isEmpty()) {
+//                RefreshToken token = RefreshToken.builder()
+//                        .key(socialResponseDto.getUserEmail())
+//                        .value(tokenFactory.getRefreshToken())
+//                        .build();
+//                refreshTokenRepository.save(token);
+//            } else {
+//                existToken.get().setTokenKey(socialResponseDto.getUserEmail());
+//                existToken.get().setTokenValue(tokenFactory.getRefreshToken());
+//            }
 
 //        return new ResponseEntity<>(new FinalResponseDto<>
 //                (true, "로그인 성공",kakaoUser), HttpStatus.OK);
@@ -114,9 +115,9 @@ public class SocialKakaoService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
-//        body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
+        body.add("redirect_uri", "http://localhost:8080/user/signin/kakao");
 //        body.add("redirect_uri", "http://localhost:3000/user/signin/kakao");
-        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/kakao");
+//        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/kakao");
         body.add("code", code);
         body.add("client_secret", clientSecret);
 

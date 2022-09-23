@@ -124,7 +124,7 @@ public class CommentService {
         log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
 
 
-        if(article.getMember().getIsApprovedEmail().equals(true)){
+        if(article.getMember().getIsAccepted().equals(true)){
             //게시글 작성자에게 이메일전송
             String maiTitle = "안녕하세요, 고객님 ChackCheck입니다";
             String detailMessage = message + "\n\n 이메일 알람 수신 거절하기  \n\n -> https://www.chackcheck99.com/mypage";
@@ -317,7 +317,7 @@ public class CommentService {
         }
 
         // 채택댓글 작성자에게 이메일 전송
-            if(targetComment.getMember().getIsApprovedEmail().equals(true)){
+            if(targetComment.getMember().getIsAccepted().equals(true)){
             String maiTitle = "안녕하세요, 고객님 ChackCheck입니다";
             String detailMessage = message + "\n\n 이메일 알람 수신 거절하기  \n\n -> https://www.chackcheck99.com/mypage";
             mailService.mailSend(new MailRequestDto(targetComment.getMember().getUserRealEmail(), maiTitle, detailMessage));

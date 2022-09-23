@@ -44,7 +44,7 @@ public class Member {
     @JsonManagedReference
     private List<Article> article=new ArrayList<>();
 
-    private Boolean isApprovedEmail = false;
+    private Boolean isAccepted = false;
 
     @Builder
     public Member(String nickName, String password, String userEmail, String userName,
@@ -67,11 +67,11 @@ public class Member {
     }
 
     public void setEmailAgreement(){
-        this.isApprovedEmail = true;
+        this.isAccepted = true;
     }
 
     public void setEmailOpposition(){
-        this.isApprovedEmail = false;
+        this.isAccepted = false;
     }
 
 

@@ -9,28 +9,29 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-  h2:
-    console:
-      enabled: true
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+  #  h2:
+  #    console:
+  #      enabled: true
+  #  datasource:
+  #    url: jdbc:h2:mem:testdb
+  #    driver-class-name: org.h2.Driver
+  #    username: sa
+  #    password:
 
-#  datasource:
-#    url: jdbc:mysql://final.cslqgjznyxib.ap-northeast-2.rds.amazonaws.com:3306/final
-#    username: ENC(BpH9uHTb5+HCzpv+wgVxKA==)
-#    password: ENC(yCt/7Y2Vr3DVD4KGd1vED0MlsMYmA+fD)
+  datasource:
+    #    url: jdbc:mysql://final.cslqgjznyxib.ap-northeast-2.rds.amazonaws.com:3306/final
+    url: jdbc:mysql://chackcheckrds.cjtjmj91mtpj.ap-northeast-2.rds.amazonaws.com:3306/chackcheckrds
+    username: ENC(BpH9uHTb5+HCzpv+wgVxKA==)
+    password: ENC(PlTyIJmBXJdj6LVv3fV13PDsju8Qr8hS)
 
   jpa:
-#    database-platform: org.hibernate.dialect.MySQL5Dialect
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    #    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
-        format_sql: true
+  #        format_sql: true
   #          show_sql: true
 
   profiles:
@@ -66,37 +67,21 @@ spring:
         min-idle: 2
     host: localhost
     port: 6379
-    password: ENC(08d7LMcA/ytF+fZREC1Xw4mNhBxIvy9w)
+    password: ENC(blYPI/+DLsIsnZWo8r/KIkvHS/z2NQMb)
 
-#prometheus
-management:
-  endpoint:
-    metrics:
-      enabled: true
-    prometheus:
-      enabled: true
-
-  endpoints:
-    web:
-      exposure:
-        include: health, info, metrics, prometheus
-
-  metrics:
-    tags:
-      application: ${spring.application.name}
 
 #s3
 cloud:
   aws:
     s3:
-      bucket: ENC(U/+bV9IQj8KlVFgaqtNSDA==)
+      bucket: ENC(ATyEyG0/DJX3UfmF9SVKeaXRikA9qflE)
     region:
       static: ap-northeast-2
     credentials:
       #            accessKey: 1234
       #            secretKey: 1234
-      accessKey: ENC(6Lxrl68p9hw6PqxX90HT3m9Tt+ZlPBD2JWhZZcukzCo=)
-      secretKey: ENC(/3EEMCUKJrV820eoHei7IbCPnClF0ZPtB7k9sXrF/4107ySWBYiEC2MAdX27fKbM7JXO8bYwnOs=)
+      accessKey: ENC(V6/PKDfEekzGrP+QBx6E3VgdXv2jenbIAswrAmF/Lzs=)
+      secretKey: ENC(sYOlqJUzkEID8eisKXXs5HPmYedm/W8M2igKtqPDKZyx/YIeij2hIz6vneoLTdhRZ6v/7xTYuSs=)
 
     stack:
       auto: false
@@ -155,4 +140,3 @@ cloud:
 
 jwt:
   secret: ENC(l73jWGeQsA3bpFp9No8eCJEpk1UfNRTX054jlQUG3+PY05NvMTe0VGv29JLfIu9RkMsePjHIYSFPsNG8OoNYcKOvpQPW8IhMUL6AmRt79Qh60DeqmyyXQbaVAySESEYuB1w70cg7UCc4rK/pEJc5jkHkvB2X+mWOadA3lR3QnOO0tNrcaTat0c4jIln2NWS6)
-

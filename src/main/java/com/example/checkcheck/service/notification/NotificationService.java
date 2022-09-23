@@ -11,7 +11,6 @@ import com.example.checkcheck.repository.EmitterRepository;
 import com.example.checkcheck.repository.EmitterRepositoryImpl;
 import com.example.checkcheck.repository.NotificationRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
-import com.example.checkcheck.util.ComfortUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
