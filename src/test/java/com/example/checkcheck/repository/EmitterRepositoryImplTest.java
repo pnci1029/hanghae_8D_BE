@@ -38,7 +38,7 @@
 //        Long memberId = 1L;
 //        String eventCacheId = memberId + "_"+ System.currentTimeMillis();
 //        Notification notification = new Notification(
-//                                   AlarmType.COMMENT,
+//                                   AlarmType.comment,
 //                "댓글 알림이 도착했습니다",
 //                true,
 //                "http://localhost:8080",

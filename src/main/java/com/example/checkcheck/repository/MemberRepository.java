@@ -2,6 +2,7 @@ package com.example.checkcheck.repository;
 
 import com.example.checkcheck.model.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

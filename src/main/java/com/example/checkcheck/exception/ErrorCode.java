@@ -17,7 +17,7 @@ public enum ErrorCode {
 
     OK(HttpStatus.OK,  "200", "true"),
 
-
+    INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "500", "서버가 다운되었습니다, 잠시후 다시 접속해주세요"),
     // 회원가입 + 로그인 + 이메일 체크
     DUPLE_EMAIL(HttpStatus.BAD_REQUEST, "400", "중복된 이메일 입니다."),
     EMAIL_CONTENT_END(HttpStatus.BAD_REQUEST, "400", ""),
@@ -46,6 +46,9 @@ public enum ErrorCode {
     NOT_VALIDURL(HttpStatus.BAD_REQUEST,"400","유효하지 않는 URL 입니다."),
     NOT_VALIDMESSAGE(HttpStatus.BAD_REQUEST,"400","유효하지 않는 내용입니다."),
     NOT_EXIST_NOTIFICATION(HttpStatus.BAD_REQUEST,"400","존재하지 않는 알림입니다. 새로고침 해주세요."),
+
+    // 이메일 전송
+    USER_ALREADY_REJECTED_EMAIL(HttpStatus.BAD_REQUEST, "400", "유저가 이메일 수신을 이미 거절했습니다"),
 
     // 게시글
     ARTICLE_NOT_FOUND(HttpStatus.NOT_FOUND, "404", "존재하지 않는 게시글입니다. 다시 시도해주세요"),
