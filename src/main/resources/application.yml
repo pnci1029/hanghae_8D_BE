@@ -67,7 +67,7 @@ spring:
         min-idle: 2
     host: localhost
     port: 6379
-    password: blYPI/+DLsIsnZWo8r/KIkvHS/z2NQMb
+    password: ENC(blYPI/+DLsIsnZWo8r/KIkvHS/z2NQMb)
 
 #s3
 cloud:

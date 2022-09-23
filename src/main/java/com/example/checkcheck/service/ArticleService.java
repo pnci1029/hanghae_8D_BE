@@ -16,8 +16,6 @@ import com.example.checkcheck.repository.ImageRepository;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
-//import com.example.checkcheck.service.s3.ImgScalrS3Uploader;
-//import com.example.checkcheck.service.s3.MarvinS3Uploader;
 import com.example.checkcheck.service.s3.ImgScalrS3Uploader;
 import com.example.checkcheck.util.ComfortUtils;
 import com.example.checkcheck.util.Time;
@@ -30,10 +28,7 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ArticleService {
@@ -72,36 +67,54 @@ public class ArticleService {
     @Transactional
     public ResponseDto<?> postArticles(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto,
                                        UserDetailsImpl userDetails) throws IOException {
-        String nickName = userDetails.getMember().getNickName();
-        String userEmail = userDetails.getUsername();
+        try {
 
-        //        유저 포인트
-        Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
-        int userPoint = userDetails.getMember().getPoint() + 2;
-        memberBox.get().updatePoint(userPoint);
+            String nickName = userDetails.getMember().getNickName();
+            String userEmail = userDetails.getUsername();
 
-        String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
+            //        유저 포인트
+            Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
+            int userPoint = userDetails.getMember().getPoint() + 2;
+            memberBox.get().updatePoint(userPoint);
 
-        //        게시글
-        Article articles = Article.builder()
-                .nickName(nickName)
-                .title(articleRequestDto.getTitle())
-                .content(articleRequestDto.getContent())
-                .price(articleRequestDto.getPrice())
-                .category(articleRequestDto.getCategory())
-                .process(Process.process)
-                .userRank(userRank)
-                .member(userDetails.getMember())
-                .userEmail(userEmail)
-                .selectedPrice(0)
-                .build();
-        articleRepository.save(articles);
+            String userRank = comfortUtils.getUserRank(memberBox.get().getPoint());
 
-        if (multipartFile == null) {
-            throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
-        } else {
+//        dto 널값 예외처리
+            if (Objects.equals(articleRequestDto.getTitle(), "")) {
+                throw new CustomException(ErrorCode.NULL_ARTICLE_TILE);
+            }
+            if (Objects.equals(articleRequestDto.getContent(), "")) {
+                throw new CustomException(ErrorCode.NULL_ARTICLE_CONTENT);
+            }
+            if (articleRequestDto.getPrice() == 0) {
+                throw new CustomException(ErrorCode.NULL_ARTICLE_PRICE);
+            }
+//            if (Objects.equals(String.valueOf(articleRequestDto.getCategory()), null)) {
+            if (Objects.equals(articleRequestDto.getCategory(), "")) {
+                throw new CustomException(ErrorCode.NULL_ARTICLE_CATEGORY);
+            }
+
+            //        게시글
+            Article articles = Article.builder()
+                    .nickName(nickName)
+                    .title(articleRequestDto.getTitle())
+                    .content(articleRequestDto.getContent())
+                    .price(articleRequestDto.getPrice())
+//                    .category(articleRequestDto.getCategory())
+                    .category(Category.valueOf(articleRequestDto.getCategory()))
+                    .process(Process.process)
+                    .userRank(userRank)
+                    .member(userDetails.getMember())
+                    .userEmail(userEmail)
+                    .selectedPrice(0)
+                    .build();
+            articleRepository.save(articles);
+
+            if (multipartFile.size() == 0) {
+                throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
+            } else {
 ////        이미지업로드
-            List<Image> imgbox = new ArrayList<>();
+                List<Image> imgbox = new ArrayList<>();
                 //          이미지 업로드
                 for (MultipartFile uploadedFile : multipartFile) {
 
@@ -116,7 +129,11 @@ public class ArticleService {
                     imageRepository.save(imagePostEntity);
                 }
 
-            return ResponseDto.success("작성 성공");
+                return ResponseDto.success("작성 성공");
+            }
+
+        } catch (NullPointerException e) {
+            throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
         }
 
     }
@@ -127,10 +144,10 @@ public class ArticleService {
         Collections.shuffle(articleResult);
 
         List<ArticleResponseDto> resultBox = new ArrayList<>();
-        if (articleResult.size() < 5) {
+        if (articleResult.size() < 10) {
             resultBox.addAll(articleResult);
         } else
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 10; i++) {
                 resultBox.add(articleResult.get(i));
             }
         return ResponseDto.success(resultBox);
@@ -208,6 +225,21 @@ public class ArticleService {
 
     @Transactional
     public ResponseDto<?> patchArticle(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto, Long articlesId, UserDetailsImpl userDetails) throws IOException {
+
+//        dto 널값 예외처리
+        if (articleRequestDto.getTitle().isEmpty()) {
+            throw new CustomException(ErrorCode.NULL_ARTICLE_TILE);
+        }
+        if (articleRequestDto.getContent().isEmpty()) {
+            throw new CustomException(ErrorCode.NULL_ARTICLE_CONTENT);
+        }
+        if (String.valueOf(articleRequestDto.getPrice()).isEmpty()) {
+            throw new CustomException(ErrorCode.NULL_ARTICLE_PRICE);
+        }
+        if (Objects.equals(articleRequestDto.getCategory(), "")) {
+            throw new CustomException(ErrorCode.NULL_ARTICLE_CATEGORY);
+        }
+
         Article targetArticle = articleRepository.findById(articlesId).orElse(null);
 
         List<String> imageList = articleRequestDto.getImageList();
@@ -220,14 +252,16 @@ public class ArticleService {
         targetArticle.setTitle(articleRequestDto.getTitle());
         targetArticle.setContent(articleRequestDto.getContent());
         targetArticle.setPrice(articleRequestDto.getPrice());
-        targetArticle.setCategory(articleRequestDto.getCategory());
+//        targetArticle.setCategory(articleRequestDto.getCategory());
+        targetArticle.setCategory(Category.valueOf(articleRequestDto.getCategory()));
 
 
         articleRepository.save(targetArticle);
 
-//
 //        이미지업로드
-        if (multipartFile != null) {
+        if (multipartFile == null) {
+            throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);}
+        else{
 
             List<Image> imgbox = new ArrayList<>();
             //          이미지 업로드
