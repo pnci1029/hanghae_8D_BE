@@ -9,8 +9,6 @@ import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
-//import com.example.checkcheck.service.RedisService;
-import com.example.checkcheck.service.RedisService;
 import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -31,9 +29,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-
 import javax.servlet.http.HttpServletResponse;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,7 +47,7 @@ public class SocialGoogleService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final ComfortUtils comfortUtils;
 
-    private final RedisService redisService;
+//    private final RedisService redisService;
 
     //header 에 Content-type 지정
     //1번
@@ -76,16 +72,16 @@ public class SocialGoogleService {
         TokenFactory tokenFactory1 = memberService.accessAndRefreshTokenProcess(member.getUserEmail(), response);
         RefreshToken refreshToken = new RefreshToken(member.getUserEmail(), tokenFactory1.getRefreshToken());
 
-        redisService.setValues(member.getUserEmail(), tokenFactory1.getRefreshToken());
+//        redisService.setValues(member.getUserEmail(), tokenFactory1.getRefreshToken());
 
 //        리프레시토큰저장 & 있을경우 셋토큰
-//        Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(member.getUserEmail());
-//        if (existToken.isEmpty()) {
-//            refreshTokenRepository.save(refreshToken);
-//        }  else {
-//            existToken.get().setTokenKey(refreshToken.getTokenKey());
-//            existToken.get().setTokenValue(refreshToken.getTokenValue());
-//        }
+        Optional<RefreshToken> existToken = refreshTokenRepository.findByTokenKey(member.getUserEmail());
+        if (existToken.isEmpty()) {
+            refreshTokenRepository.save(refreshToken);
+        }  else {
+            existToken.get().setTokenKey(refreshToken.getTokenKey());
+            existToken.get().setTokenValue(refreshToken.getTokenValue());
+        }
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(member.getUserEmail())
