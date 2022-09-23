@@ -1,5 +1,6 @@
 package com.example.checkcheck.dto.responseDto;
 
+import com.example.checkcheck.model.Member;
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +13,19 @@ public class SocialResponseDto {
     private String accessToken;
     private String refreshToken;
     private String userRank;
+    private Boolean isAccepted;
 
-
+    public SocialResponseDto(String nickName,
+                             String userEmail,
+                             String accessToken,
+                             String refreshToken,
+                             String userRank,
+                             Boolean isAccepted) {
+        this.nickName = nickName;
+        this.userEmail = userEmail;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        this.userRank = userRank;
+        this.isAccepted = isAccepted;
+    }
 }

@@ -78,6 +78,7 @@ public class SocialNaverSerivce {
 //                        .socialId(Double.valueOf(naverUser.getNaverId().substring(1, naverUser.getNaverId().length() - 1)))
                         .createdAt(LocalDateTime.now())
                         .provider(provider)
+                        .isAccepted(member.getIsAccepted())
                         .build();
                 memberRepository.save(member);
 
@@ -119,6 +120,7 @@ public class SocialNaverSerivce {
                     .accessToken(tokenFactory.getAccessToken())
                     .refreshToken(tokenFactory.getRefreshToken())
                     .userRank(comfortUtils.getUserRank(member.getPoint()))
+                    .isAccepted(member.getIsAccepted())
                     .build();
             return socialResponseDto;
 

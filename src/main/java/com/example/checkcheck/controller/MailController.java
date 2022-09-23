@@ -1,11 +1,15 @@
 package com.example.checkcheck.controller;
 
+import com.example.checkcheck.dto.requestDto.MailStatusRequestDto;
+import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.dto.responseDto.StatusResponseDto;
+import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
 import com.example.checkcheck.service.mail.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,16 +19,20 @@ public class MailController {
 
     private final MailService mailService;
 
+
+    //수신확인
+//    @PutMapping("/auth/profile/email")
+//    public ResponseEntity<Object> emailOpposed(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        mailService.setEmailAgreementStatus(userDetails);
+//        return new ResponseEntity<>(new StatusResponseDto("Success",""), HttpStatus.OK);
+//    }
+
     //수신동의
-    @GetMapping("/email/agreement/{memberId}")
-    public ResponseEntity<Object> emailApproved(@PathVariable Long memberId) {
-        mailService.setEmailApproved(memberId);
-        return new ResponseEntity<>(new StatusResponseDto("Success",""), HttpStatus.OK);
+    @PatchMapping("/auth/profile/email")
+    public ResponseDto<?> emailApproved(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                     @RequestBody MailStatusRequestDto mailStatusRequestDto) {
+
+        return mailService.setEmailAgreementStatus(mailStatusRequestDto, userDetails);
     }
-    //수신거절
-    @GetMapping("/email/opposite/{memberId}")
-    public ResponseEntity<Object> emailOpposed(@PathVariable Long memberId) {
-        mailService.setEmailOpposed(memberId);
-        return new ResponseEntity<>(new StatusResponseDto("Success",""), HttpStatus.OK);
-    }
+
 }
