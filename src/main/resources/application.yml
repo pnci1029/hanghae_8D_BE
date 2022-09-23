@@ -65,7 +65,7 @@ spring:
         max-active: 10
         max-idle: 10
         min-idle: 2
-    host: localhost
+    host: 127.0.0.1
     port: 6379
     password: ENC(blYPI/+DLsIsnZWo8r/KIkvHS/z2NQMb)
 
