@@ -55,9 +55,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 //        http.cors().configurationSource(corsConfigurationSource());
         // 토큰 인증이므로 세션 사용x
+        http.cors().configurationSource(corsConfigurationSource());
         http.csrf().disable()
-                .cors()
-                .and()
+//                .cors()
+//                .and()
                 .exceptionHandling()
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
