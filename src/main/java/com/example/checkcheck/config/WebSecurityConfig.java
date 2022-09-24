@@ -55,10 +55,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 //        http.cors().configurationSource(corsConfigurationSource());
         // 토큰 인증이므로 세션 사용x
-        http.cors().configurationSource(corsConfigurationSource());
         http.csrf().disable()
-//                .cors()
-//                .and()
+                .cors()
+                .and()
                 .exceptionHandling()
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
@@ -69,11 +68,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.headers().frameOptions().sameOrigin();
 
-        http
-                .sessionManagement()
-                .maximumSessions(1)
-                .maxSessionsPreventsLogin(false)
-                .expiredUrl("/");
+//        http
+//                .sessionManagement()
+//                .maximumSessions(1)
+//                .maxSessionsPreventsLogin(false)
+//                .expiredUrl("/");
 
 
         http.authorizeRequests()
@@ -83,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/api/main/**").permitAll()
                 .antMatchers("/auth/user/token").permitAll()
+                .antMatchers("/subscribe/**").permitAll()
 
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
@@ -102,9 +102,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowCredentials(true);
-//        configuration.addAllowedOriginPattern("*");
-        configuration.addAllowedOrigin("http://localhost:3000"); // local 테스트 시
-        configuration.addAllowedOrigin("https://www.chackcheck99.com");
+        configuration.addAllowedOriginPattern("*");
+//        configuration.addAllowedOrigin("http://localhost:3000"); // local 테스트 시
+//        configuration.addAllowedOrigin("https://www.chackcheck99.com");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("*");
