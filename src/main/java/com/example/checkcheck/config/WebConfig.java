@@ -33,6 +33,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
+                .allowCredentials(true)
 //                .allowedOrigins("*")
 //                .allowedOrigins("http://localhost:3000", "https://amplify.d3ifjxscizr42x.amplifyapp.com", "https://www.everymohum.com" +
 //                        "\n")
