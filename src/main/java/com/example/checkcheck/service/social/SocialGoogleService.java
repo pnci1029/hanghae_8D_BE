@@ -190,6 +190,7 @@ public class SocialGoogleService {
                     .password(encodedPassword)
                     .provider(provider)
                     .isAccepted(false)
+                    .isDeleted(false)
                     .build();
             memberRepository.save(kakaoMember);
 

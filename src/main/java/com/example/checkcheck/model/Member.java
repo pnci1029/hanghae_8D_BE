@@ -46,8 +46,10 @@ public class Member {
 
     private Boolean isAccepted = false;
 
+    private Boolean isDeleted;
+
     @Builder
-    public Member(String nickName, String password, String userEmail, String userName,
+    public Member(String nickName, String password, String userEmail, String userName, Boolean isDeleted,
                   LocalDateTime createdAt, String provider, String userRealEmail, Boolean isAccepted) {
         this.nickName = nickName;
         this.userName = userName;
@@ -56,6 +58,7 @@ public class Member {
         this.provider = provider;
         this.userRealEmail = userRealEmail;
         this.isAccepted = isAccepted;
+        this.isDeleted = isDeleted;
 
     }
 
@@ -73,6 +76,10 @@ public class Member {
 
     public void setEmailOpposition(){
         this.isAccepted = false;
+    }
+
+    public void setMemberDelete() {
+        this.isDeleted = true;
     }
 
 

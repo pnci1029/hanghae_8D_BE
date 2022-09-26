@@ -199,6 +199,7 @@ public class SocialKakaoService {
                     .nickName(comfortUtils.makeUserNickName())
                     .provider(provider)
                     .isAccepted(false)
+                    .isDeleted(false)
                     .build();
             memberRepository.save(kakaoMember);
 

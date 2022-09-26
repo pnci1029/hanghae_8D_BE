@@ -143,5 +143,5 @@ jwt:
 # 로그백 추가
 #logging:
 #  slack:
-#    webhook-url: https://hooks.slack.com/services/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
+#    webhook-uri: https://hooks.slack.com/services/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
 #  config: classpath:logback-spring.xml

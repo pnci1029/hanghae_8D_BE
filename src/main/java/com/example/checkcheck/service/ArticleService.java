@@ -229,6 +229,7 @@ public class ArticleService {
 
     @Transactional
     public ResponseDto<?> patchArticle(List<MultipartFile> multipartFile, ArticleRequestDto articleRequestDto, Long articlesId, UserDetailsImpl userDetails) throws IOException {
+        Article targetArticle = articleRepository.findById(articlesId).orElse(null);
 
 //        dto 널값 예외처리
         if (articleRequestDto.getTitle().isEmpty()) {
@@ -243,8 +244,9 @@ public class ArticleService {
         if (Objects.equals(articleRequestDto.getCategory(), "")) {
             throw new CustomException(ErrorCode.NULL_ARTICLE_CATEGORY);
         }
-
-        Article targetArticle = articleRepository.findById(articlesId).orElse(null);
+        if (!userDetails.getMember().getUserEmail().equals(targetArticle.getMember().getUserEmail())) {
+            throw new CustomException(ErrorCode.NOT_MY_ARTICLE);
+        }
 
         List<String> imageList = articleRequestDto.getImageList();
         for (String s : imageList) {
@@ -263,22 +265,21 @@ public class ArticleService {
         articleRepository.save(targetArticle);
 
 //        이미지업로드
+        List<Image> imgbox = new ArrayList<>();
         if (multipartFile == null) {
-            throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
-        } else {
+            return ResponseDto.success("수정 완료");
 
-            List<Image> imgbox = new ArrayList<>();
-            //          이미지 업로드
+        } else {
             for (MultipartFile uploadedFile : multipartFile) {
 
-                Image imagePostEntity = Image.builder()
-                        .image(imgScalrS3Uploader.uploadImage(uploadedFile))
-                        .userEmail(userEmail)
-                        .article(targetArticle)
-                        .build();
-                imgbox.add(imagePostEntity);
 
-                imageRepository.save(imagePostEntity);
+                    Image imagePostEntity = Image.builder()
+                            .image(imgScalrS3Uploader.uploadImage(uploadedFile))
+                            .userEmail(userEmail)
+                            .article(targetArticle)
+                            .build();
+                    imgbox.add(imagePostEntity);
+                    imageRepository.save(imagePostEntity);
             }
 
         }

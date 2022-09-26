@@ -3,6 +3,7 @@ package com.example.checkcheck.repository;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.model.Image;
+import com.example.checkcheck.model.QMember;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
@@ -19,6 +20,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.checkcheck.model.QMember.*;
 import static com.example.checkcheck.model.articleModel.QArticle.article;
 
 @Slf4j
@@ -49,6 +51,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         if (process.equals(Process.all) && category.equals(Category.all)) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
+                    .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                    .where(member.isDeleted.eq(false))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
@@ -58,7 +62,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         } else if (process.equals(Process.all)) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-                    .where(article.category.eq(category))
+                    .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                    .where(member.isDeleted.eq(false),article.category.eq(category))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
@@ -68,7 +73,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         } else if (category.equals(Category.all)) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-                    .where(article.process.eq(process))
+                    .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                    .where(member.isDeleted.eq(false),article.process.eq(process))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
@@ -78,7 +84,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         else {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-                    .where(article.process.eq(process).and(article.category.eq(category)))
+                    .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                    .where(member.isDeleted.eq(false),article.process.eq(process).and(article.category.eq(category)))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
@@ -139,7 +146,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
         List<Article> result = jpaQueryFactory
                 .selectFrom(article)
-                .where(article.process.eq(Process.process))
+                .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                .where(member.isDeleted.eq(false),article.process.eq(Process.process))
                 .fetch();
         for (Article article : result) {
             String images = "";

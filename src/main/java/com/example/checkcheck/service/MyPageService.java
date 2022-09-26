@@ -80,12 +80,14 @@ public class MyPageService {
     // 회원 탈퇴
     @Transactional
     public ResponseDto<?> deleteMember(UserDetailsImpl userDetails) {
-        Member member = userDetails.getMember();
-        if (null == member) {
-            throw new CustomException(ErrorCode.NOT_EXIST_CLIENT);
-        }
-        memberRepository.deleteById(member.getMemberId());
-        refreshTokenRepository.deleteByTokenKey(member.getUserEmail());
+        Optional<Member> member = memberRepository.findByUserEmail(userDetails.getUsername());
+        Member targetMember = member.orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_CLIENT));
+//        하드딜리트
+//        memberRepository.deleteById(member.getMemberId());
+
+//        소프트딜리트
+        targetMember.setMemberDelete();
+        refreshTokenRepository.deleteByTokenKey(targetMember.getUserEmail());
 
         return ResponseDto.success("탈퇴 완료");
     }

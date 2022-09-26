@@ -88,7 +88,8 @@ public enum ErrorCode {
     NULL_ARTICLE_TILE(HttpStatus.BAD_REQUEST,"400" ,"제목을 입력해 주세요."),
     NULL_ARTICLE_CONTENT(HttpStatus.BAD_REQUEST,"400" ,"품목에 대한 설명을 작성해 주세요."),
     NULL_ARTICLE_PRICE(HttpStatus.BAD_REQUEST,"400" ,"가격을 입력해 주세요."),
-    NULL_ARTICLE_CATEGORY(HttpStatus.BAD_REQUEST,"400" ,"카테고리를 선택해 주세요.");
+    NULL_ARTICLE_CATEGORY(HttpStatus.BAD_REQUEST,"400" ,"카테고리를 선택해 주세요."),
+    NOT_MY_ARTICLE(HttpStatus.BAD_REQUEST, "400", "본인이 작성한 게시글만 수정이 가능합니다.");
 
     // 추후 추가 코드
     private boolean success;
