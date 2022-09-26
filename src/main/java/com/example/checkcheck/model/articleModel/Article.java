@@ -56,8 +56,8 @@ public class Article extends TimeStamped {
     @JsonManagedReference
     private List<Comment> comment=new ArrayList<>();
     @Column(nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private Category category;
+//    @Enumerated(value = EnumType.STRING)
+    private String category;
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -70,7 +70,7 @@ public class Article extends TimeStamped {
     private int articleCount;
 
     @Builder
-    public Article(String nickName, String title, String content, Category category, String userEmail,
+    public Article(String nickName, String title, String content, String category, String userEmail,
                    int price, int selectedPrice, List<Image> images, Process process, String userRank,
                    Member member) {
         this.nickName = nickName;

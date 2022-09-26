@@ -1,22 +1,16 @@
 package com.example.checkcheck.util;
 
 
-import com.example.checkcheck.exception.CustomException;
-import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Notification;
 import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
-import com.example.checkcheck.repository.NotificationRepository;
-import com.example.checkcheck.security.UserDetailsImpl;
-import com.example.checkcheck.service.notification.NotificationService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class ComfortUtils {

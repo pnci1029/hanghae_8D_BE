@@ -1,16 +1,10 @@
 package com.example.checkcheck.dto.responseDto;
 
 import com.example.checkcheck.model.articleModel.Article;
-import com.example.checkcheck.model.articleModel.Category;
-import com.example.checkcheck.model.articleModel.Process;
-import com.example.checkcheck.util.TimeStamped;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import net.bytebuddy.asm.Advice;
 
-import java.text.NumberFormat;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter

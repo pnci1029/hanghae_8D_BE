@@ -1,15 +1,9 @@
 package com.example.checkcheck.dto.requestDto;
 
-import com.example.checkcheck.model.articleModel.Category;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
-import org.bytedeco.javacpp.presets.opencv_core;
-import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
 import java.util.List;
 
 @Getter
