@@ -3,7 +3,10 @@ package com.example.checkcheck.service.social;
 import com.example.checkcheck.dto.responseDto.SocialResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.NaverUserInfoDto;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
+import com.example.checkcheck.model.Notification;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
@@ -72,7 +75,6 @@ public class SocialNaverSerivce {
                         .password(encodedPassword)
                         .userEmail("n_"+naverUserEmail)
                         .userRealEmail(naverUser.getUserEmail().substring(1, naverUser.getUserEmail().length() - 1))
-//                        .socialId(Double.valueOf(naverUser.getNaverId().substring(1, naverUser.getNaverId().length() - 1)))
                         .createdAt(LocalDateTime.now())
                         .provider(provider)
                         .isAccepted(member.getIsAccepted())
@@ -82,7 +84,11 @@ public class SocialNaverSerivce {
 
             } else {
                 // 강제 로그인
+                // 탈퇴 회원 처리
                 UserDetailsImpl userDetails = new UserDetailsImpl(member);
+                if (userDetails.getMember().getIsDeleted().equals(true)) {
+                    throw new CustomException(ErrorCode.DELETED_USER_EXCEPTION);
+                }
                 Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
@@ -98,7 +104,6 @@ public class SocialNaverSerivce {
 
 //            redisService.setValues(member.getUserEmail(), refreshToken);
 
-            String accessToken = naverUser.getAccessToken();
 
 
 //        리프레시토큰저장 & 있을경우 셋토큰
@@ -112,6 +117,10 @@ public class SocialNaverSerivce {
                 existToken.get().setTokenValue(token.getTokenValue());
             }
 
+//          신규 알람 유무 조회
+            boolean alarmStatus = comfortUtils.getAlarmStatus(member.getNotification());
+
+
             SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                     .nickName(member.getNickName()) // 1
                     .userEmail(member.getUserEmail())
@@ -119,6 +128,7 @@ public class SocialNaverSerivce {
                     .refreshToken(tokenFactory.getRefreshToken())
                     .userRank(comfortUtils.getUserRank(member.getPoint()))
                     .isAccepted(member.getIsAccepted())
+                    .alarmStatus(alarmStatus)
                     .build();
             return socialResponseDto;
 
@@ -145,8 +155,8 @@ public class SocialNaverSerivce {
             String sb = "grant_type=authorization_code" +
                     "&client_id="+client_id +
                     "&client_secret="+clientSecret +
-                    "&redirect_uri=http://localhost:8080/user/signin/naver" +
-//                    "&redirect_uri=http://localhost:3000/user/signin/naver" +
+//                    "&redirect_uri=http://localhost:8080/user/signin/naver" +
+                    "&redirect_uri=http://localhost:3000/user/signin/naver" +
 //                    "&redirect_uri=https://www.chackcheck99.com/signin/naver" +
                     "&code=" + code +
                     "&state=" + state;

@@ -56,6 +56,8 @@ public class MyPageService {
 
         int articleCount = articleRepository.findAllByMember(userDetails.getMember()).size();
 
+//          신규 알람 유무 조회
+        boolean alarmStatus = comfortUtils.getAlarmStatus(memberBox.get().getNotification());
         return ResponseDto.success(
                 MyPageMemberResponseDto.builder()
                         .nickName(userDetails.getMember().getNickName())
@@ -66,6 +68,7 @@ public class MyPageService {
                         .userPoint(userPoint)
                         .articleCount(articleCount)
                         .isAccepted(userDetails.getMember().getIsAccepted())
+                        .alarmStatus(alarmStatus)
                         .build()
         );
     }
@@ -86,8 +89,9 @@ public class MyPageService {
 //        memberRepository.deleteById(member.getMemberId());
 
 //        소프트딜리트
-        targetMember.setMemberDelete();
-        refreshTokenRepository.deleteByTokenKey(targetMember.getUserEmail());
+        Member targets = member.orElse(null);
+        targets.setMemberDelete();
+        targets.setNickName(targetMember.getUserEmail());
 
         return ResponseDto.success("탈퇴 완료");
     }

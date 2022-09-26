@@ -3,6 +3,8 @@ package com.example.checkcheck.service.social;
 import com.example.checkcheck.dto.responseDto.SocialResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.KakaoUserInfoDto;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.MemberRepository;
@@ -69,9 +71,10 @@ public class SocialKakaoService {
 
 //        redisService.setValues(kakaoMember.getUserEmail(), tokenFactory.getRefreshToken());
 
+//          신규 알람 유무 조회
+        boolean alarmStatus = comfortUtils.getAlarmStatus(kakaoMember.getNotification());
 
-
-            SocialResponseDto socialResponseDto = SocialResponseDto.builder()
+        SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                     .userEmail(kakaoMember.getUserEmail())
                     .nickName(kakaoUserInfo.getNickname())
                     .accessToken(tokenFactory.getAccessToken())
@@ -79,6 +82,7 @@ public class SocialKakaoService {
 //                .jwtToken("Bearer "+jwtToken)
                     .userRank(comfortUtils.getUserRank(kakaoMember.getPoint()))
                     .isAccepted(kakaoMember.getIsAccepted())
+                    .alarmStatus(alarmStatus)
                     .build();
 
 //        리프레시토큰저장 & 있을경우 셋토큰
@@ -212,6 +216,9 @@ public class SocialKakaoService {
     // 4번
     public Authentication forceLoginKakaoUser(Member kakaoMember, HttpServletResponse response) {
         UserDetailsImpl userDetails = new UserDetailsImpl(kakaoMember);
+        if (userDetails.getMember().getIsDeleted().equals(true)) {
+            throw new CustomException(ErrorCode.DELETED_USER_EXCEPTION);
+        }
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

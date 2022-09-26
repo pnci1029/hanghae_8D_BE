@@ -44,8 +44,14 @@ public class Member {
     @JsonManagedReference
     private List<Article> article=new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Notification> notification = new ArrayList<>();
+
+    @Column
     private Boolean isAccepted = false;
 
+    @Column
     private Boolean isDeleted;
 
     @Builder
@@ -79,7 +85,7 @@ public class Member {
     }
 
     public void setMemberDelete() {
-        this.isDeleted = true;
+        isDeleted = true;
     }
 
 

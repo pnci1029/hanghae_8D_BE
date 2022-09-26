@@ -14,18 +14,21 @@ public class SocialResponseDto {
     private String refreshToken;
     private String userRank;
     private Boolean isAccepted;
+    private Boolean alarmStatus;
 
     public SocialResponseDto(String nickName,
                              String userEmail,
                              String accessToken,
                              String refreshToken,
                              String userRank,
-                             Boolean isAccepted) {
+                             Boolean isAccepted,
+                             Boolean alarmStatus) {
         this.nickName = nickName;
         this.userEmail = userEmail;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.userRank = userRank;
         this.isAccepted = isAccepted;
+        this.alarmStatus = alarmStatus;
     }
 }
