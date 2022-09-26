@@ -17,7 +17,7 @@ public class SimpleController {
         log.warn("경고");
         log.debug("디버그");
 
-        return "수정22";
+        return "수정3";
 
     }
     @GetMapping("/health")
