@@ -9,14 +9,14 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-#  h2:
-#    console:
-#      enabled: true
-#  datasource:
-#    url: jdbc:h2:mem:testdb
-#    driver-class-name: org.h2.Driver
-#    username: sa
-#    password:
+  #  h2:
+  #    console:
+  #      enabled: true
+  #  datasource:
+  #    url: jdbc:h2:mem:testdb
+  #    driver-class-name: org.h2.Driver
+  #    username: sa
+  #    password:
 
   datasource:
     #    url: jdbc:mysql://final.cslqgjznyxib.ap-northeast-2.rds.amazonaws.com:3306/final
@@ -26,7 +26,7 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL5Dialect
-#    database-platform: org.hibernate.dialect.H2Dialect
+    #    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
     properties:

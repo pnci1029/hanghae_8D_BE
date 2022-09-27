@@ -13,6 +13,7 @@ import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
 import com.example.checkcheck.util.ComfortUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
@@ -77,7 +78,7 @@ public class SocialNaverSerivce {
                         .userRealEmail(naverUser.getUserEmail().substring(1, naverUser.getUserEmail().length() - 1))
                         .createdAt(LocalDateTime.now())
                         .provider(provider)
-                        .isAccepted(member.getIsAccepted())
+                        .isAccepted(false)
                         .isDeleted(false)
                         .build();
                 memberRepository.save(member);
