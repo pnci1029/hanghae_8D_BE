@@ -70,6 +70,7 @@ public class ArticleService {
 
         String nickName = userDetails.getMember().getNickName();
         String userEmail = userDetails.getUsername();
+        comfortUtils.badWordsFilter(articleRequestDto.getTitle());
 
         //        유저 포인트
         Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);

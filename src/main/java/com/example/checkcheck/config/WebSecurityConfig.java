@@ -54,19 +54,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 //        http.cors().configurationSource(corsConfigurationSource());
-        // 토큰 인증이므로 세션 사용x
-        http.csrf().disable()
-                .cors()
-                .and()
-                .exceptionHandling()
+
+            // 토큰 인증이므로 세션 사용x
+            http.csrf().disable()
+
+                    .exceptionHandling()
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
+                    .accessDeniedHandler(jwtAccessDeniedHandler)
+                    .and()
+                    .cors()
 
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                    .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.headers().frameOptions().sameOrigin();
+            http.headers().frameOptions().sameOrigin();
 
 //        http
 //                .sessionManagement()
@@ -79,22 +81,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 회원 관리 처리 API 전부를 login 없이 허용
 
 //                .antMatchers("/api/**").permitAll()
+//                소셜로그인
                 .antMatchers("/user/**").permitAll()
+//                메인페이지
                 .antMatchers("/api/main/**").permitAll()
                 .antMatchers("/auth/user/token").permitAll()
                 .antMatchers("/subscribe/**").permitAll()
 
+
+
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
-                .antMatchers("/**").permitAll()
+//                .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
 
                 // 그 외 어떤 요청이든 '인증'
                 .and()
 //                .apply(new JwtSecurityConfig(jwtTokenProvider));
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
-
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
+//                .and()
+                .exceptionHandling()
+                .accessDeniedPage("/");
 
     }
 
