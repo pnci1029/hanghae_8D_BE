@@ -5,6 +5,7 @@ import com.example.checkcheck.security.JwtAuthenticationFilter;
 import com.example.checkcheck.security.JwtExceptionFilter;
 import com.example.checkcheck.security.JwtTokenProvider;
 import com.example.checkcheck.security.test.JwtAccessDeniedHandler;
+import com.example.checkcheck.security.test.JwtAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtExceptionFilter jwtExceptionFilter;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public BCryptPasswordEncoder encodePassword() {
@@ -55,14 +57,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 //        http.cors().configurationSource(corsConfigurationSource());
 
+
             // 토큰 인증이므로 세션 사용x
-            http.csrf().disable()
+            http
+                    .csrf().disable()
+
+                    .cors()
+                    .and()
 
                     .exceptionHandling()
+                    .accessDeniedPage("/")
 //                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                     .accessDeniedHandler(jwtAccessDeniedHandler)
-                    .and()
-                    .cors()
+                    .authenticationEntryPoint(jwtAuthenticationEntryPoint)
 
                     .and()
                     .sessionManagement()
@@ -77,32 +84,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .expiredUrl("/");
 
 
-        http.authorizeRequests()
-                // 회원 관리 처리 API 전부를 login 없이 허용
+            http.authorizeRequests()
+                    // 회원 관리 처리 API 전부를 login 없이 허용
 
-//                .antMatchers("/api/**").permitAll()
 //                소셜로그인
-                .antMatchers("/user/**").permitAll()
+                    .antMatchers("/user/**").permitAll()
 //                메인페이지
-                .antMatchers("/api/main/**").permitAll()
-                .antMatchers("/auth/user/token").permitAll()
-                .antMatchers("/subscribe/**").permitAll()
+                    .antMatchers("/api/main/**").permitAll()
+                    .antMatchers("/auth/user/token").permitAll()
+                    .antMatchers("/api/subscribe/**").permitAll()
 
 
+                    .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                .antMatchers("/**").permitAll()
+                    .anyRequest().authenticated()
 
-//                .antMatchers("/**").permitAll()
-                .anyRequest().authenticated()
-
-                // 그 외 어떤 요청이든 '인증'
-                .and()
+                    // 그 외 어떤 요청이든 '인증'
+                    .and()
 //                .apply(new JwtSecurityConfig(jwtTokenProvider));
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
+                    .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 //                .and()
-                .exceptionHandling()
-                .accessDeniedPage("/");
+//                    .exceptionHandling()
+//                    .accessDeniedPage("/");
+
 
     }
 
