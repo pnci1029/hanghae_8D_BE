@@ -56,6 +56,8 @@ public class MyPageService {
 
         int articleCount = articleRepository.findAllByMember(userDetails.getMember()).size();
 
+//          신규 알람 유무 조회
+        boolean alarmStatus = comfortUtils.getAlarmStatus(memberBox.get().getNotification());
         return ResponseDto.success(
                 MyPageMemberResponseDto.builder()
                         .nickName(userDetails.getMember().getNickName())
@@ -66,6 +68,7 @@ public class MyPageService {
                         .userPoint(userPoint)
                         .articleCount(articleCount)
                         .isAccepted(userDetails.getMember().getIsAccepted())
+                        .alarmStatus(alarmStatus)
                         .build()
         );
     }
@@ -80,12 +83,15 @@ public class MyPageService {
     // 회원 탈퇴
     @Transactional
     public ResponseDto<?> deleteMember(UserDetailsImpl userDetails) {
-        Member member = userDetails.getMember();
-        if (null == member) {
-            throw new CustomException(ErrorCode.NOT_EXIST_CLIENT);
-        }
-        memberRepository.deleteById(member.getMemberId());
-        refreshTokenRepository.deleteByTokenKey(member.getUserEmail());
+        Optional<Member> member = memberRepository.findByUserEmail(userDetails.getUsername());
+        Member targetMember = member.orElseThrow(()-> new CustomException(ErrorCode.NOT_EXIST_CLIENT));
+//        하드딜리트
+//        memberRepository.deleteById(member.getMemberId());
+
+//        소프트딜리트
+        Member targets = member.orElse(null);
+        targets.setMemberDelete();
+        targets.setNickName(targetMember.getUserEmail());
 
         return ResponseDto.success("탈퇴 완료");
     }

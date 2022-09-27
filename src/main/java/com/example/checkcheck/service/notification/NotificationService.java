@@ -138,6 +138,9 @@ public class NotificationService {
     @Transactional
     public List<NotificationResponseDto> findAllNotifications(Long userId) {
         List<Notification> notifications = notificationRepository.findAllByReceiver_MemberId(userId);
+        for (Notification notification : notifications) {
+            notification.changeState();
+        }
         return notifications.stream()
                 .map(NotificationResponseDto::create)
                 .collect(Collectors.toList());
@@ -166,7 +169,7 @@ public class NotificationService {
     @Transactional
     public void deleteAllByNotifications(UserDetailsImpl userDetails) {
         Long receiverId = userDetails.getMember().getMemberId();
-        notificationRepository.deleteAllByReceiver_MemberId(receiverId);
+        notificationRepository.deleteAllByMember_MemberId(receiverId);
 
     }
     @Transactional

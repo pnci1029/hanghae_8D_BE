@@ -4,7 +4,6 @@ import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
-import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.util.ComfortUtils;
@@ -19,6 +18,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.checkcheck.model.QMember.member;
 import static com.example.checkcheck.model.articleModel.QArticle.article;
 
 @Slf4j
@@ -34,21 +34,23 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         this.comfortUtils = comfortUtils;
     }
 
-    public Slice<ArticleResponseDto> articleScroll(Pageable pageable, Category category, Process process) {
+    public Slice<ArticleResponseDto> articleScroll(Pageable pageable, String category, Process process) {
 //        전체조회
         QueryResults<Article> articleQueryResults = null;
 
         if (category == null) {
-            category = Category.all;
+            category = "전체";
         }
         if (process == null) {
             process = Process.all;
         }
         log.info("category {}",category);
 //                전체 불러오기
-        if (process.equals(Process.all) && category.equals(Category.all)) {
+        if (process.equals(Process.all) && category.equals("전체") || category.equals("카테고리 전체")) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
+                    .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                    .where(member.isDeleted.eq(false))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
@@ -58,17 +60,19 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         } else if (process.equals(Process.all)) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-                    .where(article.category.eq(category))
+                    .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                    .where(member.isDeleted.eq(false),article.category.eq(category))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
                     .fetchResults();
 
             //            카테고리 전체
-        } else if (category.equals(Category.all)) {
+        } else if (category.equals("전체") || category.equals("카테고리 전체")) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-                    .where(article.process.eq(process))
+                    .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                    .where(member.isDeleted.eq(false),article.process.eq(process))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
@@ -78,7 +82,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         else {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
-                    .where(article.process.eq(process).and(article.category.eq(category)))
+                    .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                    .where(member.isDeleted.eq(false),article.process.eq(process),article.category.eq(category))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize() + 1)
                     .orderBy(article.articleId.desc())
@@ -139,7 +144,8 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
         List<Article> result = jpaQueryFactory
                 .selectFrom(article)
-                .where(article.process.eq(Process.process))
+                .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                .where(member.isDeleted.eq(false),article.process.eq(Process.process))
                 .fetch();
         for (Article article : result) {
             String images = "";

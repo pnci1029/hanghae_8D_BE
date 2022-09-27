@@ -44,10 +44,18 @@ public class Member {
     @JsonManagedReference
     private List<Article> article=new ArrayList<>();
 
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<Notification> notification = new ArrayList<>();
+
+    @Column
     private Boolean isAccepted = false;
 
+    @Column
+    private Boolean isDeleted;
+
     @Builder
-    public Member(String nickName, String password, String userEmail, String userName,
+    public Member(String nickName, String password, String userEmail, String userName, Boolean isDeleted,
                   LocalDateTime createdAt, String provider, String userRealEmail, Boolean isAccepted) {
         this.nickName = nickName;
         this.userName = userName;
@@ -56,6 +64,7 @@ public class Member {
         this.provider = provider;
         this.userRealEmail = userRealEmail;
         this.isAccepted = isAccepted;
+        this.isDeleted = isDeleted;
 
     }
 
@@ -73,6 +82,10 @@ public class Member {
 
     public void setEmailOpposition(){
         this.isAccepted = false;
+    }
+
+    public void setMemberDelete() {
+        isDeleted = true;
     }
 
 

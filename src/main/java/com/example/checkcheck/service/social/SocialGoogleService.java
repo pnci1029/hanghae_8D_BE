@@ -3,6 +3,8 @@ package com.example.checkcheck.service.social;
 import com.example.checkcheck.dto.responseDto.SocialResponseDto;
 import com.example.checkcheck.dto.responseDto.TokenFactory;
 import com.example.checkcheck.dto.userinfo.GoogleUserInfoDto;
+import com.example.checkcheck.exception.CustomException;
+import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.MemberRepository;
@@ -82,6 +84,9 @@ public class SocialGoogleService {
             existToken.get().setTokenKey(refreshToken.getTokenKey());
             existToken.get().setTokenValue(refreshToken.getTokenValue());
         }
+//        유저 알림 유무 조회
+
+        boolean alarmStatus = comfortUtils.getAlarmStatus(member.getNotification());
 
         SocialResponseDto socialResponseDto = SocialResponseDto.builder()
                 .userEmail(member.getUserEmail())
@@ -91,6 +96,7 @@ public class SocialGoogleService {
                 .refreshToken(tokenFactory1.getRefreshToken())
 //                .jwtToken("Bearer "+jwtToken)
                 .isAccepted(member.getIsAccepted())
+                .alarmStatus(alarmStatus)
                 .build();
 
 //        return new ResponseEntity<>(new FinalResponseDto<>
@@ -110,8 +116,8 @@ public class SocialGoogleService {
         body.add("client_id", client_id);
         body.add("client_secret", clientSecret);
 //        body.add("redirect_uri", "http://localhost:8080/user/signin/google");
-//        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
-        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/google");
+        body.add("redirect_uri", "http://localhost:3000/user/signin/google");
+//        body.add("redirect_uri", "https://www.chackcheck99.com/user/signin/google");
         body.add("code", code);
 
 
@@ -190,6 +196,7 @@ public class SocialGoogleService {
                     .password(encodedPassword)
                     .provider(provider)
                     .isAccepted(false)
+                    .isDeleted(false)
                     .build();
             memberRepository.save(kakaoMember);
 
@@ -203,6 +210,9 @@ public class SocialGoogleService {
     // 4번
     public Authentication forceLoginKakaoUser(Member googleMember) {
         UserDetails userDetails = new UserDetailsImpl(googleMember);
+        if (googleMember.getIsDeleted().equals(true)) {
+            throw new CustomException(ErrorCode.DELETED_USER_EXCEPTION);
+        }
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);

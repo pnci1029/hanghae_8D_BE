@@ -16,5 +16,6 @@ public class MyPageMemberResponseDto {
     private int userPoint;
     private int articleCount;
     private Boolean isAccepted;
+    private Boolean alarmStatus;
 
 }
