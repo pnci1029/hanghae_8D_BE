@@ -1,5 +1,6 @@
 package com.example.checkcheck.repository;
 
+import com.example.checkcheck.model.QMember;
 import com.example.checkcheck.model.commentModel.Comment;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -21,7 +22,8 @@ public class CommentRepositoryImpl implements CommentRepositoryCustom {
 
         List<Comment> result = jpaQueryFactory
                 .selectFrom(comment1)
-                .where(comment1.article.articleId.eq(id))
+                .leftJoin(QMember.member).on(comment1.member.memberId.eq(QMember.member.memberId))
+                .where(QMember.member.isDeleted.eq(false),comment1.article.articleId.eq(id))
                 .orderBy(comment1.isSelected.desc())
                 .orderBy(comment1.commentId.asc())
                 .fetch();

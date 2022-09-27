@@ -73,14 +73,14 @@ spring:
 cloud:
   aws:
     s3:
-      bucket: ENC(ATyEyG0/DJX3UfmF9SVKeaXRikA9qflE)
+      bucket: ENC(/xN9PuVNLdLaIofcDh04/sW8HmgjxajC)
     region:
       static: ap-northeast-2
     credentials:
       #            accessKey: 1234
       #            secretKey: 1234
-      accessKey: ENC(Qd5A5XO4TNS7keQZmDZQyuRjfMATSAVowdsEdVo5gqA=)
-      secretKey: ENC(c9qBTfcQMCer1hY5e5M/Ws7XrEvrT00cDoIp02zwypt8SqaICoWjJhf2TAP8Lt0WC5Jjrfzy0sE=)
+      accessKey: ENC(DrfFHfgUhuLyGcGpth/iz8MRHk6V9rAJwl5zVLUS0gg=)
+      secretKey: ENC(CHVOK/QyktGElesWGJisaazKCGEmFkRfGsppMkSq4L2oxhKrC+6p7vatWN9w+w5tRYyohEoVQZM=)
 
     stack:
       auto: false
@@ -140,8 +140,11 @@ cloud:
 jwt:
   secret: ENC(l73jWGeQsA3bpFp9No8eCJEpk1UfNRTX054jlQUG3+PY05NvMTe0VGv29JLfIu9RkMsePjHIYSFPsNG8OoNYcKOvpQPW8IhMUL6AmRt79Qh60DeqmyyXQbaVAySESEYuB1w70cg7UCc4rK/pEJc5jkHkvB2X+mWOadA3lR3QnOO0tNrcaTat0c4jIln2NWS6)
 
+sentry:
+  dsn: ENC(/rCgPybR4xFO2iZwlLEIvcOEqaKdCza+OmLBuPKuYRqRq4yCYlzOp1SH/rCi0AkwZHnNFSirMnBDEwJ5direzm0khD15yLjH69LfxORMbjHHlVHg1HQXsw==)
+
 # 로그백 추가
 #logging:
 #  slack:
-#    webhook-url: https://hooks.slack.com/services/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
+#    webhook-uri: https://hooks.slack.com/services/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
 #  config: classpath:logback-spring.xml
