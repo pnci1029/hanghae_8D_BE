@@ -27,7 +27,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
 **`실시간 알람 기능`**
 
-
+https://user-images.githubusercontent.com/81909140/192606310-6d80c837-63b2-447a-a371-2ee1fcb8d60e.gif
 *[ ] 최종발표전 기능 구현 이미지 추가예정
 
 현재 서비스를 이용중인 유저에게 SSE(Server Sent Event)를 이용하여 실시간 알람을 기능 제공하고 있습니다.
