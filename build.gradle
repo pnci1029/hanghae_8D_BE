@@ -107,17 +107,15 @@ dependencies {
 	implementation 'com.github.downgoon:MarvinPlugins:1.5.5'
 	compileOnly(group: 'org.springframework', name: 'spring-test')
 
-	// Scalr
+	// imgScalr
 	implementation group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
 
 //	slack logback
 //	implementation 'com.github.maricn:logback-slack-appender:1.6.1'
 
-//	// ImageMetadataReader
-//	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.9.1'
-
-//	// ImageMetadataReader
-//	compileOnly group: 'com.drewnoakes', name: 'metadata-extractor', version: '2.18.0'
+	// sentry + logback
+	implementation 'io.sentry:sentry-logback:6.4.2'
+	implementation 'io.sentry:sentry-spring-boot-starter:6.4.2'
 
 }
 
