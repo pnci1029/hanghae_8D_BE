@@ -140,8 +140,8 @@ cloud:
 jwt:
   secret: ENC(l73jWGeQsA3bpFp9No8eCJEpk1UfNRTX054jlQUG3+PY05NvMTe0VGv29JLfIu9RkMsePjHIYSFPsNG8OoNYcKOvpQPW8IhMUL6AmRt79Qh60DeqmyyXQbaVAySESEYuB1w70cg7UCc4rK/pEJc5jkHkvB2X+mWOadA3lR3QnOO0tNrcaTat0c4jIln2NWS6)
 
-sentry:
-  dsn: ENC(/rCgPybR4xFO2iZwlLEIvcOEqaKdCza+OmLBuPKuYRqRq4yCYlzOp1SH/rCi0AkwZHnNFSirMnBDEwJ5direzm0khD15yLjH69LfxORMbjHHlVHg1HQXsw==)
+#sentry:
+#  dsn: ENC(/rCgPybR4xFO2iZwlLEIvcOEqaKdCza+OmLBuPKuYRqRq4yCYlzOp1SH/rCi0AkwZHnNFSirMnBDEwJ5direzm0khD15yLjH69LfxORMbjHHlVHg1HQXsw==)
 
 # 로그백 추가
 #logging:
