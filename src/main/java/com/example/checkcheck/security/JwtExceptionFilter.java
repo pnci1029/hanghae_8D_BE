@@ -31,8 +31,8 @@ public class JwtExceptionFilter extends GenericFilterBean {
         try {
             chain.doFilter(request, response); // go to JwtAuthenticationFilter
         } catch (JwtException | NullPointerException e) {
-            setErrorResponse(HttpStatus.BAD_REQUEST, response, e);
-            httpServletResponse.setStatus(415);
+            setErrorResponse(HttpStatus.FORBIDDEN, response, e);
+            httpServletResponse.setStatus(405);
         } catch (NoSuchElementException e) {
             setErrorResponse(HttpStatus.UNAUTHORIZED, response, e);
             httpServletResponse.setStatus(300);
@@ -43,7 +43,7 @@ public class JwtExceptionFilter extends GenericFilterBean {
         ((HttpServletResponse)response).setStatus(status.value());
         response.setContentType("application/json; charset=UTF-8");
 
-        JwtExceptionResponse jwtExceptionResponse = new JwtExceptionResponse(false, e.getMessage(), status.value());
+        JwtExceptionResponse jwtExceptionResponse = new JwtExceptionResponse(false, e.getMessage(), String.valueOf(status));
         response.getWriter().write(jwtExceptionResponse.convertToJson());
 
 

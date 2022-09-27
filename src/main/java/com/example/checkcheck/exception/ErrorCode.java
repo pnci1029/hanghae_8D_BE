@@ -92,7 +92,7 @@ public enum ErrorCode {
     NOT_MY_ARTICLE(HttpStatus.BAD_REQUEST, "400", "본인이 작성한 게시글만 수정이 가능합니다."),
     DELETED_USER_EXCEPTION(HttpStatus.BAD_REQUEST,"400" ,"이미 탈퇴한 계정입니다.\n다른 계정으로 시도해 주세요." ),
     BADWORDS_EXCEPTION(HttpStatus.BAD_REQUEST,"400" ,"비속어가 포함된 글은 작성할 수 없습니다." ),
-    FORBIDDEN_EXCEPTION(HttpStatus.FORBIDDEN,"403" ,"잘못 된 경로입니다." );
+    FORBIDDEN_EXCEPTION(HttpStatus.FORBIDDEN,"403" ,"잘못된 경로입니다.");
 
     // 추후 추가 코드
     private boolean success;
