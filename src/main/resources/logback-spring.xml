@@ -1,0 +1,24 @@
+<configuration>
+    <!-- Console Appender 구성 -->
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 로깅 임계값을 WARN 수준으로 재정의하여 Sentry Appender 를 구성합니다. -->
+    <appender name="Sentry" class="io.sentry.logback.SentryAppender">
+        <!-- 필요한 경우 최소 이벤트 수준을 변경합니다. 이벤트의 기본값은 ERROR 입니다. -->
+        <!-- minimumEventLevel : sentry 에 event 로 인식되는 최소 레벨을 설정하는 부분 -->
+        <minimumEventLevel>INFO</minimumEventLevel>
+        <!-- 필요한 경우 최소 breadcrumbs 수준을 변경합니다. Breadcrumbs 의 기본값은 INFO 입니다. -->
+        <!-- minimumBreadcrumbLevel : event 가 발생하기 까지 이동 경로 -->
+        <minimumBreadcrumbLevel>DEBUG</minimumBreadcrumbLevel>
+    </appender>
+
+    <!-- 콘솔 및 Sentry 부록 사용. 콘솔은 다른 로깅 임계값으로 설정된 비 Sentry 로거의 예로 제공됩니다. -->
+    <root level="INFO">
+        <appender-ref ref="Console"/>
+        <appender-ref ref="Sentry"/>
+    </root>
+</configuration>
