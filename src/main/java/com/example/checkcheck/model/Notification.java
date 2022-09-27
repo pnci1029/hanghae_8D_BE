@@ -1,6 +1,7 @@
 package com.example.checkcheck.model;
 
 import com.example.checkcheck.util.TimeStamped;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -47,10 +48,11 @@ public class Notification extends TimeStamped {
     /**
      * 멤버 변수이름 변경
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @JsonBackReference
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "receiver_member_id")
-    private Member receiver;
+    private Member member;
 
     @Column
     private String title;
@@ -63,7 +65,7 @@ public class Notification extends TimeStamped {
         this.message = message;
         this.readState = readState;
         this.url = articlesId;
-        this.receiver = receiver;
+        this.member = receiver;
         this.title = title;
     }
 
