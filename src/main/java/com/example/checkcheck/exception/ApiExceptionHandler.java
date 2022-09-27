@@ -1,5 +1,6 @@
 package com.example.checkcheck.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @SuppressWarnings("unchecked")
+@Slf4j
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
@@ -24,6 +26,7 @@ public class ApiExceptionHandler {
         errorResponse.setStatus(status);
         errorResponse.setErrorCode(errCode);
         errorResponse.setErrorMessage(errMSG);
+        log.error("handleApiRequestException: {}, {}", ex.getErrorCode().getHttpStatus(), ex.getErrorCode().getMsg());
 
         return new ResponseEntity(
                 errorResponse,
