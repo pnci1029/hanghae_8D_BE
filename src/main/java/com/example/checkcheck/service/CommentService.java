@@ -118,10 +118,9 @@ public class CommentService {
 
         //본인의 게시글에 댓글을 남길때는 알림을 보낼 필요가 없다.
         if(!Objects.equals(comment.getMember().getMemberId(), article.getMember().getMemberId())) {
-
+            notificationService.send(article.getMember(), AlarmType.comment, message, article.getArticleId(), article.getTitle(), comment.getCreatedAt());
+            log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
         }
-        notificationService.send(article.getMember(), AlarmType.comment, message, article.getArticleId(), article.getTitle(), comment.getCreatedAt());
-        log.info("Alarm 대상 : {}, Alram 메시지 = {}", article.getNickName(), message);
 
 
         if(article.getMember().getIsAccepted().equals(true)){

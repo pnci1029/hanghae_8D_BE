@@ -77,7 +77,7 @@ public class SocialNaverSerivce {
                         .userRealEmail(naverUser.getUserEmail().substring(1, naverUser.getUserEmail().length() - 1))
                         .createdAt(LocalDateTime.now())
                         .provider(provider)
-                        .isAccepted(member.getIsAccepted())
+                        .isAccepted(false)
                         .isDeleted(false)
                         .build();
                 memberRepository.save(member);

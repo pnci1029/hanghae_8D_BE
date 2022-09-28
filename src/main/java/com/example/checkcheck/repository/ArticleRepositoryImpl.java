@@ -44,9 +44,13 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         if (process == null) {
             process = Process.all;
         }
+        if (category.equals("카테고리 전체")) {
+            category = "전체";
+        }
+
         log.info("category {}",category);
 //                전체 불러오기
-        if (process.equals(Process.all) && category.equals("전체") || category.equals("카테고리 전체")) {
+        if (process.equals(Process.all) && category.equals("전체")) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
                     .leftJoin(member).on(article.member.memberId.eq(member.memberId))
@@ -68,7 +72,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                     .fetchResults();
 
             //            카테고리 전체
-        } else if (category.equals("전체") || category.equals("카테고리 전체")) {
+        } else if (category.equals("전체")) {
             articleQueryResults = jpaQueryFactory
                     .selectFrom(article)
                     .leftJoin(member).on(article.member.memberId.eq(member.memberId))
