@@ -51,7 +51,7 @@ public class ArticleController {
         return articleService.getArticleCarousel();
     }
 
-        @GetMapping("/auth/detail/{articlesId}")
+    @GetMapping("/auth/detail/{articlesId}")
     public ArticleDetailResponseDto getArticleDetail(@PathVariable Long articlesId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return articleService.getArticleDetail(articlesId, userDetails);
     }
