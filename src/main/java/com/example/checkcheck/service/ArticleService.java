@@ -165,6 +165,7 @@ public class ArticleService {
                 () -> new CustomException(ErrorCode.ARTICLE_NOT_FOUND)
         );
         Boolean isMyArticles = false;
+//        로그인한 사용자인지 구분
         if (article.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
             isMyArticles = true;
         }
