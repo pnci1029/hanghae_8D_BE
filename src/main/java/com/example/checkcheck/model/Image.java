@@ -23,6 +23,9 @@ public class Image {
     private String image;
 
     @Column
+    private String cropImage;
+
+    @Column
     @JsonIgnore
     private String userEmail;
 

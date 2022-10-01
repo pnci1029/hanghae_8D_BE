@@ -118,6 +118,7 @@ public class ArticleService {
 
                 Image imagePostEntity = Image.builder()
                         .image(imgScalrS3Uploader.uploadImage(uploadedFile))
+                        .cropImage(imgScalrS3Uploader.uploadCropImage(uploadedFile))
                         .userEmail(userEmail)
                         .article(articles)
                         .build();
@@ -278,6 +279,7 @@ public class ArticleService {
 
                     Image imagePostEntity = Image.builder()
                             .image(imgScalrS3Uploader.uploadImage(uploadedFile))
+                            .cropImage(imgScalrS3Uploader.uploadCropImage(uploadedFile))
                             .userEmail(userEmail)
                             .article(targetArticle)
                             .build();
