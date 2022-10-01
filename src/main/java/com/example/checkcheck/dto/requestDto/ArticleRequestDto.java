@@ -20,36 +20,6 @@ public class ArticleRequestDto {
     private String category;
     private List<String> imageList;
 
-//    @JsonCreator
-//    public ArticleRequestDto(
-//            @JsonProperty("title") String title,
-//            @JsonProperty("content") String content,
-//            @JsonProperty("price") int price,
-//            @JsonProperty("category") String category
-//    ) {
-//
-//        this.title = title(title);
-//        this.content = content(content);
-//        this.price = price(price);
-//        this.category = Category.valueOf(category(Category.valueOf(category)));
-//    }
-//
-//    private String title(String title) {
-//        return String.valueOf(title);
-//    }
-//
-//    private String content(String content) {
-//        return String.valueOf(content);
-//    }
-//    private int price(int price) {
-//        return price;
-//    }
-//
-//    private String category(Category category) {
-//        return String.valueOf(category);
-////        return Arrays.stream(Category.values())
-////                .filter(type -> StringUtils.startsWithIgnoreCase(type.name().toLowerCase(), category))
-////                .findFirst().orElseGet(() -> null);
-//    }
+
 
 }

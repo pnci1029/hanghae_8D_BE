@@ -91,6 +91,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/user/**").permitAll()
 //                메인페이지
                     .antMatchers("/api/main/**").permitAll()
+                    .antMatchers("/h2-console/**").permitAll()
                     .antMatchers("/auth/user/token").permitAll()
                     .antMatchers("/api/subscribe/**").permitAll()
 
