@@ -100,8 +100,14 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             String images = null;
             List<Image> imageList = imageRepository.findByArticle_ArticleId(article.getArticleId());
             for (Image image : imageList) {
-                images = image.getImage();
-                break;
+                if (image.getCropImage() != null) {
+                    images = image.getCropImage();
+                    break;
+                } else {
+                    images = image.getImage();
+                    break;
+                }
+
             }
 
 //                진행상태가 진행중일때
@@ -155,8 +161,13 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             String images = "";
             List<Image> imageList = imageRepository.findByArticle_ArticleId(article.getArticleId());
             for (Image image : imageList) {
-                images = image.getImage();
-                break;
+                if (image.getCropImage() != null) {
+                    images = image.getCropImage();
+                    break;
+                } else {
+                    images = image.getImage();
+                    break;
+                }
             }
             ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
                     .article(article)
@@ -194,8 +205,13 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
             String image = "";
             List<Image> imageList = imageRepository.findByArticle_ArticleId(articles.getArticleId());
             for (Image images : imageList) {
-                image = images.getImage();
-                break;
+                if (images.getCropImage() != null) {
+                    image = images.getCropImage();
+                    break;
+                } else {
+                    image = images.getImage();
+                    break;
+                }
             }
 
             int point = 0;

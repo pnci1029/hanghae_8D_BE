@@ -13,6 +13,7 @@
 //import org.springframework.data.domain.Slice;
 //import org.springframework.stereotype.Service;
 //
+//import java.util.ArrayList;
 //import java.util.List;
 //
 //@SpringBootTest
@@ -21,24 +22,28 @@
 //    @Autowired
 //    ArticleRepository articleRepository;
 //
-//    public Article create(String title, String content, String category, int price, Member member) {
+//    public List<Article> create(String title, String content, String category, int price, Member member) {
 //        if (title == null || title.isEmpty()) {
 //            throw new IllegalArgumentException("제목을 입력해주세요.");
 //        }
-//        Article article = Article.builder()
-//                .nickName(member.getNickName())
-//                .title(title)
-//                .content(content)
-//                .price(price)
-//                .category(category)
-//                .process(Process.process)
-//                .userRank("S")
-//                .member(member)
-//                .userEmail(member.getUserEmail())
-//                .selectedPrice(0)
-//                .build();
-////        articleRepository.save(article);
-//        return article;
+//        List<Article> result = new ArrayList<>();
+//        for (int i = 0; i < 20; i++) {
+//            Article article = Article.builder()
+//                    .nickName(member.getNickName())
+//                    .title(title)
+//                    .content(content)
+//                    .price(price)
+//                    .category(category)
+//                    .process(Process.process)
+//                    .userRank("S")
+//                    .member(member)
+//                    .userEmail(member.getUserEmail())
+//                    .selectedPrice(0)
+//                    .build();
+//            articleRepository.save(article);
+//            result.add(article);
+//        }
+//        return result;
 //    }
 //
 //    public Slice<?> getAll(Pageable pageable, String category, Process process) {
@@ -48,7 +53,19 @@
 //
 //    public List<ArticleResponseDto> getCarousel() {
 ////        진행중인 상태만 조회
-//        List<ArticleResponseDto> articleResponseDtos = articleRepository.articleCarousel();
-//        return articleResponseDtos;
+//        List<ArticleResponseDto> resultBox = new ArrayList<>();
+//        List<Article> result = articleRepository.findAll();
+//        for (Article article : result) {
+//            ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+//                    .article(article)
+//                    .process(String.valueOf(Process.process))
+//                    .userRank("S")
+//                    .price(String.valueOf(article.getPrice()))
+//                    .selectedPrice("0")
+//                    .image(null)
+//                    .build();
+//            resultBox.add(articleResponseDto);
+//        }
+//        return resultBox;
 //    }
 //}
