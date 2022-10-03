@@ -22,9 +22,13 @@ public class MemberService {
     private JwtTokenProvider jwtTokenProvider;
     private RefreshTokenRepository refreshTokenRepository;
 
-    public MemberService(JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository) {
+    private RedisService redisService;
+
+    public MemberService(JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository,
+                         RedisService redisService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.redisService = redisService;
     }
 
     public TokenFactory accessAndRefreshTokenProcess(String username, HttpServletResponse response) {
@@ -48,8 +52,11 @@ public class MemberService {
     public RefreshTokenResponseDto refreshAccessToken(String refreshToken) throws AuthenticationException {
         try {
             String id = jwtTokenProvider.getPayload(refreshToken);
-            RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
-            String compareToken = refresh.getTokenValue();
+//            RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
+            String compareToken = redisService.getValues(id);
+//            String compareToken = refresh.getTokenValue();
+
+
 
             /**
              * 글로벌 예외처리 하기
