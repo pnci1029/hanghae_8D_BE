@@ -5,6 +5,7 @@ import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.model.Image;
 import com.example.checkcheck.model.articleModel.Article;
 import com.example.checkcheck.model.articleModel.Process;
+import com.example.checkcheck.model.commentModel.Comment;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.util.ComfortUtils;
 import com.querydsl.core.QueryResults;
@@ -27,11 +28,14 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
     private final ImageRepository imageRepository;
     private final ComfortUtils comfortUtils;
+    private final CommentRepository commentRepository;
 
-    public ArticleRepositoryImpl(JPAQueryFactory jpaQueryFactory, ImageRepository imageRepository, ComfortUtils comfortUtils) {
+    public ArticleRepositoryImpl(JPAQueryFactory jpaQueryFactory, ImageRepository imageRepository, ComfortUtils comfortUtils,
+                                 CommentRepository commentRepository) {
         this.jpaQueryFactory = jpaQueryFactory;
         this.imageRepository = imageRepository;
         this.comfortUtils = comfortUtils;
+        this.commentRepository = commentRepository;
     }
 
     public Slice<ArticleResponseDto> articleScroll(Pageable pageable, String category, Process process) {
@@ -97,6 +101,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
         List<ArticleResponseDto> content = new ArrayList<>();
         for (Article article : articleQueryResults.getResults()) {
+            List<Comment> commentList = commentRepository.getCommentList(article.getArticleId());
             String images = null;
             List<Image> imageList = imageRepository.findByArticle_ArticleId(article.getArticleId());
             for (Image image : imageList) {
@@ -120,6 +125,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 //                            게시자가 올린 금액 OK 선택 금액 NUll
                         .price(NumberFormat.getInstance().format(article.getPrice()))
                         .selectedPrice(null)
+                        .commentCount(commentList.size())
                         .build();
                 content.add(articleResponseDto);
 //                    완료가 된 경우
@@ -131,6 +137,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                         .process(comfortUtils.getProcessKorean(article.getProcess()))
                         .price(null)
                         .selectedPrice(NumberFormat.getInstance().format(article.getSelectedPrice()))
+                        .commentCount(commentList.size())
                         .build();
                 content.add(articleResponseDto);
             }
