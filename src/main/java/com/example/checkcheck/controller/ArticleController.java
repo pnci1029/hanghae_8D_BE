@@ -29,7 +29,7 @@ public class ArticleController {
     }
 
     @PostMapping(value = "/auth/form", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseDto<?> upload(@RequestPart(required = false) @Valid ArticleRequestDto articlesDto,
+    public ResponseDto<?> upload(@RequestPart(required = false)  ArticleRequestDto articlesDto,
                                  @RequestPart(required = false) List<MultipartFile> multipartFile,
                                  @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return articleService.postArticles(multipartFile, articlesDto, userDetails);

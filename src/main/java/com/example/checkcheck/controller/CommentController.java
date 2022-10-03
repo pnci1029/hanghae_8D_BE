@@ -22,7 +22,7 @@ public class CommentController {
 
     // 댓글 작성
     @PostMapping(value = "/api/auth/detail/comments")
-    public ResponseEntity<Object> createComment(@RequestBody @Valid CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> createComment(@RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userDetails);
         return (userDetails.getMember().getUserEmail()!=null) ?new ResponseEntity<>(new StatusResponseDto("댓글 등록 성공", commentResponseDto), HttpStatus.OK):
                                            new ResponseEntity<>(new StatusResponseDto("댓글 등록 실패", null), HttpStatus.BAD_REQUEST);
