@@ -3,6 +3,7 @@ package com.example.checkcheck.controller;
 import com.example.checkcheck.dto.requestDto.CommentChoiseRequestDto;
 import com.example.checkcheck.dto.requestDto.CommentRequestDto;
 import com.example.checkcheck.dto.responseDto.*;
+import com.example.checkcheck.dto.responseDto.social.StatusResponseDto;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,7 +22,7 @@ public class CommentController {
 
     // 댓글 작성
     @PostMapping(value = "/api/auth/detail/comments")
-    public ResponseEntity<Object> createComment(@RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<Object> createComment(@RequestBody @Valid CommentRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         CommentResponseDto commentResponseDto = commentService.createComment(requestDto, userDetails);
         return (userDetails.getMember().getUserEmail()!=null) ?new ResponseEntity<>(new StatusResponseDto("댓글 등록 성공", commentResponseDto), HttpStatus.OK):
                                            new ResponseEntity<>(new StatusResponseDto("댓글 등록 실패", null), HttpStatus.BAD_REQUEST);

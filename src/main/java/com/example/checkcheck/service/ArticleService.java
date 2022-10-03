@@ -35,10 +35,8 @@ public class ArticleService {
     private ArticleRepository articleRepository;
     private ImageRepository imageRepository;
     private MemberRepository memberRepository;
-    //    private MarvinS3Uploader marvinS3Uploader;
     private ImgScalrS3Uploader imgScalrS3Uploader;
     private ComfortUtils comfortUtils;
-    private Time time;
 
 
     private NotificationService notificationService;
@@ -48,18 +46,14 @@ public class ArticleService {
             ImageRepository imageRepository,
             MemberRepository memberRepository,
             ImgScalrS3Uploader imgScalrS3Uploader,
-//            MarvinS3Uploader marvinS3Uploader,
             ComfortUtils comfortUtils,
-            Time time,
             NotificationService notificationService
     ) {
         this.articleRepository = articleRepository;
         this.imageRepository = imageRepository;
         this.memberRepository = memberRepository;
         this.imgScalrS3Uploader = imgScalrS3Uploader;
-//        this.marvinS3Uploader = marvinS3Uploader;
         this.comfortUtils = comfortUtils;
-        this.time = time;
         this.notificationService = notificationService;
     }
 
@@ -70,7 +64,7 @@ public class ArticleService {
 
         String nickName = userDetails.getMember().getNickName();
         String userEmail = userDetails.getUsername();
-        comfortUtils.badWordsFilter(articleRequestDto.getTitle());
+//        comfortUtils.badWordsFilter(articleRequestDto.getTitle());
 
         //        유저 포인트
         Optional<Member> memberBox = memberRepository.findByUserEmail(userEmail);
@@ -100,8 +94,6 @@ public class ArticleService {
                 .title(articleRequestDto.getTitle())
                 .content(articleRequestDto.getContent())
                 .price(articleRequestDto.getPrice())
-//                    .category(articleRequestDto.getCategory())
-//                .category(Category.valueOf(articleRequestDto.getCategory()))
                 .category(articleRequestDto.getCategory())
                 .process(Process.process)
                 .userRank(userRank)
@@ -112,7 +104,6 @@ public class ArticleService {
 
         ////        이미지업로드
         List<Image> imgbox = new ArrayList<>();
-        //          이미지 업로드
         for (MultipartFile uploadedFile : multipartFile) {
             try {
 
@@ -130,21 +121,12 @@ public class ArticleService {
                 throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
             }
         }
-//            if (multipartFile != null) {
 
         articleRepository.save(articles);
         return ResponseDto.success("작성 성공");
-//            } else {
-//                throw new CustomException(ErrorCode.NO_IMAGE_EXCEPTION);
-//            }
-
-//        } catch (NullPointerException e) {
-//            throw new CustomException(ErrorCode.DUPLE_EMAIL);
-//        }
 
     }
 
-    //    public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
     public ResponseDto<List<ArticleResponseDto>> getArticleCarousel() {
         List<ArticleResponseDto> articleResult = articleRepository.articleCarousel();
         Collections.shuffle(articleResult);
@@ -188,7 +170,6 @@ public class ArticleService {
                     .selectedPrice(NumberFormat.getInstance().format(article.getSelectedPrice()))
                     .isMyArticles(isMyArticles)
                     .image(imageBox)
-//                    .category(comfortUtils.getCategoryKorean(article.getCategory()))
                     .category(article.getCategory())
                     .process(comfortUtils.getProcessKorean(article.getProcess()))
                     .createdAt(createdAt)
@@ -203,7 +184,6 @@ public class ArticleService {
                 .price(NumberFormat.getInstance().format(article.getPrice()))
                 .selectedPrice(null)
                 .image(imageBox)
-//                .category(comfortUtils.getCategoryKorean(article.getCategory()))
                 .category(article.getCategory())
                 .process(comfortUtils.getProcessKorean(article.getProcess()))
                 .createdAt(createdAt)
@@ -263,7 +243,6 @@ public class ArticleService {
         targetArticle.setTitle(articleRequestDto.getTitle());
         targetArticle.setContent(articleRequestDto.getContent());
         targetArticle.setPrice(articleRequestDto.getPrice());
-//        targetArticle.setCategory(articleRequestDto.getCategory());
         targetArticle.setCategory(articleRequestDto.getCategory());
 
 

@@ -5,7 +5,6 @@ import com.example.checkcheck.dto.responseDto.ArticleDetailResponseDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.ResponseDto;
 import com.example.checkcheck.model.articleModel.Process;
-import com.example.checkcheck.repository.ArticleRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.ArticleService;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +23,9 @@ import java.util.List;
 public class ArticleController {
 
     private ArticleService articleService;
-    private ArticleRepository articleRepository;
 
-    public ArticleController(ArticleService articleService, ArticleRepository articleRepository) {
+    public ArticleController(ArticleService articleService) {
         this.articleService = articleService;
-        this.articleRepository = articleRepository;
     }
 
     @PostMapping(value = "/auth/form", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -57,7 +54,7 @@ public class ArticleController {
     }
 
     @PatchMapping("/auth/detail/{articlesId}")
-    public ResponseDto<?> patchArticle(@RequestPart(required = false) ArticleRequestDto articlesDto,
+    public ResponseDto<?> patchArticle(@RequestPart(required = false)@Valid ArticleRequestDto articlesDto,
                                      @RequestPart(required = false) List<MultipartFile> multipartFile,
                                      @PathVariable Long articlesId,
                                      @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
