@@ -51,9 +51,9 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
  
 
 
-<h2 align="center">5. 이미지 리사이징 기술</h2>
+<h2 align="center">5. 이미지 리사이징(imgScalr) 기능</h2>
 
-다량의 이미지 리소스를 효율적이고 이미지 서버의 용량을 최적화하여 관리하기 위해 이미지 압축 기술을 도입
+다량의 이미지 리소스를 효율적이고 이미지 서버의 용량을 최적화하여 관리하기 위해 이미지 압축 기능을 도입
 
 <img width="200" alt="originalImage" src="https://user-images.githubusercontent.com/81909140/193583776-ed9a1c7e-4d0d-4ccb-a584-47c3194ffa21.png">
 
