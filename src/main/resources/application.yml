@@ -9,14 +9,14 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
-#  h2:
-#    console:
-#      enabled: true
-#  datasource:
-#    url: jdbc:h2:mem:testdb
-#    driver-class-name: org.h2.Driver
-#    username: sa
-#    password:
+  #  h2:
+  #    console:
+  #      enabled: true
+  #  datasource:
+  #    url: jdbc:h2:mem:testdb
+  #    driver-class-name: org.h2.Driver
+  #    username: sa
+  #    password:
 
   datasource:
     #    url: jdbc:mysql://final.cslqgjznyxib.ap-northeast-2.rds.amazonaws.com:3306/final
@@ -26,7 +26,7 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL5Dialect
-#    database-platform: org.hibernate.dialect.H2Dialect
+    #    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
     properties:
@@ -142,6 +142,10 @@ jwt:
 
 sentry:
   dsn: ENC(vHkHTYc9g8n5eOKMF5mV05gCRpiIfWFxBn2rw18X9Ds4He95Dwub6eu7L7rUG9eH5LHyp9jO9IIB7kLC0R19hQVBOO0KH98IgXoYPzzRC6V4B3iv83Edoob2jDoHkaHh)
+
+# 테스트코드 확인용 디버그
+logging.level:
+  org.hibernate.SQL: debug
 
 # 로그백 추가
 #logging:

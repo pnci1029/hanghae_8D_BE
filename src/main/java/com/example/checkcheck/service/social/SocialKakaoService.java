@@ -11,6 +11,7 @@ import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
+import com.example.checkcheck.service.RedisService;
 import com.example.checkcheck.util.ComfortUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
