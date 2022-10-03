@@ -2,7 +2,7 @@
  
 <br />
 
-<img width = "500" src="https://user-images.githubusercontent.com/107388110/190458944-477fdfa9-129c-4704-9e8e-481667262d06.PNG" width="80%">
+<img width = "200" src="https://user-images.githubusercontent.com/107388110/190458944-477fdfa9-129c-4704-9e8e-481667262d06.PNG" width="80%">
 
 *[ ] 최종발표전 이미지 수정필요
 
