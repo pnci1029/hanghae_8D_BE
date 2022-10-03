@@ -50,7 +50,6 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 원본이미지 7.2MB
 <img width="1026" alt="resize crop" src="https://user-images.githubusercontent.com/81909140/193583768-278533bf-b18c-4758-8689-9523eac8b7bd.png">
 1. 이미지 리사이징으로 1/10 가량의 압축 (**7.2MB → 699.8KB**)
-
 2. 이미지 crop으로 썸네일 크기의 250배 가량 압축 (**7.2Mb → 27.7KB**)
 
  <br />
