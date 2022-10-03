@@ -1,4 +1,4 @@
-# <img src="https://user-images.githubusercontent.com/107388110/190458944-477fdfa9-129c-4704-9e8e-481667262d06.PNG" align=left width=50 > 책첵 : 구매, 판매전에 책정가격을 체크!
+# 책첵 : 구매, 판매전에 책정가격을 체크!
  
 <br />
 
