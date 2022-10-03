@@ -19,9 +19,11 @@ public class ArticleResponseDto {
     private String userRank;
     private String image;
     private String selectedPrice;
+    private int commentCount;
 
     @Builder
-    public ArticleResponseDto(Article article, String image, String userRank, String process, String selectedPrice, String price) {
+    public ArticleResponseDto(Article article, String image, String userRank, String process,
+                              String selectedPrice, String price, int commentCount) {
         this.articlesId = article.getArticleId();
 //        천단위 컴마찍기위해서 넣음
 //        스트링으로 잘받는지 확인필요
@@ -32,6 +34,7 @@ public class ArticleResponseDto {
         this.userRank = userRank;
         this.image = image;
         this.selectedPrice = selectedPrice;
+        this.commentCount = commentCount;
     }
 
 }

@@ -1,8 +1,6 @@
 //package com.example.checkcheck.service;
 //
 //import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
-//import com.example.checkcheck.exception.CustomException;
-//import com.example.checkcheck.exception.ErrorCode;
 //import com.example.checkcheck.model.Member;
 //import com.example.checkcheck.model.articleModel.Article;
 //import com.example.checkcheck.model.articleModel.Process;
