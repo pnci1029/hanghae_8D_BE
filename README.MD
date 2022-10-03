@@ -54,11 +54,11 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
 무분별한 에러 로그에 대한 모니터링을 효율적으로 관리하기 위해 사용
 
-<img src="">
-
+<img src="https://user-images.githubusercontent.com/108970153/193579404-ddf38508-4a43-4d3d-ba9b-5191344c45d0.png">
+<img src="https://user-images.githubusercontent.com/108970153/193580032-350bde06-249b-4217-9385-49a67c6ec7ee.png">
  <br />
 
-## 👥 팀 소개
+## 👥 Back-End팀 소개
 
 
 #### `Backend`
