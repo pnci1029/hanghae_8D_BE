@@ -40,7 +40,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 ------------------
 ------------------
 
-                                                     **`이메일 알람 기능`**
+**`이메일 알람 기능`**
 
 <img width = "300px" src="https://user-images.githubusercontent.com/81909140/193575956-bfd2f776-ab26-415e-a7dd-226dc54dd5d9.gif">
 
