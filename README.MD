@@ -73,7 +73,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
  
 
 
-<h2 align="center">6. Santry 활용한 Error Log Monitoring</h2>
+<h2 align="center">6. Sentry 활용한 Error Log Monitoring</h2>
 
 무분별한 에러 로그에 대한 모니터링을 효율적으로 관리하기 위해 사용
 
