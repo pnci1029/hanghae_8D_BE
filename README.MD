@@ -9,7 +9,7 @@
 
 <h2 align="center">메인 페이지 - 카테고리 별 조회 & 무한스크롤(QueryDSL)</h2>
 
-<img height = "600px" src="https://user-images.githubusercontent.com/81909140/193582276-884e37f5-86c7-428d-975f-8f9da0b457eb.gif">
+<p align="center"> <img height = "600px" src="https://user-images.githubusercontent.com/81909140/193582276-884e37f5-86c7-428d-975f-8f9da0b457eb.gif"></p>
 
 
 QueryDSL을 이용한 동적 쿼리 작성으로 책정 카테고리 별 조회 기능과 [전체/진행중/진행완료] 별 검색 기능을 조합해서 사용할 수 있도록 했습니다.
