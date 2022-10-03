@@ -36,6 +36,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
 
 **`이메일 알람 기능`**
+https://user-images.githubusercontent.com/81909140/193575956-bfd2f776-ab26-415e-a7dd-226dc54dd5d9.gif
 
 
 사이트에 접속하지 않은 유저를 고려하여 발생한 해당 이벤트의 내용을 JavaMailSender를 이용하여 이메일 알림으로 받을 수 있도록 했습니다.
