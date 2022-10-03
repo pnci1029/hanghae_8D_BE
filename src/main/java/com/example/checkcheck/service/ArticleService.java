@@ -84,7 +84,7 @@ public class ArticleService {
             throw new CustomException(ErrorCode.NULL_ARTICLE_PRICE);
         }
 //            if (Objects.equals(String.valueOf(articleRequestDto.getCategory()), null)) {
-        if (Objects.equals(articleRequestDto.getCategory(), "")) {
+        if (Objects.equals(articleRequestDto.getCategory(), "카테고리를 선택해 주세요.")) {
             throw new CustomException(ErrorCode.NULL_ARTICLE_CATEGORY);
         }
 
