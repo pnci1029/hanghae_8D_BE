@@ -9,12 +9,13 @@
 
 **`메인 페이지 - 카테고리 별 조회 & 무한스크롤(QueryDSL)`**
 
-![무한스크롤_카테고리]<img width = "300px" src="https://user-images.githubusercontent.com/81909140/193582276-884e37f5-86c7-428d-975f-8f9da0b457eb.gif">
+<img width = "300px" src="https://user-images.githubusercontent.com/81909140/193582276-884e37f5-86c7-428d-975f-8f9da0b457eb.gif">
 
 
 
 QueryDSL을 이용한 동적 쿼리 작성으로 책정 카테고리 별 조회 기능과 [전체/진행중/진행완료] 별 검색 기능을 조합해서 사용할 수 있도록 했습니다.
  <br />
+* * *
 * * *
 
 **`무중단 배포 기술`**
@@ -24,10 +25,11 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
  <br />
 * * *
+* * *
 
 **`실시간 알람 기능`**
 
-![sse](https://user-images.githubusercontent.com/81909140/192606571-bd9b013e-5ff9-4b9c-9671-f3531fd156a9.gif)
+<img width = "300px" src="https://user-images.githubusercontent.com/81909140/192606571-bd9b013e-5ff9-4b9c-9671-f3531fd156a9.gif">
 
 
 
@@ -35,15 +37,18 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
  <br />
 * * *
+* * *
 
 **`이메일 알람 기능`**
 
-![email2](https://user-images.githubusercontent.com/81909140/193575956-bfd2f776-ab26-415e-a7dd-226dc54dd5d9.gif)
+<img width = "300px" src="https://user-images.githubusercontent.com/81909140/193575956-bfd2f776-ab26-415e-a7dd-226dc54dd5d9.gif">
 
 
 사이트에 접속하지 않은 유저를 고려하여 발생한 해당 이벤트의 내용을 JavaMailSender를 이용하여 이메일 알림으로 받을 수 있도록 했습니다.
 
  <br />
+ * * *
+ * * *
 
 **`이미지 리사이징 기술`**
 
@@ -57,6 +62,8 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 2. 이미지 crop으로 썸네일 크기의 250배 가량 압축 (**7.2Mb → 27.7KB**)
 
  <br />
+ * * *
+ * * *
 
 **`Santry 활용한 Error Log Monitoring`**
 
