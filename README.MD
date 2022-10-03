@@ -58,7 +58,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
  <br />
 
-## 👥 Back-End팀 소개
+## 👥 팀 소개
 
 
 #### `Backend`
