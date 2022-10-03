@@ -144,8 +144,8 @@ sentry:
   dsn: ENC(vHkHTYc9g8n5eOKMF5mV05gCRpiIfWFxBn2rw18X9Ds4He95Dwub6eu7L7rUG9eH5LHyp9jO9IIB7kLC0R19hQVBOO0KH98IgXoYPzzRC6V4B3iv83Edoob2jDoHkaHh)
 
 # 테스트코드 확인용 디버그
-logging.level:
-  org.hibernate.SQL: debug
+#logging.level:
+#  org.hibernate.SQL: debug
 
 # 로그백 추가
 #logging:
