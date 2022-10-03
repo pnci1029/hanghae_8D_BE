@@ -1,12 +1,10 @@
 package com.example.checkcheck.service;
 
-import com.example.checkcheck.dto.responseDto.RefreshTokenResponseDto;
-import com.example.checkcheck.dto.responseDto.TokenFactory;
+import com.example.checkcheck.dto.responseDto.social.RefreshTokenResponseDto;
+import com.example.checkcheck.dto.responseDto.social.TokenFactory;
 import com.example.checkcheck.exception.CustomException;
 import com.example.checkcheck.exception.ErrorCode;
-import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
-import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.JwtTokenProvider;
 import org.springframework.stereotype.Service;
@@ -22,9 +20,13 @@ public class MemberService {
     private JwtTokenProvider jwtTokenProvider;
     private RefreshTokenRepository refreshTokenRepository;
 
-    public MemberService(JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository) {
+    private RedisService redisService;
+
+    public MemberService(JwtTokenProvider jwtTokenProvider, RefreshTokenRepository refreshTokenRepository,
+                         RedisService redisService) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.redisService = redisService;
     }
 
     public TokenFactory accessAndRefreshTokenProcess(String username, HttpServletResponse response) {
@@ -48,8 +50,11 @@ public class MemberService {
     public RefreshTokenResponseDto refreshAccessToken(String refreshToken) throws AuthenticationException {
         try {
             String id = jwtTokenProvider.getPayload(refreshToken);
-            RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
-            String compareToken = refresh.getTokenValue();
+//            RefreshToken refresh = refreshTokenRepository.findByTokenKey(id).orElse(null);
+            String compareToken = redisService.getValues(id);
+//            String compareToken = refresh.getTokenValue();
+
+
 
             /**
              * 글로벌 예외처리 하기

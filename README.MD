@@ -1,54 +1,84 @@
-# <img src="https://user-images.githubusercontent.com/107388110/190458944-477fdfa9-129c-4704-9e8e-481667262d06.PNG" align=left width=50 > 책첵 : 구매, 판매전에 책정가격을 체크!
- 
-<br />
 
-<img src="https://user-images.githubusercontent.com/107388110/190458944-477fdfa9-129c-4704-9e8e-481667262d06.PNG" width="80%">
+<h1 align="center" ><b>책첵 : 구매, 판매전에 책정가격을 체크!</b></h1>
 
-*[ ] 최종발표전 이미지 수정필요
+<img width = "120" src="https://user-images.githubusercontent.com/107388110/190458944-477fdfa9-129c-4704-9e8e-481667262d06.PNG" width="80%">
 
  <br />
 
 ## ✨ 핵심기능
 
-**`메인 페이지 - 카테고리 별 조회 & 검색 기능`**
+<h2 align="center">1. 메인 페이지 - 카테고리 별 조회 & 무한스크롤(QueryDSL)</h2>
 
+<p align="center"> <img height = "600px" src="https://user-images.githubusercontent.com/81909140/193582276-884e37f5-86c7-428d-975f-8f9da0b457eb.gif"></p>
 
-*[ ] 최종발표전 기능 구현 이미지 추가예정
 
 QueryDSL을 이용한 동적 쿼리 작성으로 책정 카테고리 별 조회 기능과 [전체/진행중/진행완료] 별 검색 기능을 조합해서 사용할 수 있도록 했습니다.
+ <br />
+ <br />
 
+<h2 align="center">2. 무중단 배포 기술</h2>
 
-**`무중단 배포 기술`**
+<p align="center"> <img height = "250px" src="https://user-images.githubusercontent.com/107388110/193594640-31f32afd-858b-4a0e-be16-ac09f67726d6.PNG"></p>
 
 Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 관리하여 업무 효율성 증대
 
-*[ ] 최종발표전 기능 구현 이미지 추가예정
+
+ <br />
+ 
+
+<h2 align="center">3. 실시간 알림 기능</h2>
+
+<img height = "600px" src="https://user-images.githubusercontent.com/81909140/192606571-bd9b013e-5ff9-4b9c-9671-f3531fd156a9.gif">
 
 
-**`실시간 알람 기능`**
-
-![sse](https://user-images.githubusercontent.com/81909140/192606571-bd9b013e-5ff9-4b9c-9671-f3531fd156a9.gif)
-
-*[ ] 최종발표전 기능 구현 이미지 추가예정
 
 현재 서비스를 이용중인 유저에게 SSE(Server Sent Event)를 이용하여 실시간 알람을 기능 제공하고 있습니다.
 
+ <br />
+ 
 
 
-**`이메일 알람 기능`**
+
+<h2 align="center">4. 이메일 알림</h2>
+
+
+<img height = "600px" src="https://user-images.githubusercontent.com/81909140/193575956-bfd2f776-ab26-415e-a7dd-226dc54dd5d9.gif">
 
 
 사이트에 접속하지 않은 유저를 고려하여 발생한 해당 이벤트의 내용을 JavaMailSender를 이용하여 이메일 알림으로 받을 수 있도록 했습니다.
 
-* [ ] 최종발표전 기능 구현 이미지 추가예정
+ <br />
+ 
 
 
-**`이미지 리사이징 기술`**
+<h2 align="center">5. 이미지 리사이징(imgScalr) 기능</h2>
 
-다량의 이미지 리소스를 효율적이고 이미지 서버의 용량을 최적화하여 관리하기 위해 이미지 압축 기술을 도입
+다량의 이미지 리소스를 효율적이고 이미지 서버의 용량을 최적화하여 관리하기 위해 이미지 압축 기능을 도입
 
-* [ ] 최종발표전 기능 구현 이미지 추가예정
+<img width="200" alt="originalImage" src="https://user-images.githubusercontent.com/81909140/193583776-ed9a1c7e-4d0d-4ccb-a584-47c3194ffa21.png">
 
+원본이미지 7.2MB
+
+<img width="1026" alt="resize crop" src="https://user-images.githubusercontent.com/81909140/193583768-278533bf-b18c-4758-8689-9523eac8b7bd.png">
+
+ <br />
+ 
+* 이미지 리사이징으로 1/10 가량의 압축 (**7.2MB → 699.8KB**)
+
+ <br />
+ 
+* 이미지 crop으로 썸네일 크기의 250배 가량 압축 (**7.2MB → 27.7KB**)
+
+ <br />
+ 
+
+
+<h2 align="center">6. Sentry 활용한 Error Log Monitoring</h2>
+
+무분별한 에러 로그에 대한 모니터링을 효율적으로 관리하기 위해 사용
+
+<img src="https://user-images.githubusercontent.com/108970153/193579404-ddf38508-4a43-4d3d-ba9b-5191344c45d0.png">
+<img src="https://user-images.githubusercontent.com/108970153/193580032-350bde06-249b-4217-9385-49a67c6ec7ee.png">
  <br />
 
 ## 👥 Back-End팀 소개
@@ -68,13 +98,13 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
 
 ## 🗓 프로젝트 기간
-* 2022년 08월 26일 ~ 2022년 9월 17일
-* 배포예정일 : 2022년 09월 23일
+* 2022년 08월 26일 ~ 2022년 10월 06일
+* 배포일 : 2022년 09월 27일
 
 <br />
 
 ## 🎈 ERD
-<img src="https://user-images.githubusercontent.com/107388110/190672010-6f68de07-6d17-428c-b5f3-f790249d43e2.jpg">  
+<img src="https://user-images.githubusercontent.com/81909140/193574565-becb44fa-8d42-47b6-84e8-fced552024e9.png">  
 <br />
 
 ## 📜 아키텍쳐
@@ -83,7 +113,12 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 <br />
 
 ## 📜 Troubleshooting
-* [ ] 운영단계 이후까지 포함하여 작성예정
+- CI CD 적용(Continuous Integration/Continuous Deployment) - [상세보기 - WIKI 이동](https://github.com/pnci1029/hanghae_8D_BE/wiki/CI-CD-%EC%A0%81%EC%9A%A9(Continuous-Integration-Continuous-Deployment))
+- OAuth2.0 Login Redis - [상세보기 - WIKI 이동](https://github.com/pnci1029/hanghae_8D_BE/wiki/OAuth2.0-Login---Redis)
+- EC2 RAM 초과 & Memory 성능 이슈 - [상세보기 - WIKI 이동](https://github.com/pnci1029/hanghae_8D_BE/wiki/EC2-RAM-%EC%B4%88%EA%B3%BC-&-Memory-%EC%84%B1%EB%8A%A5-%EC%9D%B4%EC%8A%88)
+- Image 리사이징 이슈 - [상세보기 - WIKI 이동](https://github.com/pnci1029/hanghae_8D_BE/wiki/Image-%EB%A6%AC%EC%82%AC%EC%9D%B4%EC%A7%95-%EC%9D%B4%EC%8A%88)
+- QueryDSL 적용 - [상세보기 - WIKI 이동](https://github.com/pnci1029/hanghae_8D_BE/wiki/QueryDSL-%EC%A0%81%EC%9A%A9)
+- SSE - [상세보기 - WIKI 이동](https://github.com/pnci1029/hanghae_8D_BE/wiki/SSE)
 
 <br />
 
@@ -91,10 +126,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 📔  **[노션 링크]( https://frost-class-aac.notion.site/2-02def98b9fe04e8dbf00e39cba77693d)**
 
 
-<br />
-
 ## 🛠 Tech Stack
-**Frontend Tech Stack**  
 
 [//]: # (![리액트]&#40;https://user-images.githubusercontent.com/97425158/161745107-cc062718-9c52-4446-8f14-9faba0b9dea7.svg&#41;)
 
@@ -125,7 +157,14 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 <img src="https://img.shields.io/badge/Amazon S3-569A31?style=for-the-badge&logo=Amazon S3&logoColor=white">
 <img src="https://img.shields.io/badge/GitHub Actions-2088FF?style=for-the-badge&logo=GitHub Actions&logoColor=white">
 <img src="https://img.shields.io/badge/codedeploy-6DB33F?style=for-the-badge&logo=codedeploy&logoColor=white">
+<img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
 <img src="https://img.shields.io/badge/JUnit5-25A162?style=for-the-badge&logo=JUnit5&logoColor=white">
 <img src="https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=NGINX&logoColor=white">
+<img src="https://img.shields.io/badge/postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
+<img src="https://img.shields.io/badge/ubuntu-FCC624?style=for-the-badge&logo=linux&logoColor=black">
+<img src="https://img.shields.io/badge/linux-FCC624?style=for-the-badge&logo=linux&logoColor=black">
+<img src="https://img.shields.io/badge/Sentry-362D59?style=for-the-badge&logo=Sentry&logoColor=white">
+<img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white">
+
 
 [//]: # (<img src="https://img.shields.io/badge/Apache JMeter-D22128?style=for-the-badge&logo=Apache JMeter&logoColor=white">)

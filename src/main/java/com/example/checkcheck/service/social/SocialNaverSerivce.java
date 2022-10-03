@@ -1,18 +1,19 @@
 package com.example.checkcheck.service.social;
 
-import com.example.checkcheck.dto.responseDto.SocialResponseDto;
-import com.example.checkcheck.dto.responseDto.TokenFactory;
+import com.example.checkcheck.dto.responseDto.social.SocialResponseDto;
+import com.example.checkcheck.dto.responseDto.social.TokenFactory;
 import com.example.checkcheck.dto.userinfo.NaverUserInfoDto;
 import com.example.checkcheck.exception.CustomException;
 import com.example.checkcheck.exception.ErrorCode;
 import com.example.checkcheck.model.Member;
-import com.example.checkcheck.model.Notification;
 import com.example.checkcheck.model.RefreshToken;
 import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.MemberService;
+import com.example.checkcheck.service.RedisService;
 import com.example.checkcheck.util.ComfortUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;

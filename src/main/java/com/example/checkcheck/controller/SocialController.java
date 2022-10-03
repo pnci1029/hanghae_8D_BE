@@ -1,8 +1,7 @@
 package com.example.checkcheck.controller;
 
-import com.example.checkcheck.dto.responseDto.RefreshTokenResponseDto;
-import com.example.checkcheck.dto.responseDto.SocialResponseDto;
-import com.example.checkcheck.dto.responseDto.TokenFactory;
+import com.example.checkcheck.dto.responseDto.social.RefreshTokenResponseDto;
+import com.example.checkcheck.dto.responseDto.social.SocialResponseDto;
 import com.example.checkcheck.security.JwtTokenProvider;
 import com.example.checkcheck.service.MemberService;
 import com.example.checkcheck.service.social.SocialGoogleService;
@@ -11,7 +10,6 @@ import com.example.checkcheck.service.social.SocialNaverSerivce;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.sasl.AuthenticationException;
