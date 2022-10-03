@@ -29,7 +29,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
 <h2 align="center">실시간 알람 기능</h2>
 
-<img height = "600px" src="https://user-images.githubusercontent.com/81909140/192606571-bd9b013e-5ff9-4b9c-9671-f3531fd156a9.gif">
+<img height = "600px" src="https://user-images.githubusercontent.com/81909140/192606571-bd9b013e-5ff9-4b9c-9671-f3531fd156a9.gif" margin: 0px auto;>
 
 
 
