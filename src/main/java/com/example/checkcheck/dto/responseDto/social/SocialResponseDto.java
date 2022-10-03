@@ -1,4 +1,4 @@
-package com.example.checkcheck.dto.responseDto;
+package com.example.checkcheck.dto.responseDto.social;
 
 import com.example.checkcheck.model.Member;
 import lombok.Builder;

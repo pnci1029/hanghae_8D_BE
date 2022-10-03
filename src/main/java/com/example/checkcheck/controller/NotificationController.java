@@ -2,18 +2,16 @@ package com.example.checkcheck.controller;
 
 import com.example.checkcheck.dto.responseDto.NotificationCountDto;
 import com.example.checkcheck.dto.responseDto.NotificationResponseDto;
-import com.example.checkcheck.dto.responseDto.StatusResponseDto;
+import com.example.checkcheck.dto.responseDto.social.StatusResponseDto;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController

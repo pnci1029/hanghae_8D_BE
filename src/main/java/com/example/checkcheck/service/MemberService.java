@@ -1,12 +1,10 @@
 package com.example.checkcheck.service;
 
-import com.example.checkcheck.dto.responseDto.RefreshTokenResponseDto;
-import com.example.checkcheck.dto.responseDto.TokenFactory;
+import com.example.checkcheck.dto.responseDto.social.RefreshTokenResponseDto;
+import com.example.checkcheck.dto.responseDto.social.TokenFactory;
 import com.example.checkcheck.exception.CustomException;
 import com.example.checkcheck.exception.ErrorCode;
-import com.example.checkcheck.model.Member;
 import com.example.checkcheck.model.RefreshToken;
-import com.example.checkcheck.repository.MemberRepository;
 import com.example.checkcheck.repository.RefreshTokenRepository;
 import com.example.checkcheck.security.JwtTokenProvider;
 import org.springframework.stereotype.Service;
