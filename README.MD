@@ -9,7 +9,7 @@
 
 <h2 align="center">메인 페이지 - 카테고리 별 조회 & 무한스크롤(QueryDSL)</h2>
 
-<img height = "300px" src="https://user-images.githubusercontent.com/81909140/193582276-884e37f5-86c7-428d-975f-8f9da0b457eb.gif">
+<center><img height = "300px" src="https://user-images.githubusercontent.com/81909140/193582276-884e37f5-86c7-428d-975f-8f9da0b457eb.gif" ></center>
 
 
 
