@@ -1,9 +1,7 @@
-## 책첵 : 구매, 판매전에 책정가격을 체크!
- 
-<br />
 
-<img src="https://user-images.githubusercontent.com/81909140/193509060-0abb56aa-6627-4846-8eeb-8727f5747ebb.png">
+# 책첵 : 구매, 판매전에 책정가격을 체크!
 
+<img width = "120" src="https://user-images.githubusercontent.com/107388110/190458944-477fdfa9-129c-4704-9e8e-481667262d06.PNG" width="80%">
 
  <br />
 
@@ -84,6 +82,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 ## 🎈 ERD
 <img src="https://user-images.githubusercontent.com/81909140/193574565-becb44fa-8d42-47b6-84e8-fced552024e9.png">  
 <br />
+
 ## 📜 아키텍쳐
 <img src="https://user-images.githubusercontent.com/107388110/190461358-951eac84-df6b-4c4b-9ecf-3936a8550fa6.jpg">   
 
