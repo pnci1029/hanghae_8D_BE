@@ -7,7 +7,7 @@
 
 ## ✨ 핵심기능
 
-**`메인 페이지 - 카테고리 별 조회 & 무한스크롤(QueryDSL)`**
+<h2 align="center">메인 페이지 - 카테고리 별 조회 & 무한스크롤(QueryDSL)</h2>
 
 <img width = "300px" src="https://user-images.githubusercontent.com/81909140/193582276-884e37f5-86c7-428d-975f-8f9da0b457eb.gif">
 
@@ -19,7 +19,7 @@ QueryDSL을 이용한 동적 쿼리 작성으로 책정 카테고리 별 조회 
  <br />
  <br />
 
-**`무중단 배포 기술`**
+<h2 align="center">무중단 배포 기술</h2>
 
 Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 관리하여 업무 효율성 증대
 
@@ -27,7 +27,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
  <br />
 
 
-**`실시간 알람 기능`**
+<h2 align="center">실시간 알람 기능</h2>
 
 <img width = "300px" src="https://user-images.githubusercontent.com/81909140/192606571-bd9b013e-5ff9-4b9c-9671-f3531fd156a9.gif">
 
@@ -38,7 +38,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
  <br />
  
 ------------------
-------------------
+
 
 <h2 align="center">이메일 알람</h2>
 
@@ -50,9 +50,8 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
  <br />
 * * *
-* * *
 
-**`이미지 리사이징 기술`**
+<h2 align="center">이미지 리사이징 기술</h2>
 
 다량의 이미지 리소스를 효율적이고 이미지 서버의 용량을 최적화하여 관리하기 위해 이미지 압축 기술을 도입
 
@@ -65,9 +64,8 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
  <br />
 * * *
-* * *
 
-**`Santry 활용한 Error Log Monitoring`**
+<h2 align="center">Santry 활용한 Error Log Monitoring</h2>
 
 무분별한 에러 로그에 대한 모니터링을 효율적으로 관리하기 위해 사용
 
