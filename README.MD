@@ -45,6 +45,10 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 
 
 **`이미지 리사이징 기술`**
+<img width="401" alt="originalImage" src="https://user-images.githubusercontent.com/81909140/193576623-370f9a94-e9ab-4ed4-86ae-a38ed1482896.png">
+
+<img width="2052" alt="resize crop" src="https://user-images.githubusercontent.com/81909140/193576648-8aa5b43a-9ac9-496c-90b8-a7f89287ff86.png">
+
 
 다량의 이미지 리소스를 효율적이고 이미지 서버의 용량을 최적화하여 관리하기 위해 이미지 압축 기술을 도입
 
