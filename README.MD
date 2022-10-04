@@ -108,7 +108,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 <br />
 
 ## 📜 아키텍쳐
-<img src="https://user-images.githubusercontent.com/107388110/190461358-951eac84-df6b-4c4b-9ecf-3936a8550fa6.jpg">   
+![아키텍처2](https://user-images.githubusercontent.com/81909140/193764617-44b39330-f9ea-42df-8738-e403e83e1da0.PNG)
 
 <br />
 
