@@ -54,10 +54,10 @@ public class ArticleController {
     }
 
     @PatchMapping("/auth/detail/{articlesId}")
-    public ResponseDto<?> patchArticle(@RequestPart(required = false)@Valid ArticleRequestDto articlesDto,
-                                     @RequestPart(required = false) List<MultipartFile> multipartFile,
-                                     @PathVariable Long articlesId,
-                                     @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+    public ResponseDto<?> patchArticle(@RequestPart(required = false) ArticleRequestDto articlesDto,
+                                       @RequestPart(required = false) List<MultipartFile> multipartFile,
+                                       @PathVariable Long articlesId,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         return articleService.patchArticle(multipartFile, articlesDto, articlesId, userDetails);
     }
 
