@@ -1,6 +1,8 @@
 //package com.example.checkcheck.controller;
 //
 //import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
+//import com.example.checkcheck.exception.CustomException;
+//import com.example.checkcheck.exception.ErrorCode;
 //import com.example.checkcheck.model.Member;
 //import com.example.checkcheck.model.articleModel.Article;
 //import com.example.checkcheck.model.articleModel.Process;
@@ -71,13 +73,21 @@
 //        int price = 10000;
 //
 //        Member member1 = memberRepository.findByNickName("유저1").orElse(null);
+//        Member member2 = memberRepository.findByNickName("유저2").orElse(null);
 //
 ////        Article result = new ArticleServiceTest().create(title, content, category, price,member1);
 //
 //        List<Article> result =
 //                articleServiceTest.create(title, content, category, price, member1);
+//        articleServiceTest.create(title, content, category, price, member2);
+//
+//        List<Article> all = articleRepository.findAll();
+//
 //        assertThat(result.get(0).getNickName()).isEqualTo("유저1");
-//        assertThat(result.size()).isEqualTo(20);
+//        assertThat(result.size()).isEqualTo(11);
+////        전체 게시글 조회
+//        assertThat(all.size()).isEqualTo(22);
+//        assertThat(all.get(12).getNickName()).isEqualTo("유저2");
 //    }
 //
 //    @Test
@@ -121,7 +131,10 @@
 //        Slice<?> result = articleServiceTest.getAll(Pageable.ofSize(10), category, process);
 //
 //        List<Article> all = articleRepository.findAll();
-//        System.out.println("all = " + all.get(0).getUserEmail());
+//        for (Article article : all) {
+//            System.out.println("article.getArticleId() = " + article.getArticleId());
+//            System.out.println("article.getNickName() = " + article.getNickName());
+//        }
 //    }
 //
 //    @Test
@@ -204,7 +217,24 @@
 //    @Test
 //    @Order(12)
 //    void 댓글_조회_O() {
+////        1번 게시글에 사용자이름 유저1이  댓글을 10개 단 상태
 //        List<Comment> comment = articleServiceTest.allComment(1L);
+//        for (Comment comment1 : comment) {
+//            System.out.println("comment1.getNickName() = " + comment1.getNickName());
+//        }
 //        assertThat(comment.size()).isEqualTo(10);
+//    }
+//
+//    @Test
+//    @Order(13)
+//    void 댓글_채택_X() {
+//        assertThatIllegalArgumentException()
+//                .isThrownBy(() -> articleServiceTest.choose(1L, 1L));
+//    }
+//
+//    @Test
+//    @Order(14)
+//    void 댓글_채택_O() {
+//
 //    }
 //}

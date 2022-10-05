@@ -34,7 +34,7 @@
 //            throw new IllegalArgumentException("제목을 입력해주세요.");
 //        }
 //        List<Article> result = new ArrayList<>();
-//        for (int i = 0; i < 20; i++) {
+//        for (int i = 0; i < 11; i++) {
 //            Article article = Article.builder()
 //                    .nickName(member.getNickName())
 //                    .title(title)
@@ -124,6 +124,7 @@
 //                    .nickName(target.get().getMember().getNickName())
 //                    .userRank("S")
 //                    .isMyComment(false)
+//                    .isSelected(false)
 //                    .build();
 //            commentRepository.save(comments);
 //        }
@@ -140,5 +141,28 @@
 //        List<Comment> result = commentRepository.getCommentList(articlesId);
 //        resultBox.addAll(result);
 //        return resultBox;
+//    }
+//
+//    public void choose(Long articlesId, Long commentId) {
+//        Optional<Article> targetArticle = articleRepository.findById(articlesId);
+//        Optional<Comment> targetComment = commentRepository.findById(commentId);
+//
+////        게시글 존재여부 예외처리
+//        if (targetArticle.isEmpty()) {
+//            throw new NullPointerException("존재하지 않는 게시글입니다.");
+//        }
+////        댓글 존재여부 예외처리
+//        if (targetComment.isEmpty()) {
+//            throw new NullPointerException("존재하지 않는 댓글입니다");
+//        }
+////        동일 사용자 게시글 댓글 작성 예외처리
+//        if (targetArticle.get().getNickName().equals(targetComment.get().getNickName())) {
+//            throw new IllegalArgumentException("게시글 작성자와 댓글 작성자가 같습니다");
+//        }
+//        if (targetComment.get().getType().equals(Type.text)) {
+//            throw new IllegalArgumentException("금액 댓글만 채택이 가능합니다.");
+//        }
+//        targetComment.get().setSelected(true);
+//        targetArticle.get().setPrice(0);
 //    }
 //}
