@@ -8,8 +8,6 @@ import com.example.checkcheck.model.articleModel.Category;
 import com.example.checkcheck.model.articleModel.Process;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -17,19 +15,7 @@ import java.util.List;
 @Component
 public class ComfortUtils {
 
-    private Time time;
 
-    public ComfortUtils(Time time) {
-        this.time = time;
-    }
-
-    //TODO: 수정필요
-//    public String getTime(LocalDateTime cratedAt) {
-//        LocalDateTime now = Time.times(cratedAt);
-//        System.out.println("now = " + now);
-//
-//        return Time.times(now);
-//    }
 
     public String getUserRank(int point) {
 
