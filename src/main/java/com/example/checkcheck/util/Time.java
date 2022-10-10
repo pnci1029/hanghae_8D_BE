@@ -1,8 +1,13 @@
 package com.example.checkcheck.util;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+@Getter
+@NoArgsConstructor
 public class Time {
 
     public static String times(LocalDateTime localDateTime) {
