@@ -24,11 +24,12 @@ public class ComfortUtils {
     }
 
     //TODO: 수정필요
-    public String getTime(LocalDateTime cratedAt) {
-        long now = ChronoUnit.MINUTES.between(cratedAt, LocalDateTime.now());
-
-        return time.times(now);
-    }
+//    public String getTime(LocalDateTime cratedAt) {
+//        LocalDateTime now = Time.times(cratedAt);
+//        System.out.println("now = " + now);
+//
+//        return Time.times(now);
+//    }
 
     public String getUserRank(int point) {
 

@@ -42,9 +42,7 @@ public class NotificationResponseDto {
     }
 
     public static NotificationResponseDto create(Notification notification) {
-        long now = ChronoUnit.MINUTES.between(notification.getCreatedAt() , LocalDateTime.now());
-        Time time = new Time();
-        String createdAt = time.times(now);
+        String createdAt = Time.times(notification.getCreatedAt());
 
         return NotificationResponseDto.builder()
                 .id(notification.getId())

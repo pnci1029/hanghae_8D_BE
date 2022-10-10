@@ -1,30 +1,43 @@
 package com.example.checkcheck.util;
 
-import org.springframework.stereotype.Component;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
-@Component
 public class Time {
 
-    public String times(long time) {
+    public static String times(LocalDateTime localDateTime) {
         // 게시글이 현재로 부터 몇 분전에 작성되었는지 보기 좋게 변경
-        if (time < 60) {
-            return String.format("%s분 전", time);
+        int SEC = 60;
+        int MIN = 60;
+        int HOUR = 24;
+        int DAY = 30;
+        int MONTH = 12;
+        LocalDateTime now = LocalDateTime.now();
+
+        long diffTime = localDateTime.until(now, ChronoUnit.SECONDS); // now보다 이후면 +, 전이면 -
+
+        if (diffTime < SEC) {
+            return diffTime + "초전";
         }
-        time = time / 60;  // 시간
-        if (time < 24) {
-            return String.format("%s시간 전", time);
+        diffTime = diffTime / SEC;
+        if (diffTime < MIN) {
+            return diffTime + "분 전";
         }
-        time = time / 24;
-        if (time < 7) {
-            return String.format("%s일 전", time);
+        diffTime = diffTime / MIN;
+        if (diffTime < HOUR) {
+            return diffTime + "시간 전";
+        }
+        diffTime = diffTime / HOUR;
+        if (diffTime < DAY) {
+            return diffTime + "일 전";
+        }
+        diffTime = diffTime / DAY;
+        if (diffTime < MONTH) {
+            return diffTime + "개월 전";
         }
 
-        time = time / 30;
-        if (time < 12) {
-            return String.format("%s개월 전", time+1);
-        }
-
-        time = time / 12;
-        return String.format("%s년 전", time);
+        diffTime = diffTime / MONTH;
+        return diffTime + "년 전";
     }
+
 }
