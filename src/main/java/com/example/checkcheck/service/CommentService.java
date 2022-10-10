@@ -22,6 +22,7 @@ import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.service.mail.MailService;
 import com.example.checkcheck.service.notification.NotificationService;
 import com.example.checkcheck.util.ComfortUtils;
+import com.example.checkcheck.util.Time;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -136,7 +137,7 @@ public class CommentService {
         if (comment.getMember().getMemberId().equals(userDetails.getMember().getMemberId())) {
             isMyComment = true;
         }
-        String rightNow = comfortUtils.getTime(comment.getCreatedAt());
+        String rightNow = Time.times(comment.getCreatedAt());
 
         return
                 CommentResponseDto.builder()
@@ -173,7 +174,8 @@ public class CommentService {
 
         for (Comment comment : commentList) {
 
-                String rightNow = comfortUtils.getTime(comment.getCreatedAt());
+//                String rightNow = comfortUtils.getTime(comment.getCreatedAt());
+                String rightNow = Time.times(comment.getCreatedAt());
 
                 Boolean isMyComment = false;
                 if (userDetails.getMember().getUserEmail().equals(comment.getMember().getUserEmail())) {
