@@ -21,7 +21,7 @@ public class Time {
 
         time = time / 30;
         if (time < 12) {
-            return String.format("%s개월 전", time);
+            return String.format("%s개월 전", time+1);
         }
 
         time = time / 12;
