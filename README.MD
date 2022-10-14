@@ -1,7 +1,8 @@
-
+<h2 align="center" ><b>항해99 최고의 프로젝트상 수상</b></h2>
+<p align="center"><img height = "500px" src="https://user-images.githubusercontent.com/81909140/195820544-44c84701-cfe7-4cd6-ac41-6f920ceab66a.jpeg"></p>
 <h1 align="center" ><b>책첵 : 구매, 판매전에 책정가격을 체크!</b></h1>
 
-<img width = "120" src="https://user-images.githubusercontent.com/107388110/190458944-477fdfa9-129c-4704-9e8e-481667262d06.PNG" width="80%">
+![Frame 33686](https://user-images.githubusercontent.com/107227445/193818873-d2192561-f749-4ec5-a904-e58777c768f2.png)
 
  <br />
 
