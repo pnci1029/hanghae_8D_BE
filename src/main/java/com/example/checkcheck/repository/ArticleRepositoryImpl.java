@@ -1,5 +1,6 @@
 package com.example.checkcheck.repository;
 
+import com.example.checkcheck.dto.requestDto.SearchRequestDto;
 import com.example.checkcheck.dto.responseDto.ArticleResponseDto;
 import com.example.checkcheck.dto.responseDto.MyPageResponseDto;
 import com.example.checkcheck.model.Image;
@@ -9,6 +10,7 @@ import com.example.checkcheck.model.commentModel.Comment;
 import com.example.checkcheck.security.UserDetailsImpl;
 import com.example.checkcheck.util.ComfortUtils;
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -263,6 +265,56 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         }
 
         return resultList;
+    }
+
+    public List<ArticleResponseDto> searchArticles(SearchRequestDto searchQuery) {
+        List<Article> result = jpaQueryFactory
+                .selectFrom(article)
+//                .where(searchQuery(searchQuery.getSearchQuery()).and(article.member.isDeleted.eq(false)))
+                .where(searchArticle(searchQuery.getSearchQuery()).and(article.member.isDeleted.eq(false)))
+                .leftJoin(member).on(article.member.memberId.eq(member.memberId))
+                .fetch();
+
+        List<ArticleResponseDto> resultBox = new ArrayList<>();
+        for (Article articles : result) {
+//            댓글개수
+            List<Comment> commentList = commentRepository.getCommentList(articles.getArticleId());
+
+//            이미지
+            String images = null;
+            List<Image> imageList = imageRepository.findByArticle_ArticleId(articles.getArticleId());
+            for (Image image : imageList) {
+                if (image.getCropImage() != null) {
+                    images = image.getCropImage();
+                    break;
+                } else {
+                    images = image.getImage();
+                    break;
+                }
+
+            }
+
+            ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                    .article(articles)
+                    .userRank(comfortUtils.getUserRank(articles.getMember().getPoint()))
+                    .process(comfortUtils.getProcessKorean(articles.getProcess()))
+                    .price(NumberFormat.getInstance().format(articles.getPrice()))
+                    .selectedPrice(null)
+                    .image(images)
+                    .commentCount(commentList.size())
+                    .build();
+
+            resultBox.add(articleResponseDto);
+//                            게시자가 올린 금액 OK 선택 금액 NUll
+        }
+
+
+        return resultBox;
+    }
+
+
+    private BooleanExpression searchArticle(String content) {
+        return (!content.isEmpty()) ? article.title.contains(content) : null;
     }
 
 }
