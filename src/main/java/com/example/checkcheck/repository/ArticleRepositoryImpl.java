@@ -271,7 +271,7 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
         List<Article> result = jpaQueryFactory
                 .selectFrom(article)
 //                .where(searchQuery(searchQuery.getSearchQuery()).and(article.member.isDeleted.eq(false)))
-                .where(searchArticle(searchQuery.getSearchQuery()).and(article.member.isDeleted.eq(false)))
+                .where(searchArticle(searchQuery.getSearchQuery()).or(searchArticleContent(searchQuery.getSearchQuery())).and(article.member.isDeleted.eq(false)))
                 .leftJoin(member).on(article.member.memberId.eq(member.memberId))
                 .fetch();
 
@@ -293,18 +293,31 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
                 }
 
             }
+            if (articles.getProcess().equals(Process.process)) {
+                ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                        .article(articles)
+                        .userRank(comfortUtils.getUserRank(articles.getMember().getPoint()))
+                        .process(comfortUtils.getProcessKorean(articles.getProcess()))
+                        .price(NumberFormat.getInstance().format(articles.getPrice()))
+                        .selectedPrice(null)
+                        .image(images)
+                        .commentCount(commentList.size())
+                        .build();
+                resultBox.add(articleResponseDto);
+            } else {
+                ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
+                        .article(articles)
+                        .userRank(comfortUtils.getUserRank(articles.getMember().getPoint()))
+                        .process(comfortUtils.getProcessKorean(articles.getProcess()))
+                        .price(null)
+                        .selectedPrice(NumberFormat.getInstance().format(articles.getSelectedPrice()))
+                        .image(images)
+                        .commentCount(commentList.size())
+                        .build();
+                resultBox.add(articleResponseDto);
+            }
 
-            ArticleResponseDto articleResponseDto = ArticleResponseDto.builder()
-                    .article(articles)
-                    .userRank(comfortUtils.getUserRank(articles.getMember().getPoint()))
-                    .process(comfortUtils.getProcessKorean(articles.getProcess()))
-                    .price(NumberFormat.getInstance().format(articles.getPrice()))
-                    .selectedPrice(null)
-                    .image(images)
-                    .commentCount(commentList.size())
-                    .build();
 
-            resultBox.add(articleResponseDto);
 //                            게시자가 올린 금액 OK 선택 금액 NUll
         }
 
@@ -315,6 +328,10 @@ public class ArticleRepositoryImpl implements ArticleRepositoryCustom {
 
     private BooleanExpression searchArticle(String content) {
         return (!content.isEmpty()) ? article.title.contains(content) : null;
+    }
+
+    private BooleanExpression searchArticleContent(String content) {
+        return (!content.isEmpty()) ? article.content.contains(content) : null;
     }
 
 }

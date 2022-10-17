@@ -16,7 +16,7 @@ public class SearchController {
     }
 
     @GetMapping("/search")
-    public List<ArticleResponseDto> searchArticle(@RequestBody SearchRequestDto searchRequestDto) {
+    public List<ArticleResponseDto> searchArticle(SearchRequestDto searchRequestDto) {
         return articleRepository.searchArticles(searchRequestDto);
     }
 }
