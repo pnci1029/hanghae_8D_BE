@@ -93,7 +93,7 @@ Git Action + Nginx 기술을 활용한 유동적인 개발 & 운영 서버를 �
 * **배근아 (부팀장)**
 * **김단비** 
 #### `Designer`
-* **박연아**
+* **박연아(pyeona93@gmail.com)**
 
 <br />
 
